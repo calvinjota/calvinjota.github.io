@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Política de Privacidade — Preço e Lucro</title>
+<style>
+  * { box-sizing: border-box; }
+
+  :root {
+    --bg: #0b1120;
+    --text: #eef2f8;
+    --muted: #8892a6;
+    --accent: #22d3ee;
+    --border: #1f2c47;
+    --panel: #111a2e;
+  }
+
+  @media (prefers-color-scheme: light) {
+    :root[data-theme="light"],
+    :root:not([data-theme]) {
+      --bg: #f5f7fb;
+      --text: #111827;
+      --muted: #5b6472;
+      --accent: #0369a1;
+      --border: #dde3ef;
+      --panel: #ffffff;
+    }
+  }
+
+  body {
+    margin: 0;
+    padding: 32px 20px 60px;
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    line-height: 1.7;
+    transition: background 0.2s ease, color 0.2s ease;
+  }
+
+  .container {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  h1 {
+    font-size: 28px;
+    font-weight: 700;
+    margin: 0 0 8px 0;
+    color: var(--accent);
+  }
+
+  .last-updated {
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 32px;
+  }
+
+  h2 {
+    font-size: 18px;
+    font-weight: 600;
+    margin: 32px 0 16px 0;
+    color: var(--text);
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+  }
+
+  h3 {
+    font-size: 15px;
+    font-weight: 600;
+    margin: 20px 0 12px 0;
+    color: var(--text);
+  }
+
+  p, li {
+    font-size: 14px;
+    color: var(--text);
+    margin: 12px 0;
+  }
+
+  ul {
+    margin: 16px 0;
+    padding-left: 20px;
+  }
+
+  li {
+    margin-bottom: 8px;
+  }
+
+  a {
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 500;
+  }
+
+  a:hover {
+    text-decoration: underline;
+  }
+
+  .highlight {
+    background: var(--panel);
+    border-left: 3px solid var(--accent);
+    padding: 16px;
+    border-radius: 8px;
+    margin: 16px 0;
+  }
+
+  .footer {
+    margin-top: 48px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+    font-size: 12px;
+    color: var(--muted);
+  }
+
+  @media (max-width: 600px) {
+    h1 {
+      font-size: 22px;
+    }
+
+    h2 {
+      font-size: 16px;
+    }
+
+    body {
+      padding: 20px 16px 40px;
+    }
+  }
+</style>
+<script>
+  // Detectar tema do sistema na primeira carga
+  (function() {
+    const theme = localStorage.getItem('theme');
+    if (theme === 'light' || (theme === 'system' && window.matchMedia('(prefers-color-scheme: light)').matches)) {
+      document.documentElement.setAttribute('data-theme', 'light');
+    }
+  })();
+</script>
+</head>
+<body>
+  <div class="container">
+    <h1>Política de Privacidade</h1>
+    <p class="last-updated">Última atualização: 13 de julho de 2026</p>
+
+<p>Esta Política de Privacidade descreve como o aplicativo <strong>Preço e Lucro</strong> ("nós", "aplicativo") coleta, usa, armazena e protege as informações dos usuários, em conformidade com a Lei Geral de Proteção de Dados Pessoais — LGPD (Lei nº 13.709/2018) e com as políticas do Google Play.</p>
+
+<h2>1. Dados que coletamos</h2>
+
+<p><strong>a) Dados da sua conta Google (quando você faz login):</strong></p>
+<ul>
+  <li>Nome de exibição</li>
+  <li>Endereço de e-mail</li>
+  <li>Foto do perfil (URL)</li>
+</ul>
+<p>Esses dados são obtidos por meio do login com o Google (Firebase Authentication) e são necessários para identificar sua conta no aplicativo.</p>
+
+<p><strong>b) Dados de uso da conta:</strong></p>
+<ul>
+  <li>Data de criação da conta</li>
+  <li>Data de início e status do período de teste gratuito (trial)</li>
+</ul>
+
+<p><strong>c) Dados de cálculos e preços salvos:</strong></p>
+<ul>
+  <li>Quando você salva um preço/cálculo, os dados são armazenados em duas cópias:
+    <ul>
+      <li><strong>No seu dispositivo:</strong> cópia local para acesso offline</li>
+      <li><strong>Na nuvem (Firebase Cloud Firestore):</strong> sincronizados com sua conta Google pra não perder se trocar de celular</li>
+    </ul>
+  </li>
+  <li>Dados incluem: nome do produto, custo, percentuais (comissão, imposto, margem), data de salvamento</li>
+</ul>
+
+<p><strong>d) Outros dados armazenados apenas no seu dispositivo:</strong></p>
+<ul>
+  <li>Preferência de tema (claro/escuro)</li>
+</ul>
+
+<p><strong>Não coletamos:</strong> localização, contatos, arquivos do dispositivo, dados financeiros/bancários, nem qualquer dado sensível (saúde, biometria, etc.).</p>
+
+<h2>2. Como usamos os seus dados</h2>
+<ul>
+  <li>Autenticar e identificar sua conta no aplicativo;</li>
+  <li>Controlar o período de teste gratuito e o acesso às funcionalidades;</li>
+  <li>Prestar suporte quando você entrar em contato;</li>
+  <li>Cumprir obrigações legais.</li>
+</ul>
+<p><strong>Não vendemos, alugamos nem compartilhamos seus dados pessoais para fins de publicidade.</strong></p>
+
+<h2>3. Base legal (LGPD)</h2>
+<p>O tratamento dos seus dados pessoais se baseia nas seguintes hipóteses previstas no art. 7º da LGPD:</p>
+<ul>
+  <li><strong>Execução de contrato</strong> (art. 7º, V): dados necessários para fornecer o serviço que você contratou/utiliza;</li>
+  <li><strong>Consentimento</strong> (art. 7º, I): manifestado ao fazer login com sua conta Google;</li>
+  <li><strong>Cumprimento de obrigação legal</strong> (art. 7º, II), quando aplicável.</li>
+</ul>
+
+<h2>4. Compartilhamento e operadores</h2>
+<p>Utilizamos os seguintes serviços de terceiros, que atuam como operadores de dados e possuem suas próprias políticas de privacidade:</p>
+<ul>
+  <li><strong>Google Firebase</strong> (Authentication e Cloud Firestore) — autenticação e armazenamento em nuvem. <a href="https://firebase.google.com/support/privacy" target="_blank" rel="noopener">Política de privacidade do Firebase</a>;</li>
+  <li><strong>Google Play Services</strong> — distribuição do aplicativo e, futuramente, processamento de assinaturas (Google Play Billing). <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Política de privacidade do Google</a>.</li>
+</ul>
+<p>Seus dados podem ser armazenados em servidores localizados fora do Brasil (infraestrutura do Google). Nesses casos, a transferência internacional ocorre com as salvaguardas exigidas pela LGPD.</p>
+
+<h2>5. Armazenamento e segurança</h2>
+<ul>
+  <li>Os dados da sua conta são armazenados na infraestrutura do Google Firebase, que adota medidas de segurança reconhecidas internacionalmente (criptografia em trânsito e em repouso);</li>
+  <li>Os dados de cálculos e preços salvos ficam armazenados apenas no seu dispositivo e são removidos se você desinstalar o aplicativo;</li>
+  <li>Mantemos os dados da sua conta enquanto ela estiver ativa. Após a exclusão da conta, os dados são removidos dos nossos registros.</li>
+</ul>
+
+<h2>6. Seus direitos (LGPD)</h2>
+<p>Nos termos do art. 18 da LGPD, você pode, a qualquer momento, solicitar:</p>
+<ul>
+  <li>Confirmação da existência de tratamento dos seus dados;</li>
+  <li>Acesso aos seus dados;</li>
+  <li>Correção de dados incompletos, inexatos ou desatualizados;</li>
+  <li>Anonimização, bloqueio ou eliminação de dados desnecessários;</li>
+  <li>Portabilidade dos dados;</li>
+  <li>Eliminação dos dados tratados com base no consentimento;</li>
+  <li>Revogação do consentimento.</li>
+</ul>
+<p>Para exercer qualquer desses direitos, entre em contato pelo e-mail indicado na seção "Contato". Responderemos no prazo previsto na legislação.</p>
+
+<h2>7. Exclusão da conta e dos dados</h2>
+<p>Você pode solicitar a exclusão da sua conta e de todos os dados associados de duas formas:</p>
+<ul>
+  <li>Enviando um e-mail para <strong>contato@calvinjota.com.br</strong> com o assunto "Exclusão de conta", a partir do e-mail cadastrado no aplicativo;</li>
+  <li>Os dados armazenados apenas no dispositivo são removidos automaticamente ao desinstalar o aplicativo.</li>
+</ul>
+<p>Após a confirmação da solicitação, excluiremos sua conta e os dados associados em até 30 dias, exceto quando a lei exigir a retenção por prazo maior.</p>
+
+<h2>8. Crianças e adolescentes</h2>
+<p>O aplicativo é uma ferramenta de cálculo de preços e margens destinada ao público geral e não é direcionado a menores de 13 anos. Não coletamos intencionalmente dados de crianças. Se você acredita que uma criança nos forneceu dados pessoais, entre em contato para que possamos removê-los.</p>
+
+<h2>9. Alterações desta política</h2>
+<p>Podemos atualizar esta Política de Privacidade periodicamente. A versão vigente estará sempre disponível nesta página, com a data da última atualização indicada no topo. Alterações relevantes serão comunicadas pelo aplicativo.</p>
+
+<h2>10. Contato</h2>
+<p>Se você tiver dúvidas sobre esta Política de Privacidade ou sobre o tratamento dos seus dados, entre em contato:</p>
+<div class="highlight">
+  <strong>E-mail de Suporte:</strong><br>
+  <a href="mailto:contato@calvinjota.com.br">contato@calvinjota.com.br</a><br><br>
+  <strong>Resposta:</strong> Respondemos em até 10 dias úteis
+</div>
+
+    <div class="footer">
+      <p><strong>Versão 1.0 — 13 de julho de 2026</strong></p>
+      <p>Preço & Lucro • Calvin Jota<br>
+      <a href="mailto:contato@calvinjota.com.br">contato@calvinjota.com.br</a></p>
+    </div>
+  </div>
+</body>
+</html>

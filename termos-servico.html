@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Termos de Serviço - Preço & Lucro</title>
+  <style>
+    * { box-sizing: border-box; }
+
+    :root {
+      --bg: #0b1120;
+      --text: #eef2f8;
+      --muted: #8892a6;
+      --accent: #22d3ee;
+      --border: #1f2c47;
+      --panel: #111a2e;
+    }
+
+    @media (prefers-color-scheme: light) {
+      :root[data-theme="light"],
+      :root:not([data-theme]) {
+        --bg: #f5f7fb;
+        --text: #111827;
+        --muted: #5b6472;
+        --accent: #0369a1;
+        --border: #dde3ef;
+        --panel: #ffffff;
+      }
+    }
+
+    body {
+      margin: 0;
+      padding: 32px 20px 60px;
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      line-height: 1.7;
+      transition: background 0.2s ease, color 0.2s ease;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      font-size: 28px;
+      font-weight: 700;
+      margin: 0 0 8px 0;
+      color: var(--accent);
+    }
+
+    .last-updated {
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 32px;
+    }
+
+    h2 {
+      font-size: 18px;
+      font-weight: 600;
+      margin: 32px 0 16px 0;
+      color: var(--text);
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+    }
+
+    h3 {
+      font-size: 15px;
+      font-weight: 600;
+      margin: 20px 0 12px 0;
+      color: var(--text);
+    }
+
+    p, li {
+      font-size: 14px;
+      color: var(--text);
+      margin: 12px 0;
+    }
+
+    ul {
+      margin: 16px 0;
+      padding-left: 20px;
+    }
+
+    li {
+      margin-bottom: 8px;
+    }
+
+    a {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    .highlight {
+      background: var(--panel);
+      border-left: 3px solid var(--accent);
+      padding: 16px;
+      border-radius: 8px;
+      margin: 16px 0;
+    }
+
+    .highlight-warning {
+      background: var(--panel);
+      border-left: 3px solid #f5a623;
+      padding: 16px;
+      border-radius: 8px;
+      margin: 16px 0;
+    }
+
+    .footer {
+      margin-top: 48px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    @media (max-width: 600px) {
+      h1 {
+        font-size: 22px;
+      }
+
+      h2 {
+        font-size: 16px;
+      }
+
+      body {
+        padding: 20px 16px 40px;
+      }
+    }
+  </style>
+  <script>
+    // Detectar tema do sistema na primeira carga
+    (function() {
+      const theme = localStorage.getItem('theme');
+      if (theme === 'light' || (theme === 'system' && window.matchMedia('(prefers-color-scheme: light)').matches)) {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <div class="container">
+    <h1>Termos de Serviço</h1>
+    <p class="last-updated">Última atualização: 14 de julho de 2026</p>
+
+    <p><strong>Bem-vindo ao Preço & Lucro!</strong> Estes Termos de Serviço regem seu acesso e uso do aplicativo Preço & Lucro (doravante "Aplicativo"), desenvolvido por <strong>Calvin Jota</strong>. Ao usar este Aplicativo, você concorda com estes Termos. Se você não concordar com alguma parte, por favor, não use o Aplicativo.</p>
+
+    <!-- 1. Aceitação dos Termos -->
+    <h2>1. Aceitação dos Termos</h2>
+    <p>Ao acessar e usar este Aplicativo, você aceita integralmente estes Termos de Serviço e nossa <a href="politica-privacidade.html">Política de Privacidade</a>. Se você não concorda com qualquer disposição, não está autorizado a usar o Aplicativo.</p>
+
+    <!-- 2. Descrição do Serviço -->
+    <h2>2. Descrição do Serviço</h2>
+    <p>O Preço & Lucro é uma calculadora mobile para empresários e vendedores que necessitam calcular preços, margens de lucro e custos operacionais de produtos. O Aplicativo oferece:</p>
+    <ul>
+      <li>Cálculo de preço de venda sugerido com base em custos e percentuais</li>
+      <li>Sincronização de preços salvos entre dispositivos (via conta Google)</li>
+      <li>Opções de customização de tema (claro/escuro)</li>
+      <li>Suporte a múltiplos tipos de impostos e taxas</li>
+    </ul>
+    <p>O Aplicativo funciona como uma ferramenta de cálculo e não substitui consultoria profissional contábil ou fiscal.</p>
+
+    <!-- 3. Conta de Usuário -->
+    <h2>3. Conta de Usuário e Login</h2>
+    <h3>3.1 Autenticação com Google</h3>
+    <p>O Aplicativo utiliza <strong>autenticação obrigatória via Google Sign-In</strong>. Para usar o Aplicativo, você deve:</p>
+    <ul>
+      <li>Possuir uma conta Google válida</li>
+      <li>Autorizar o acesso às informações de perfil (nome, e-mail, foto)</li>
+      <li>Manter suas credenciais de login seguras</li>
+    </ul>
+    <p>Você é responsável por todas as atividades realizadas em sua conta.</p>
+
+    <h3>3.2 Período de Teste (Trial)</h3>
+    <p>Novos usuários recebem automaticamente <strong>7 dias de teste gratuito</strong> a partir da primeira autenticação. Após o período de teste:</p>
+    <ul>
+      <li>O Aplicativo será bloqueado até que você assine um plano Pro</li>
+      <li>Seus dados calculados serão preservados e sincronizados na nuvem</li>
+      <li>Você pode restaurar acesso ao contratar um plano de assinatura</li>
+    </ul>
+
+    <!-- 4. Assinatura e Pagamento -->
+    <h2>4. Assinatura e Pagamento</h2>
+    <h3>4.1 Planos de Assinatura</h3>
+    <p>Após o término do período de teste, você pode assinar um plano Pro para continuar usando o Aplicativo. Os planos e preços são exibidos dentro do Aplicativo.</p>
+
+    <h3>4.2 Processamento de Pagamento</h3>
+    <div class="highlight-warning">
+      <strong>⚠️ Pagamentos gerenciados pelo Google Play:</strong><br>
+      Todos os pagamentos, cobranças recorrentes e processamento de cartão são gerenciados exclusivamente pelo Google Play Billing. Calvin Jota <strong>não recebe, armazena ou processa</strong> dados de cartão de crédito, senha ou informações sensíveis de pagamento.
+    </div>
+    <p>Ao confirmar a compra no Aplicativo, você está fechando um contrato de assinatura com os termos do Google Play Billing.</p>
+
+    <!-- 5. Direito de Arrependimento -->
+    <h2>5. Direito de Arrependimento e Cancelamento</h2>
+    <h3>5.1 Direito Legal de Arrependimento (Brasil - CDC)</h3>
+    <p>Conforme o Código de Defesa do Consumidor (Lei nº 8.078/1990), você tem o direito de <strong>se arrepender da compra no prazo de 7 dias</strong>, contados a partir da contratação, <strong>sem necessidade de justificativa</strong>.</p>
+
+    <h3>5.2 Como Cancelar e Solicitar Reembolso</h3>
+    <p>Para cancelar sua assinatura e solicitar reembolso:</p>
+    <ul>
+      <li><strong>Via Google Play:</strong> Abra Google Play → Minha conta → Assinaturas → Preço & Lucro → Cancelar assinatura</li>
+      <li><strong>Prazo:</strong> Solicite dentro de 7 dias da contratação</li>
+      <li><strong>Processamento:</strong> O Google Play processará o reembolso automaticamente (geralmente em 3-5 dias úteis)</li>
+      <li><strong>Suporte:</strong> Se encontrar dificuldades, contate <a href="mailto:contato@calvinjota.com.br">contato@calvinjota.com.br</a></li>
+    </ul>
+
+    <div class="highlight">
+      <strong>Nota importante:</strong> Após o cancelamento, seu acesso ao Aplicativo será bloqueado imediatamente. Você poderá contratar um novo plano a qualquer momento para restaurar o acesso.
+    </div>
+
+    <!-- 6. Coleta e Uso de Dados -->
+    <h2>6. Coleta e Uso de Dados</h2>
+    <p>Veja a <a href="politica-privacidade.html">Política de Privacidade</a> para detalhes completos sobre coleta, armazenamento e uso de dados.</p>
+
+    <!-- 7. Direitos de Propriedade Intelectual -->
+    <h2>7. Direitos de Propriedade Intelectual</h2>
+    <p>O Aplicativo, incluindo seu código-fonte, design, funcionalidades e conteúdo (exceto dados inseridos por você), é propriedade intelectual de <strong>Calvin Jota</strong> ou de seus licenciadores. Você não tem o direito de copiar, modificar, distribuir ou usar o Aplicativo de forma não autorizada.</p>
+
+    <p>Seus dados de cálculos (preços, margens, etc.) são de sua propriedade. Você autoriza Calvin Jota a armazenar e sincronizar esses dados apenas para fornecer o serviço.</p>
+
+    <!-- 8. Limitação de Responsabilidade -->
+    <h2>8. Limitação de Responsabilidade</h2>
+    <h3>8.1 Isenção de Garantias</h3>
+    <p>O Aplicativo é fornecido "COMO ESTÁ" sem garantias explícitas ou implícitas. Calvin Jota não garante que:</p>
+    <ul>
+      <li>O Aplicativo será livre de erros ou interrupções</li>
+      <li>Os cálculos serão sempre 100% precisos (você é responsável por validar)</li>
+      <li>O serviço estará disponível em todos os momentos</li>
+    </ul>
+
+    <h3>8.2 Limitação de Danos</h3>
+    <p>Em hipótese alguma Calvin Jota será responsável por danos diretos, indiretos, especiais ou consequentes decorrentes do uso ou incapacidade de usar o Aplicativo, incluindo perda de dados ou lucros cessantes, ainda que advertido da possibilidade de tais danos.</p>
+
+    <h3>8.3 Uso por sua Conta</h3>
+    <p>Você utiliza o Aplicativo por sua conta e risco. Você é responsável por:</p>
+    <ul>
+      <li>Validar todos os cálculos antes de usar em decisões comerciais críticas</li>
+      <li>Consultar um contador ou consultor fiscal para questões contábeis complexas</li>
+      <li>Manter a segurança de sua conta Google</li>
+    </ul>
+
+    <!-- 9. Proibições de Uso -->
+    <h2>9. Proibições de Uso</h2>
+    <p>Você concorda em não:</p>
+    <ul>
+      <li>Usar o Aplicativo para fins ilegais ou não autorizados</li>
+      <li>Tentar acessar, hackear ou contornar sistemas de segurança</li>
+      <li>Distribuir, vender, alugar ou compartilhar acesso não autorizado ao Aplicativo</li>
+      <li>Usar o Aplicativo para coletar dados de terceiros sem consentimento</li>
+      <li>Interferir com a operação ou disponibilidade do Aplicativo</li>
+    </ul>
+
+    <!-- 10. Modificações e Descontinuação -->
+    <h2>10. Modificações e Descontinuação do Serviço</h2>
+    <p>Calvin Jota se reserva o direito de:</p>
+    <ul>
+      <li>Modificar ou descontinuar o Aplicativo a qualquer momento, com ou sem aviso prévio</li>
+      <li>Alterar preços ou termos de assinatura com pelo menos 30 dias de aviso</li>
+      <li>Remover ou restringir recursos do Aplicativo</li>
+    </ul>
+    <p>Alterações substanciais nos termos serão comunicadas via e-mail registrado em sua conta Google.</p>
+
+    <!-- 11. Modificações dos Termos -->
+    <h2>11. Modificações destes Termos</h2>
+    <p>Calvin Jota pode atualizar estes Termos de Serviço a qualquer momento. As modificações entram em vigor imediatamente após publicação. <strong>Seu uso continuado do Aplicativo após alterações constitui aceitação dos novos termos.</strong></p>
+
+    <p>Data da última atualização: 14 de julho de 2026</p>
+
+    <!-- 12. Contato -->
+    <h2>12. Contato e Suporte</h2>
+    <p>Se você tiver dúvidas sobre estes Termos, sua privacidade, ou desejar exercer seus direitos (cancelamento, exclusão de conta, LGPD), entre em contato:</p>
+
+    <div class="highlight">
+      <strong>E-mail de Suporte:</strong><br>
+      <a href="mailto:contato@calvinjota.com.br">contato@calvinjota.com.br</a><br><br>
+      <strong>Resposta:</strong> Respondemos em até 10 dias úteis
+    </div>
+
+    <!-- 13. Disposições Finais -->
+    <h2>13. Disposições Finais</h2>
+    <p>Se qualquer disposição destes Termos for considerada inválida ou não exequível, as demais disposições permanecerão em vigor.</p>
+
+    <p>Este é o acordo integral entre você e Calvin Jota com relação ao Aplicativo.</p>
+
+    <!-- Footer -->
+    <div class="footer">
+      <p><strong>Versão 1.0 — 14 de julho de 2026</strong></p>
+      <p>Preço & Lucro • Calvin Jota<br>
+      <a href="mailto:contato@calvinjota.com.br">contato@calvinjota.com.br</a></p>
+    </div>
+  </div>
+</body>
+</html>
