@@ -20,10 +20,11 @@
             background: linear-gradient(135deg, #0b1120 0%, #1a2847 100%);
             color: var(--text);
             min-height: 100vh;
-            padding: 40px 20px;
+            display: flex;
+            flex-direction: column;
         }
-        .container { max-width: 900px; margin: 0 auto; }
-        .header { text-align: center; margin-bottom: 60px; }
+        .container { max-width: 900px; margin: 0 auto; padding: 40px 20px; flex: 1; display: flex; flex-direction: column; }
+        .header { text-align: center; margin-bottom: 60px; margin-top: auto; }
         .header-top {
             display: flex;
             align-items: center;
@@ -38,6 +39,9 @@
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 24px;
             margin-bottom: 60px;
+            max-width: 900px;
+            margin-left: auto;
+            margin-right: auto;
         }
         .app-card {
             background: var(--panel);
@@ -68,19 +72,23 @@
         .app-link:hover { filter: brightness(1.1); }
         .footer {
             text-align: center;
-            padding-top: 40px;
+            padding: 40px 20px;
             border-top: 1px solid var(--border);
             font-size: 13px;
             color: var(--muted);
+            margin-top: auto;
         }
-        .legal-links { margin-top: 16px; }
-        .legal-links a {
-            color: var(--muted);
+        .footer-content {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        .footer-contact { margin-top: 16px; }
+        .footer-contact a {
+            color: var(--accent);
             text-decoration: none;
-            margin: 0 8px;
-            font-size: 12px;
+            font-weight: 500;
         }
-        .legal-links a:hover { color: var(--accent); }
+        .footer-contact a:hover { text-decoration: underline; }
         .coming-soon {
             background: rgba(34, 211, 238, 0.05);
             border: 1px dashed var(--border);
@@ -122,13 +130,11 @@
         </div>
 
         <div class="footer">
-            <p>© 2026 Calvin Jota. Todos os direitos reservados.</p>
-            <div class="legal-links">
-                <a href="preco-lucro/politica-privacidade.html">Política de Privacidade</a>
-                <span>·</span>
-                <a href="preco-lucro/termos-servico.html">Termos de Serviço</a>
-                <span>·</span>
-                <a href="mailto:contato@calvinjota.com.br">Contato</a>
+            <div class="footer-content">
+                <p>© 2026 Calvin Jota. Todos os direitos reservados.</p>
+                <div class="footer-contact">
+                    <a href="mailto:contato@calvinjota.com.br">Contato</a>
+                </div>
             </div>
         </div>
     </div>
