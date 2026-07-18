@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Calvin Jota</title>
     <meta name="description" content="Ferramentas para e-commerce e negócios.">
-    <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+    <link rel="icon" type="image/png" href="assets/favicon.png">
     <style>
         :root {
             --text: #eef2f8;
@@ -20,11 +20,19 @@
             background: linear-gradient(135deg, #0b1120 0%, #1a2847 100%);
             color: var(--text);
             min-height: 100vh;
+            display: grid;
+            grid-template-rows: 1fr auto;
+        }
+        .container {
+            max-width: 900px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 40px 20px;
             display: flex;
             flex-direction: column;
+            justify-content: center;
         }
-        .container { max-width: 900px; margin: 0 auto; padding: 40px 20px; flex: 1; display: flex; flex-direction: column; }
-        .header { text-align: center; margin-bottom: 60px; margin-top: auto; }
+        .header { text-align: center; margin-bottom: 60px; }
         .header-top {
             display: flex;
             align-items: center;
@@ -32,16 +40,14 @@
             gap: 16px;
             margin-bottom: 30px;
         }
-        .logo { font-size: 48px; line-height: 1; }
+        .logo { width: 56px; height: 56px; line-height: 1; }
         h1 { font-size: 32px; color: var(--accent); line-height: 1; }
         .apps-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr));
             gap: 24px;
             margin-bottom: 60px;
-            max-width: 900px;
-            margin-left: auto;
-            margin-right: auto;
+            width: 100%;
         }
         .app-card {
             background: var(--panel);
@@ -76,7 +82,6 @@
             border-top: 1px solid var(--border);
             font-size: 13px;
             color: var(--muted);
-            margin-top: auto;
         }
         .footer-content {
             max-width: 900px;
@@ -105,7 +110,7 @@
     <div class="container">
         <div class="header">
             <div class="header-top">
-                <div class="logo">🚀</div>
+                <img class="logo" src="assets/logo-android.png" alt="Logo Calvin Jota">
                 <h1>Calvin Jota</h1>
             </div>
         </div>
@@ -128,15 +133,15 @@
                 <div class="coming-soon-text">Novo app chegando em breve</div>
             </div>
         </div>
+    </div>
 
-        <div class="footer">
-            <div class="footer-content">
-                <p>© 2026 Calvin Jota. Todos os direitos reservados.</p>
-                <div class="footer-contact">
-                    <a href="mailto:contato@calvinjota.com.br">Contato</a>
-                </div>
+    <footer class="footer">
+        <div class="footer-content">
+            <p>© 2026 Calvin Jota. Todos os direitos reservados.</p>
+            <div class="footer-contact">
+                <a href="mailto:contato@calvinjota.com.br">Contato</a>
             </div>
         </div>
-    </div>
+    </footer>
 </body>
 </html>
