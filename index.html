@@ -3,11 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calvin Jota - Preço & Lucro</title>
-    <meta name="description" content="Preço & Lucro: calcule o preço perfeito para seus produtos com margem de lucro garantida. Ferramenta essencial para e-commerce e varejo.">
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <title>Calvin Jota</title>
+    <meta name="description" content="Ferramentas para e-commerce e negócios.">
+    <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
     <style>
-        /* Paleta compartilhada com preco-lucro/style.css (padrão visual do app) */
         :root {
             --text: #eef2f8;
             --muted: #8892a6;
@@ -16,44 +15,122 @@
             --panel: #111a2e;
         }
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: linear-gradient(135deg, #0b1120 0%, #1a2847 100%); color: var(--text); min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
-        .container { max-width: 600px; text-align: center; }
-        h1 { font-size: 2.5em; margin-bottom: 10px; color: var(--accent); }
-        .subtitle { font-size: 1.2em; color: var(--muted); margin-bottom: 30px; }
-        .app-icon { width: 120px; height: 120px; margin: 0 auto 30px; background: var(--panel); border: 1px solid var(--border); border-radius: 30px; display: flex; align-items: center; justify-content: center; font-size: 60px; }
-        .description { font-size: 1.1em; line-height: 1.6; margin-bottom: 40px; color: var(--text); }
-        .links { display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; }
-        a { padding: 12px 30px; background: var(--accent); color: #06222b; text-decoration: none; border-radius: 8px; font-weight: 600; transition: filter 0.2s ease; }
-        a:hover { filter: brightness(1.1); }
-        .footer { margin-top: 50px; font-size: 0.9em; color: var(--muted); }
-        .legal-links { margin-top: 12px; }
-        .legal-links a { padding: 0; background: none; color: var(--muted); font-weight: 400; font-size: 0.9em; text-decoration: underline; }
-        .legal-links a:hover { color: var(--accent); background: none; }
-        .legal-links span { color: var(--border); margin: 0 8px; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0b1120 0%, #1a2847 100%);
+            color: var(--text);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+        .container { max-width: 900px; margin: 0 auto; }
+        .header { text-align: center; margin-bottom: 60px; }
+        .header-top {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            margin-bottom: 30px;
+        }
+        .logo { font-size: 48px; line-height: 1; }
+        h1 { font-size: 32px; color: var(--accent); line-height: 1; }
+        .apps-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            margin-bottom: 60px;
+        }
+        .app-card {
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 32px 24px;
+            text-align: center;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+        .app-card:hover {
+            border-color: var(--accent);
+            box-shadow: 0 0 16px rgba(34, 211, 238, 0.1);
+        }
+        .app-icon { font-size: 48px; margin-bottom: 16px; line-height: 1; }
+        .app-name { font-size: 20px; font-weight: 600; margin-bottom: 8px; color: var(--text); }
+        .app-desc { font-size: 14px; color: var(--muted); line-height: 1.6; margin-bottom: 24px; }
+        .app-link {
+            display: inline-block;
+            padding: 10px 24px;
+            background: var(--accent);
+            color: #06222b;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 14px;
+            transition: filter 0.2s ease;
+        }
+        .app-link:hover { filter: brightness(1.1); }
+        .footer {
+            text-align: center;
+            padding-top: 40px;
+            border-top: 1px solid var(--border);
+            font-size: 13px;
+            color: var(--muted);
+        }
+        .legal-links { margin-top: 16px; }
+        .legal-links a {
+            color: var(--muted);
+            text-decoration: none;
+            margin: 0 8px;
+            font-size: 12px;
+        }
+        .legal-links a:hover { color: var(--accent); }
+        .coming-soon {
+            background: rgba(34, 211, 238, 0.05);
+            border: 1px dashed var(--border);
+            border-radius: 12px;
+            padding: 32px 24px;
+            text-align: center;
+        }
+        .coming-soon-label { font-size: 12px; color: var(--accent); font-weight: 600; text-transform: uppercase; margin-bottom: 12px; }
+        .coming-soon-text { font-size: 14px; color: var(--muted); }
     </style>
     <meta name="google-site-verification" content="eC-2TbcTWnUkv8lhqgKw6UgmN-RkCiJPox_PvYTnBLg" />
 </head>
 <body>
     <div class="container">
-        <div class="app-icon">💰</div>
-        <h1>Preço & Lucro</h1>
-        <p class="subtitle">por Calvin Jota</p>
-        <p class="description">
-            Calcule o preço perfeito para seus produtos com margem de lucro garantida.
-            Ferramenta essencial para e-commerce, varejo e qualquer negócio que vende.
-        </p>
-        <div class="links">
-            <a href="https://play.google.com/store/apps/details?id=com.calvinjota.precoelucro" target="_blank" rel="noopener noreferrer">Baixar no Play Store</a>
-            <a href="mailto:contato@calvinjota.com.br">Contato</a>
+        <div class="header">
+            <div class="header-top">
+                <div class="logo">🚀</div>
+                <h1>Calvin Jota</h1>
+            </div>
         </div>
-        <p class="footer">© 2026 Calvin Jota. Todos os direitos reservados.</p>
-        <p class="legal-links">
-            <a href="preco-lucro/politica-privacidade.html">Política de Privacidade</a>
-            <span>·</span>
-            <a href="preco-lucro/termos-servico.html">Termos de Serviço</a>
-            <span>·</span>
-            <a href="preco-lucro/deletar-conta.html">Excluir Conta</a>
-        </p>
+
+        <div class="apps-grid">
+            <div class="app-card">
+                <div class="app-icon">💰</div>
+                <div class="app-name">Preço & Lucro</div>
+                <p class="app-desc">Calcule o preço perfeito para seus produtos com margem de lucro garantida.</p>
+                <a href="preco-lucro/" class="app-link">Acessar página</a>
+            </div>
+
+            <div class="coming-soon">
+                <div class="coming-soon-label">Em breve</div>
+                <div class="coming-soon-text">Novo app chegando em breve</div>
+            </div>
+
+            <div class="coming-soon">
+                <div class="coming-soon-label">Em breve</div>
+                <div class="coming-soon-text">Novo app chegando em breve</div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>© 2026 Calvin Jota. Todos os direitos reservados.</p>
+            <div class="legal-links">
+                <a href="preco-lucro/politica-privacidade.html">Política de Privacidade</a>
+                <span>·</span>
+                <a href="preco-lucro/termos-servico.html">Termos de Serviço</a>
+                <span>·</span>
+                <a href="mailto:contato@calvinjota.com.br">Contato</a>
+            </div>
+        </div>
     </div>
 </body>
 </html>
