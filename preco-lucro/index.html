@@ -34,16 +34,9 @@
             text-align: center;
         }
         .app-icon {
-            width: 120px;
-            height: 120px;
+            font-size: 80px;
             margin: 0 auto 30px;
-            background: var(--panel);
-            border: 1px solid var(--border);
-            border-radius: 30px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 60px;
+            line-height: 1;
         }
         h1 { font-size: 2.5em; margin-bottom: 10px; color: var(--accent); }
         .subtitle { font-size: 1.2em; color: var(--muted); margin-bottom: 30px; }
@@ -65,6 +58,13 @@
             border: 1px solid var(--accent);
         }
         .btn-outline:hover { background: rgba(34, 211, 238, 0.1); filter: none; }
+        .btn-disabled {
+            background: var(--panel);
+            color: var(--muted);
+            border: 1px solid var(--border);
+            cursor: not-allowed;
+        }
+        .btn-disabled:hover { filter: none; background: var(--panel); }
         .footer {
             text-align: center;
             padding: 40px 20px;
@@ -93,7 +93,7 @@
             Ferramenta essencial para e-commerce, varejo e qualquer negócio que vende.
         </p>
         <div class="links">
-            <a class="btn" href="https://play.google.com/store/apps/details?id=com.calvinjota.precoelucro" target="_blank" rel="noopener noreferrer">Baixar no Play Store</a>
+            <span class="btn btn-disabled">Baixar no Play Store</span>
             <a class="btn btn-outline" href="calculadora/">Usar no navegador</a>
         </div>
     </div>
