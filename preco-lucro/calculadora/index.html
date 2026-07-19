@@ -3,9 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Preço & Lucro — Calvin Jota</title>
-    <meta name="description" content="Preço & Lucro: calcule o preço perfeito para seus produtos com margem de lucro garantida. Ferramenta essencial para e-commerce e varejo.">
-    <link rel="icon" type="image/svg+xml" href="../assets/favicon.svg">
+    <title>Calculadora — Preço & Lucro</title>
+    <meta name="description" content="Use a calculadora Preço & Lucro direto no navegador. Em breve para assinantes.">
+    <meta name="robots" content="noindex">
+    <link rel="icon" type="image/svg+xml" href="../../assets/favicon.svg">
     <style>
         :root {
             --text: #eef2f8;
@@ -45,9 +46,20 @@
             justify-content: center;
             font-size: 60px;
         }
-        h1 { font-size: 2.5em; margin-bottom: 10px; color: var(--accent); }
-        .subtitle { font-size: 1.2em; color: var(--muted); margin-bottom: 30px; }
-        .description { font-size: 1.1em; line-height: 1.6; margin-bottom: 40px; color: var(--text); }
+        .badge {
+            display: inline-block;
+            margin: 0 auto 16px;
+            padding: 6px 16px;
+            border: 1px dashed var(--border);
+            border-radius: 999px;
+            color: var(--accent);
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        h1 { font-size: 2em; margin-bottom: 16px; color: var(--accent); }
+        .description { font-size: 1.05em; line-height: 1.6; margin-bottom: 40px; color: var(--muted); }
         .links { display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; }
         .btn {
             padding: 12px 30px;
@@ -72,43 +84,26 @@
             font-size: 13px;
             color: var(--muted);
         }
-        .footer-links { margin-top: 12px; }
-        .footer-links a {
-            color: var(--muted);
-            text-decoration: underline;
-            font-size: 12px;
-        }
-        .footer-links a:hover { color: var(--accent); }
-        .footer-links span { color: var(--border); margin: 0 8px; }
     </style>
-    <meta name="google-site-verification" content="eC-2TbcTWnUkv8lhqgKw6UgmN-RkCiJPox_PvYTnBLg" />
 </head>
 <body>
     <div class="container">
         <div class="app-icon">💰</div>
-        <h1>Preço & Lucro</h1>
-        <p class="subtitle">por Calvin Jota</p>
+        <div><span class="badge">Em breve</span></div>
+        <h1>Calculadora no navegador</h1>
         <p class="description">
-            Calcule o preço perfeito para seus produtos com margem de lucro garantida.
-            Ferramenta essencial para e-commerce, varejo e qualquer negócio que vende.
+            Estamos preparando a versão web da calculadora Preço & Lucro,
+            com login pela sua conta Google — a mesma do app.
+            Por enquanto, use o aplicativo no seu celular.
         </p>
         <div class="links">
             <a class="btn" href="https://play.google.com/store/apps/details?id=com.calvinjota.precoelucro" target="_blank" rel="noopener noreferrer">Baixar no Play Store</a>
-            <a class="btn btn-outline" href="calculadora/">Usar no navegador</a>
+            <a class="btn btn-outline" href="../">Voltar</a>
         </div>
     </div>
 
     <footer class="footer">
         <p>© 2026 Calvin Jota. Todos os direitos reservados.</p>
-        <div class="footer-links">
-            <a href="politica-privacidade.html">Política de Privacidade</a>
-            <span>·</span>
-            <a href="termos-servico.html">Termos de Serviço</a>
-            <span>·</span>
-            <a href="deletar-conta.html">Excluir Conta</a>
-            <span>·</span>
-            <a href="mailto:contato@calvinjota.com.br">Contato</a>
-        </div>
     </footer>
 </body>
 </html>
