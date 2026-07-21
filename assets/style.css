@@ -36,6 +36,12 @@ body {
   text-decoration: underline;
 }
 
+/* Esconde o "Voltar" quando a página é aberta dentro de um iframe
+   (ex.: popup de documentos legais da calculadora web). */
+html.embedded .back-link {
+  display: none;
+}
+
 h1 {
   font-size: 28px;
   font-weight: 700;

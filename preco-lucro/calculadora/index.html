@@ -1,101 +1,332 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calculadora — Preço & Lucro</title>
-    <meta name="description" content="Use a calculadora Preço & Lucro direto no navegador. Em breve para assinantes.">
-    <meta name="robots" content="noindex">
-    <link rel="icon" type="image/svg+xml" href="../../assets/favicon.svg">
-    <style>
-        :root {
-            --text: #eef2f8;
-            --muted: #8892a6;
-            --accent: #22d3ee;
-            --border: #1f2c47;
-            --panel: #111a2e;
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora - Preço &amp; Lucro</title>
+  <meta name="description" content="Calcule preço de venda e margem de lucro direto no navegador. Exclusivo para assinantes Preço & Lucro.">
+  <meta name="robots" content="noindex">
+  <link rel="icon" type="image/svg+xml" href="../../assets/favicon.svg">
+  <script>
+    // Aplica o tema salvo antes da página desenhar (evita "piscada" de tema errado)
+    (function () {
+      try {
+        var t = localStorage.getItem('theme');
+        if (t === 'dark' || t === 'light') {
+          document.documentElement.setAttribute('data-theme', t);
+        } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) {
+          document.documentElement.setAttribute('data-theme', 'light');
+        } else {
+          document.documentElement.setAttribute('data-theme', 'dark');
         }
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #0b1120 0%, #1a2847 100%);
-            color: var(--text);
-            min-height: 100vh;
-            display: grid;
-            grid-template-rows: 1fr auto;
-        }
-        .container {
-            max-width: 600px;
-            width: 100%;
-            margin: 0 auto;
-            padding: 40px 20px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            text-align: center;
-        }
-        .app-icon {
-            font-size: 80px;
-            margin: 0 auto 30px;
-            line-height: 1;
-        }
-        .badge {
-            display: inline-block;
-            margin: 0 auto 16px;
-            padding: 6px 16px;
-            border: 1px dashed var(--border);
-            border-radius: 999px;
-            color: var(--accent);
-            font-size: 12px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-        h1 { font-size: 2em; margin-bottom: 16px; color: var(--accent); }
-        .description { font-size: 1.05em; line-height: 1.6; margin-bottom: 40px; color: var(--muted); }
-        .links { display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; }
-        .btn {
-            padding: 12px 30px;
-            background: var(--accent);
-            color: #06222b;
-            text-decoration: none;
-            border-radius: 8px;
-            font-weight: 600;
-            transition: filter 0.2s ease;
-        }
-        .btn:hover { filter: brightness(1.1); }
-        .btn-outline {
-            background: transparent;
-            color: var(--accent);
-            border: 1px solid var(--accent);
-        }
-        .btn-outline:hover { background: rgba(34, 211, 238, 0.1); filter: none; }
-        .footer {
-            text-align: center;
-            padding: 40px 20px;
-            border-top: 1px solid var(--border);
-            font-size: 13px;
-            color: var(--muted);
-        }
-    </style>
+      } catch (e) {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+  <link rel="stylesheet" href="calculadora.css">
 </head>
 <body>
-    <div class="container">
-        <div class="app-icon">💰</div>
-        <div><span class="badge">Em breve</span></div>
-        <h1>Calculadora no navegador</h1>
-        <p class="description">
-            Estamos preparando a versão web da calculadora Preço & Lucro,
-            com login pela sua conta Google, a mesma do app.
-            Por enquanto, use o aplicativo no seu celular.
-        </p>
-        <div class="links">
-            <a class="btn btn-outline" href="../">Voltar</a>
+
+  <!-- ===== Botão hambúrguer (aparece só em telas estreitas) ===== -->
+  <button id="menuToggle" class="menu-toggle" aria-label="Abrir menu" aria-expanded="false">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/></svg>
+  </button>
+  <div id="menuBackdrop" class="menu-backdrop" hidden></div>
+
+  <!-- ===== Menu lateral fixo ===== -->
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-brand">
+      <span class="brand-name">Preço &amp; Lucro</span>
+      <span class="brand-sub">Calculadora web</span>
+    </div>
+
+    <!-- Perfil -->
+    <section class="side-section">
+      <h3 class="side-title">Perfil</h3>
+      <div id="profileArea" class="profile-area">
+        <!-- Estado: deslogado -->
+        <div id="profileLoggedOut">
+          <p class="side-note">Entre com a sua conta Google (a mesma do app) para acessar seus preços.</p>
+          <button id="btnGoogleLogin" class="google-btn" type="button">
+            <svg class="google-icon" viewBox="0 0 18 18" aria-hidden="true">
+              <path fill="#4285F4" d="M17.64 9.2c0-.64-.06-1.25-.16-1.84H9v3.48h4.84a4.14 4.14 0 0 1-1.8 2.72v2.26h2.92c1.7-1.57 2.68-3.88 2.68-6.62z"/>
+              <path fill="#34A853" d="M9 18c2.43 0 4.47-.8 5.96-2.18l-2.92-2.26c-.8.54-1.84.86-3.04.86-2.34 0-4.32-1.58-5.03-3.7H.96v2.33A9 9 0 0 0 9 18z"/>
+              <path fill="#FBBC05" d="M3.97 10.72a5.4 5.4 0 0 1 0-3.44V4.95H.96a9 9 0 0 0 0 8.1l3.01-2.33z"/>
+              <path fill="#EA4335" d="M9 3.58c1.32 0 2.5.45 3.44 1.35l2.58-2.58C13.47.9 11.43 0 9 0A9 9 0 0 0 .96 4.95l3.01 2.33C4.68 5.16 6.66 3.58 9 3.58z"/>
+            </svg>
+            Entrar com Google
+          </button>
         </div>
+        <!-- Estado: logado -->
+        <div id="profileLoggedIn" hidden>
+          <div class="profile-user">
+            <img id="profilePhoto" class="profile-photo" alt="" referrerpolicy="no-referrer" hidden>
+            <div class="profile-meta">
+              <span id="profileName" class="profile-name"></span>
+              <span id="profileEmail" class="profile-email"></span>
+            </div>
+          </div>
+          <button id="btnLogout" class="side-link-btn" type="button">Sair</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Plano -->
+    <section class="side-section">
+      <h3 class="side-title">Plano</h3>
+      <p id="planStatus" class="side-note">Exclusivo para assinantes do app.</p>
+      <a class="side-link-btn" href="https://play.google.com/store/apps/details?id=com.calvinjota.precoelucro" target="_blank" rel="noopener noreferrer">Assinar pelo app</a>
+    </section>
+
+    <!-- Aparência -->
+    <section class="side-section">
+      <h3 class="side-title">Aparência</h3>
+      <div class="theme-row">
+        <span class="theme-row-label">Modo escuro / claro</span>
+        <label class="theme-switch" aria-label="Alternar modo claro/escuro">
+          <input type="checkbox" id="themeSwitch">
+          <span class="theme-switch-track">
+            <span class="theme-switch-stars">
+              <span style="top:7px;left:38px;"></span>
+              <span style="top:14px;left:48px;"></span>
+              <span style="top:9px;left:57px;"></span>
+              <span style="top:21px;left:42px;"></span>
+            </span>
+            <span class="theme-switch-clouds">
+              <span style="width:16px;height:8px;left:8px;top:11px;"></span>
+              <span style="width:12px;height:7px;left:19px;top:12px;"></span>
+            </span>
+            <span class="theme-switch-thumb"></span>
+          </span>
+        </label>
+      </div>
+    </section>
+
+    <!-- Rodapé do menu -->
+    <div class="sidebar-footer">
+      <a href="../">← Página do app</a>
+    </div>
+  </aside>
+
+  <!-- ===== Conteúdo principal ===== -->
+  <main class="content">
+    <header class="page-head">
+      <div>
+        <h1>Precificação de Produto</h1>
+        <p class="subtitle">Calcule o seu lucro</p>
+      </div>
+      <button id="btnReset" class="btn-reset" type="button">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7"/><polyline points="3 4 3 9 8 9"/></svg>
+        Resetar
+      </button>
+    </header>
+
+    <div class="gate-wrap">
+    <div id="calcGate" class="grid" data-locked="true">
+
+      <!-- ==== Coluna 1: Dados da Venda ==== -->
+      <section class="glass-card card-dados">
+        <h2 class="card-title">Dados da Venda</h2>
+
+        <label class="field-label" for="custoProduto">Custo do Produto (R$)</label>
+        <div class="money-input">
+          <span>R$</span>
+          <input id="custoProduto" inputmode="decimal" value="0,00" autocomplete="off">
+        </div>
+
+        <!-- Impostos sobre o produto: sempre visível no site (nada escondido) -->
+        <div class="tax-group">
+          <h4 class="tax-group-title">Impostos sobre o produto (ICMS, ST, IPI)</h4>
+
+          <div class="pct-field">
+            <div class="pct-head"><label for="icmsNum">ICMS (%)</label><span id="lbl-icms" class="pct-value">0,00%</span></div>
+            <div class="pct-controls">
+              <input type="range" id="icmsSlider" min="0" max="100" step="0.5" value="0" aria-label="ICMS">
+              <input id="icmsNum" inputmode="decimal" value="0,00" autocomplete="off">
+            </div>
+          </div>
+
+          <div class="pct-field">
+            <div class="pct-head"><label for="icmsStNum">ICMS-ST (%)</label><span id="lbl-icmsSt" class="pct-value">0,00%</span></div>
+            <div class="pct-controls">
+              <input type="range" id="icmsStSlider" min="0" max="100" step="0.5" value="0" aria-label="ICMS-ST">
+              <input id="icmsStNum" inputmode="decimal" value="0,00" autocomplete="off">
+            </div>
+          </div>
+
+          <div class="pct-field">
+            <div class="pct-head"><label for="ipiNum">IPI (%)</label><span id="lbl-ipi" class="pct-value">0,00%</span></div>
+            <div class="pct-controls">
+              <input type="range" id="ipiSlider" min="0" max="100" step="0.5" value="0" aria-label="IPI">
+              <input id="ipiNum" inputmode="decimal" value="0,00" autocomplete="off">
+            </div>
+          </div>
+        </div>
+
+        <label class="field-label" for="taxaFixa">Taxa fixa (R$)</label>
+        <div class="money-input">
+          <span>R$</span>
+          <input id="taxaFixa" inputmode="decimal" value="0,00" autocomplete="off">
+        </div>
+
+        <div class="pct-field">
+          <div class="pct-head"><label for="comissaoNum">Comissão (%)</label><span id="lbl-comissao" class="pct-value pct-amber">0,00%</span></div>
+          <div class="pct-controls">
+            <input type="range" id="comissaoSlider" min="0" max="100" step="0.5" value="0" aria-label="Comissão">
+            <input id="comissaoNum" inputmode="decimal" value="0,00" autocomplete="off">
+          </div>
+        </div>
+
+        <div class="pct-field">
+          <div class="pct-head"><label for="impostoNum">Imposto sobre a Venda (%)</label><span id="lbl-imposto" class="pct-value pct-pink">0,00%</span></div>
+          <div class="pct-controls">
+            <input type="range" id="impostoSlider" min="0" max="100" step="0.5" value="0" aria-label="Imposto sobre a venda">
+            <input id="impostoNum" inputmode="decimal" value="0,00" autocomplete="off">
+          </div>
+        </div>
+
+        <div class="pct-field">
+          <div class="pct-head"><label for="margemNum">Margem de Lucro Desejada (%)</label><span id="lbl-margem" class="pct-value pct-teal">0,00%</span></div>
+          <div class="pct-controls">
+            <input type="range" id="margemSlider" min="0" max="100" step="0.5" value="0" aria-label="Margem de lucro">
+            <input id="margemNum" inputmode="decimal" value="0,00" autocomplete="off">
+          </div>
+        </div>
+
+        <div class="actions-row">
+          <button id="btnSalvar" class="btn-secondary" type="button">💾 Salvar</button>
+          <button id="btnCarregar" class="btn-secondary" type="button">📂 Carregar</button>
+        </div>
+      </section>
+
+      <!-- ==== Coluna 2: Preço + Detalhamento ==== -->
+      <div class="col-mid">
+        <section class="glass-card card-preco">
+          <div class="preco-head">
+            <div>
+              <h2 class="card-title">Preço de Venda Sugerido</h2>
+              <p class="card-sub">Valor calculado com base em todos os custos e margem desejada.</p>
+            </div>
+            <div class="markup-badge">MARKUP <strong id="hero-markup">0,00x</strong></div>
+          </div>
+          <div class="preco-body">
+            <div class="preco-main">
+              <div class="preco-big"><span class="currency">R$</span><span id="hero-preco">0,00</span></div>
+              <p class="voce-recebe">você recebe <strong id="hero-voce-recebe">R$ 0,00</strong></p>
+            </div>
+            <div class="lucro-box">
+              <span class="lucro-label">Lucro Operacional</span>
+              <span id="stat-lucro" class="lucro-value">R$ 0,00</span>
+              <span id="stat-margem-pct" class="lucro-pct">0,00%</span>
+            </div>
+          </div>
+        </section>
+
+        <section class="glass-card card-detalhe">
+          <h2 class="card-title">Detalhamento da Venda</h2>
+          <div id="compBar" class="comp-bar"></div>
+          <div class="legend"></div>
+          <table class="detail-table">
+            <tbody>
+              <tr class="row-strong"><td>PREÇO DE VENDA</td><td id="tbl-preco-pct">100,00%</td><td id="tbl-preco">R$ 0,00</td></tr>
+              <tr><td><i class="dot dot-amber"></i>Comissão</td><td id="tbl-comissao-pct">0,00%</td><td id="tbl-comissao-val">R$ 0,00</td></tr>
+              <tr><td><i class="dot dot-orange"></i>Taxa fixa</td><td id="tbl-taxaFixa-pct">0,00%</td><td id="tbl-taxaFixa-val">R$ 0,00</td></tr>
+              <tr class="row-muted"><td>Receita pós Taxa e Comissão</td><td id="tbl-receita-pct">0,00%</td><td id="tbl-receita-val">R$ 0,00</td></tr>
+              <tr class="row-strong"><td><i class="dot dot-grey"></i>Custo final do produto</td><td id="tbl-custofinal-pct">0,00%</td><td id="tbl-custofinal-val">R$ 0,00</td></tr>
+              <!-- Componentes do custo final: sempre visíveis no site (nada escondido) -->
+              <tr class="row-sub"><td>Custo do Produto</td><td id="tbl-custoprod-pct">0,00%</td><td id="tbl-custoprod-val">R$ 0,00</td></tr>
+              <tr class="row-sub"><td><i class="dot dot-purple"></i>ICMS</td><td id="tbl-icms-pct">0,00%</td><td id="tbl-icms-val">R$ 0,00</td></tr>
+              <tr class="row-sub"><td><i class="dot dot-sky"></i>ICMS-ST</td><td id="tbl-icmsst-pct">0,00%</td><td id="tbl-icmsst-val">R$ 0,00</td></tr>
+              <tr class="row-sub"><td><i class="dot dot-rose"></i>IPI</td><td id="tbl-ipi-pct">0,00%</td><td id="tbl-ipi-val">R$ 0,00</td></tr>
+              <tr><td><i class="dot dot-pink"></i>Imposto sobre a Venda</td><td id="tbl-imposto-pct">0,00%</td><td id="tbl-imposto-val">R$ 0,00</td></tr>
+              <tr class="row-lucro"><td><i class="dot dot-teal"></i>Lucro Operacional da Venda</td><td id="tbl-lucro-pct">0,00%</td><td id="tbl-lucro-val">R$ 0,00</td></tr>
+            </tbody>
+          </table>
+        </section>
+      </div>
+
+      <!-- ==== Coluna 3: Preços Salvos ==== -->
+      <section class="glass-card card-salvos">
+        <h2 class="card-title">Preços Salvos</h2>
+        <div id="savedList" class="saved-list">
+          <p class="saved-empty">Nenhum preço salvo ainda.</p>
+        </div>
+      </section>
+
+    </div>
+
+    <!-- ===== Trava de assinante (some quando a assinatura Pro é confirmada) ===== -->
+    <div id="gateOverlay" class="gate-overlay">
+      <div class="gate-box">
+        <p id="gateMessage" class="gate-message">Entre com sua conta Google para acessar a calculadora.</p>
+        <a id="gateAppLink" class="btn-primary gate-cta" href="" hidden>Assinar pelo app</a>
+        <button id="gateRetry" class="btn-secondary" type="button" hidden>Tentar novamente</button>
+      </div>
+    </div>
     </div>
 
     <footer class="footer">
-        <p>© 2026 Calvin Jota. Todos os direitos reservados.</p>
+      <p>© 2026 Calvin Jota. Todos os direitos reservados.</p>
+      <div class="footer-links">
+        <a href="../politica-privacidade.html" data-legal="politica">Política de Privacidade</a>
+        <span>·</span>
+        <a href="../termos-servico.html" data-legal="termos">Termos de Serviço</a>
+        <span>·</span>
+        <a href="../deletar-conta.html" data-legal="excluir">Excluir Conta</a>
+        <span>·</span>
+        <a href="mailto:contato@calvinjota.com.br">Contato</a>
+      </div>
     </footer>
+  </main>
+
+  <!-- ===== Popup: salvar preço ===== -->
+  <div id="saveOverlay" class="overlay" hidden>
+    <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="saveTitle">
+      <h3 id="saveTitle">Salvar preço</h3>
+      <label class="field-label" for="saveName">Nome do produto</label>
+      <input id="saveName" maxlength="40" autocomplete="off" placeholder="Ex: Chuveiro elétrico">
+      <div class="char-count"><span id="saveNameCount">0</span>/40</div>
+      <div class="dialog-actions">
+        <button id="saveCancel" class="btn-secondary" type="button">Cancelar</button>
+        <button id="saveConfirm" class="btn-primary" type="button">Salvar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== Popup: carregar preço salvo ===== -->
+  <div id="loadOverlay" class="overlay" hidden>
+    <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="loadTitle">
+      <h3 id="loadTitle">Preços salvos</h3>
+      <div id="loadList" class="saved-list dialog-list"></div>
+      <div class="dialog-actions">
+        <button id="loadClose" class="btn-secondary" type="button">Fechar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== Popup: documentos legais (iframe) ===== -->
+  <div id="legalOverlay" class="overlay" hidden>
+    <div class="legal-modal" role="dialog" aria-modal="true" aria-label="Documento">
+      <button id="legalClose" class="legal-close" type="button" aria-label="Fechar">✕</button>
+      <iframe id="legalFrame" class="legal-frame" title="Documento" src="about:blank"></iframe>
+    </div>
+  </div>
+
+  <!-- ===== Popup: confirmar exclusão ===== -->
+  <div id="deleteOverlay" class="overlay" hidden>
+    <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="deleteTitle">
+      <h3 id="deleteTitle">Excluir preço?</h3>
+      <p id="deleteMsg" class="dialog-text"></p>
+      <div class="dialog-actions">
+        <button id="deleteCancel" class="btn-secondary" type="button">Cancelar</button>
+        <button id="deleteConfirm" class="btn-danger" type="button">Excluir</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="app.js"></script>
+  <script type="module" src="auth.js"></script>
+  <script type="module" src="paywall.js"></script>
 </body>
 </html>
