@@ -128,6 +128,35 @@ function render() {
 
 /* ===================== Sincronização slider ↔ número ===================== */
 
+// Enter pula pro próximo campo: quem só usa teclado consegue preencher tudo
+// apertando Enter em sequência, sem precisar clicar em nada. Ordem = ordem
+// visual da tela (um ciclo só, diferente do app, que pula o grupo ICMS/ST/IPI).
+const ENTER_NEXT = {
+  custoProduto: 'icmsNum',
+  icmsNum: 'icmsStNum',
+  icmsStNum: 'ipiNum',
+  ipiNum: 'taxaFixa',
+  taxaFixa: 'comissaoNum',
+  comissaoNum: 'impostoNum',
+  impostoNum: 'margemNum',
+  margemNum: 'custoProduto',
+};
+function goToNextField(e, nextId) {
+  if (e.key !== 'Enter') return;
+  e.preventDefault();
+  const el = nextId ? $(nextId) : null;
+  if (el) {
+    el.focus();
+    el.select();
+  } else {
+    e.target.blur();
+  }
+}
+document.querySelectorAll('input[id]').forEach((el) => {
+  const nextId = ENTER_NEXT[el.id];
+  if (nextId) el.addEventListener('keydown', (e) => goToNextField(e, nextId));
+});
+
 for (const key of PCT_KEYS) {
   const slider = $(key + 'Slider');
   const numEl = $(key + 'Num');
