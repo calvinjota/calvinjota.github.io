@@ -24,7 +24,11 @@
       }
     })();
   </script>
-  <link rel="stylesheet" href="calculadora.css">
+  <!-- ?v=N: número de versão pra forçar o navegador a buscar a versão nova
+       ao publicar (senão ele reaproveita o CSS/JS antigo do cache). Subir
+       esse número em TODOS os arquivos locais (aqui e nos imports entre os
+       módulos) sempre que qualquer um deles mudar. -->
+  <link rel="stylesheet" href="calculadora.css?v=2">
 </head>
 <body>
 
@@ -325,9 +329,9 @@
     </div>
   </div>
 
-  <script type="module" src="app.js"></script>
-  <script type="module" src="auth.js"></script>
-  <script type="module" src="sync.js"></script>
-  <script type="module" src="paywall.js"></script>
+  <script type="module" src="app.js?v=2"></script>
+  <script type="module" src="auth.js?v=2"></script>
+  <script type="module" src="sync.js?v=2"></script>
+  <script type="module" src="paywall.js?v=2"></script>
 </body>
 </html>

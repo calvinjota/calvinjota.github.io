@@ -7,7 +7,7 @@
  * Worker + RevenueCat) + sincronização dos preços com o Firestore do app.
  */
 
-import { calcular, brl, pct } from './calc.js';
+import { calcular, brl, pct } from './calc.js?v=2';
 
 const $ = (id) => document.getElementById(id);
 
