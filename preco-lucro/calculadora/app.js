@@ -189,12 +189,12 @@ function loadSaved() {
   }
 }
 
-function persistSaved(list) {
+export function persistSaved(list) {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
 }
 
 // Renderiza a lista nos dois lugares: coluna "Preços Salvos" e popup "Carregar"
-function renderSavedList() {
+export function renderSavedList() {
   const list = loadSaved();
   const html =
     list.length === 0
@@ -276,8 +276,7 @@ $('saveConfirm').addEventListener('click', () => {
   const name = $('saveName').value.trim();
   if (!name || !lastCalc) return;
   const inputs = readInputs();
-  const list = loadSaved();
-  list.unshift({
+  const price = {
     id: Date.now() + '-' + Math.random().toString(36).slice(2, 8),
     name,
     inputs,
@@ -288,10 +287,14 @@ $('saveConfirm').addEventListener('click', () => {
       lucro: lastCalc.valorMargem,
     },
     lastModified: Date.now(),
-  });
+  };
+  const list = loadSaved();
+  list.unshift(price);
   persistSaved(list);
   renderSavedList();
   $('saveOverlay').hidden = true;
+  // Avisa quem quiser sincronizar isso com a nuvem (ver sync.js)
+  document.dispatchEvent(new CustomEvent('price-saved', { detail: price }));
 });
 
 /* ---- popup excluir ---- */
@@ -302,9 +305,12 @@ $('deleteCancel').addEventListener('click', () => ($('deleteOverlay').hidden = t
 
 $('deleteConfirm').addEventListener('click', () => {
   if (pendingDeleteId) {
-    persistSaved(loadSaved().filter((p) => p.id !== pendingDeleteId));
+    const deletedId = pendingDeleteId;
+    persistSaved(loadSaved().filter((p) => p.id !== deletedId));
     pendingDeleteId = null;
     renderSavedList();
+    // Avisa quem quiser sincronizar isso com a nuvem (ver sync.js)
+    document.dispatchEvent(new CustomEvent('price-deleted', { detail: { id: deletedId } }));
   }
   $('deleteOverlay').hidden = true;
 });
