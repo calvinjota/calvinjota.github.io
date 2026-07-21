@@ -154,6 +154,50 @@ for (const key of PCT_KEYS) {
   numEl.addEventListener('focus', () => numEl.select());
 }
 
+// Overlay de arrasto com sensibilidade reduzida (igual ao app): em vez de
+// arrastar o slider nativo direto (muito sensível, difícil de acertar um
+// valor exato), um overlay invisível por cima escala o movimento do
+// mouse/dedo por um fator < 1, então precisa mover mais pra mudar o valor.
+function attachSliderSensitivity(sliderId, sensitivity) {
+  const slider = $(sliderId);
+  const overlay = slider.nextElementSibling;
+  let dragging = false;
+  let startX = 0;
+  let startValue = 0;
+
+  overlay.addEventListener('pointerdown', (e) => {
+    dragging = true;
+    startX = e.clientX;
+    startValue = parseFloat(slider.value);
+    if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
+    overlay.setPointerCapture(e.pointerId);
+  });
+  overlay.addEventListener('pointermove', (e) => {
+    if (!dragging) return;
+    const min = parseFloat(slider.min);
+    const max = parseFloat(slider.max);
+    const step = parseFloat(slider.step) || 1;
+    const width = overlay.getBoundingClientRect().width;
+    const deltaValue = ((e.clientX - startX) / width) * (max - min) * sensitivity;
+    let v = Math.round((startValue + deltaValue) / step) * step;
+    if (v < min) v = min;
+    if (v > max) v = max;
+    if (v !== parseFloat(slider.value)) {
+      slider.value = v;
+      slider.dispatchEvent(new Event('input', { bubbles: true }));
+    }
+  });
+  function endDrag(e) {
+    dragging = false;
+    if (overlay.hasPointerCapture(e.pointerId)) overlay.releasePointerCapture(e.pointerId);
+  }
+  overlay.addEventListener('pointerup', endDrag);
+  overlay.addEventListener('pointercancel', endDrag);
+}
+for (const key of PCT_KEYS) {
+  attachSliderSensitivity(key + 'Slider', 0.35);
+}
+
 // Setinhas ▲▼ ao lado do valor, para ajuste fino de 0,01 em 0,01 (igual ao app)
 document.querySelectorAll('[data-step-key]').forEach((btn) => {
   btn.addEventListener('click', () => {

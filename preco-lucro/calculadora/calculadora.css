@@ -321,8 +321,27 @@ body {
 .pct-teal { color: var(--teal); }
 
 .pct-controls { display: flex; align-items: center; gap: 12px; }
-.pct-controls input[type="range"] { flex: 1; accent-color: var(--teal-bright); min-width: 0; }
 .money-input:focus-within { border-color: var(--teal); }
+
+/* Slider com overlay de arrasto: reduz a sensibilidade do arrasto (igual ao
+   app), pra facilitar acertar valores precisos em vez de pular demais.
+   O input nativo fica só decorativo (pointer-events:none); quem responde ao
+   arrasto é o .slider-touch-overlay por cima, com uma área de toque maior. */
+.slider-touch-wrap { position: relative; flex: 1; display: flex; align-items: center; min-width: 0; }
+.slider-touch-wrap input[type="range"] {
+  width: 100%;
+  pointer-events: none;
+  accent-color: var(--teal-bright);
+}
+.slider-touch-overlay {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: -14px;
+  bottom: -14px;
+  touch-action: none;
+  cursor: pointer;
+}
 
 /* Caixa do valor percentual + setinhas de +/-0,01 (igual ao app) */
 .num-box {

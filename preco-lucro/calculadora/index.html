@@ -28,7 +28,7 @@
        ao publicar (senão ele reaproveita o CSS/JS antigo do cache). Subir
        esse número em TODOS os arquivos locais (aqui e nos imports entre os
        módulos) sempre que qualquer um deles mudar. -->
-  <link rel="stylesheet" href="calculadora.css?v=3">
+  <link rel="stylesheet" href="calculadora.css?v=4">
 </head>
 <body>
 
@@ -157,7 +157,10 @@
           <div class="pct-field">
             <div class="pct-head"><label for="icmsNum">ICMS (%)</label><span id="lbl-icms" class="pct-value">0,00%</span></div>
             <div class="pct-controls">
-              <input type="range" id="icmsSlider" min="0" max="100" step="0.5" value="0" aria-label="ICMS">
+              <div class="slider-touch-wrap">
+                <input type="range" id="icmsSlider" min="0" max="100" step="0.5" value="0" aria-label="ICMS">
+                <div class="slider-touch-overlay"></div>
+              </div>
               <div class="num-box">
                 <input id="icmsNum" inputmode="decimal" value="0,00" autocomplete="off">
                 <div class="steppers">
@@ -171,7 +174,10 @@
           <div class="pct-field">
             <div class="pct-head"><label for="icmsStNum">ICMS-ST (%)</label><span id="lbl-icmsSt" class="pct-value">0,00%</span></div>
             <div class="pct-controls">
-              <input type="range" id="icmsStSlider" min="0" max="100" step="0.5" value="0" aria-label="ICMS-ST">
+              <div class="slider-touch-wrap">
+                <input type="range" id="icmsStSlider" min="0" max="100" step="0.5" value="0" aria-label="ICMS-ST">
+                <div class="slider-touch-overlay"></div>
+              </div>
               <div class="num-box">
                 <input id="icmsStNum" inputmode="decimal" value="0,00" autocomplete="off">
                 <div class="steppers">
@@ -185,7 +191,10 @@
           <div class="pct-field">
             <div class="pct-head"><label for="ipiNum">IPI (%)</label><span id="lbl-ipi" class="pct-value">0,00%</span></div>
             <div class="pct-controls">
-              <input type="range" id="ipiSlider" min="0" max="100" step="0.5" value="0" aria-label="IPI">
+              <div class="slider-touch-wrap">
+                <input type="range" id="ipiSlider" min="0" max="100" step="0.5" value="0" aria-label="IPI">
+                <div class="slider-touch-overlay"></div>
+              </div>
               <div class="num-box">
                 <input id="ipiNum" inputmode="decimal" value="0,00" autocomplete="off">
                 <div class="steppers">
@@ -206,7 +215,10 @@
         <div class="pct-field">
           <div class="pct-head"><label for="comissaoNum">Comissão (%)</label><span id="lbl-comissao" class="pct-value pct-amber">0,00%</span></div>
           <div class="pct-controls">
-            <input type="range" id="comissaoSlider" min="0" max="100" step="0.5" value="0" aria-label="Comissão">
+            <div class="slider-touch-wrap">
+              <input type="range" id="comissaoSlider" min="0" max="100" step="0.5" value="0" aria-label="Comissão">
+              <div class="slider-touch-overlay"></div>
+            </div>
             <div class="num-box">
               <input id="comissaoNum" inputmode="decimal" value="0,00" autocomplete="off">
               <div class="steppers">
@@ -220,7 +232,10 @@
         <div class="pct-field">
           <div class="pct-head"><label for="impostoNum">Imposto sobre a Venda (%)</label><span id="lbl-imposto" class="pct-value pct-pink">0,00%</span></div>
           <div class="pct-controls">
-            <input type="range" id="impostoSlider" min="0" max="100" step="0.5" value="0" aria-label="Imposto sobre a venda">
+            <div class="slider-touch-wrap">
+              <input type="range" id="impostoSlider" min="0" max="100" step="0.5" value="0" aria-label="Imposto sobre a venda">
+              <div class="slider-touch-overlay"></div>
+            </div>
             <div class="num-box">
               <input id="impostoNum" inputmode="decimal" value="0,00" autocomplete="off">
               <div class="steppers">
@@ -234,7 +249,10 @@
         <div class="pct-field">
           <div class="pct-head"><label for="margemNum">Margem de Lucro Desejada (%)</label><span id="lbl-margem" class="pct-value pct-teal">0,00%</span></div>
           <div class="pct-controls">
-            <input type="range" id="margemSlider" min="0" max="100" step="0.5" value="0" aria-label="Margem de lucro">
+            <div class="slider-touch-wrap">
+              <input type="range" id="margemSlider" min="0" max="100" step="0.5" value="0" aria-label="Margem de lucro">
+              <div class="slider-touch-overlay"></div>
+            </div>
             <div class="num-box">
               <input id="margemNum" inputmode="decimal" value="0,00" autocomplete="off">
               <div class="steppers">
@@ -402,9 +420,9 @@
     </div>
   </div>
 
-  <script type="module" src="app.js?v=3"></script>
+  <script type="module" src="app.js?v=4"></script>
   <script type="module" src="auth.js?v=2"></script>
-  <script type="module" src="sync.js?v=3"></script>
+  <script type="module" src="sync.js?v=4"></script>
   <script type="module" src="paywall.js?v=2"></script>
 </body>
 </html>
