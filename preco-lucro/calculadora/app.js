@@ -154,6 +154,23 @@ for (const key of PCT_KEYS) {
   numEl.addEventListener('focus', () => numEl.select());
 }
 
+// Setinhas ▲▼ ao lado do valor, para ajuste fino de 0,01 em 0,01 (igual ao app)
+document.querySelectorAll('[data-step-key]').forEach((btn) => {
+  btn.addEventListener('click', () => {
+    const key = btn.dataset.stepKey;
+    const delta = parseFloat(btn.dataset.stepDelta);
+    const numEl = $(key + 'Num');
+    const slider = $(key + 'Slider');
+    const max = parseFloat(slider.max);
+    let v = parseNum(numEl.value) + delta;
+    if (v < 0) v = 0;
+    if (v > max) v = max;
+    numEl.value = fmtNum(v);
+    slider.value = v;
+    render();
+  });
+});
+
 for (const id of ['custoProduto', 'taxaFixa']) {
   const el = $(id);
   el.addEventListener('input', render);
@@ -174,6 +191,7 @@ $('btnReset').addEventListener('click', () => {
     $(key + 'Num').value = '0,00';
   }
   render();
+  clearLoadedPrice();
 });
 
 /* ===================== Preços salvos (localStorage) ===================== */
@@ -205,7 +223,9 @@ export function renderSavedList() {
     <div class="saved-item" data-id="${escapeHtml(p.id)}">
       <div class="saved-item-head">
         <span class="saved-item-name">${escapeHtml(p.name)}</span>
-        <button class="saved-item-del" type="button" aria-label="Excluir ${escapeHtml(p.name)}">🗑</button>
+        <button class="saved-item-del" type="button" aria-label="Excluir ${escapeHtml(p.name)}">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+        </button>
       </div>
       <div class="saved-item-info">
         <span>Custo final: <strong>${brl(p.display.custoFinal)}</strong></span>
@@ -218,6 +238,19 @@ export function renderSavedList() {
           .join('');
   $('savedList').innerHTML = html;
   $('loadList').innerHTML = html;
+}
+
+/* ---- estado do preço carregado (banner no topo da coluna 1, igual ao app) ---- */
+
+let loadedPriceId = null;
+
+function showLoadedBanner(name) {
+  $('loadedPriceName').textContent = name;
+  $('loadedPriceBanner').hidden = false;
+}
+function clearLoadedPrice() {
+  loadedPriceId = null;
+  $('loadedPriceBanner').hidden = true;
 }
 
 // carregar / excluir via delegação de eventos (mesma lógica nas duas listas)
@@ -244,6 +277,8 @@ function handleSavedListClick(e) {
     $(key + 'Num').value = fmtNum(price.inputs[key]);
   }
   render();
+  loadedPriceId = id;
+  showLoadedBanner(price.name);
   $('loadOverlay').hidden = true;
 }
 $('savedList').addEventListener('click', handleSavedListClick);
@@ -257,13 +292,25 @@ $('btnCarregar').addEventListener('click', () => {
 });
 $('loadClose').addEventListener('click', () => ($('loadOverlay').hidden = true));
 
-/* ---- popup salvar ---- */
+/* ---- popup salvar (preço novo, sem nada carregado) ---- */
 
-$('btnSalvar').addEventListener('click', () => {
+function openSavePopup() {
   $('saveName').value = '';
   $('saveNameCount').textContent = '0';
   $('saveOverlay').hidden = false;
   $('saveName').focus();
+}
+
+// Se já tem um preço carregado, pergunta "salvar por cima ou como novo?"
+// (igual ao app); senão, pede o nome de um preço novo direto.
+$('btnSalvar').addEventListener('click', () => {
+  if (loadedPriceId && loadSaved().some((p) => p.id === loadedPriceId)) {
+    const loaded = loadSaved().find((p) => p.id === loadedPriceId);
+    $('saveChoiceName').textContent = loaded.name;
+    $('saveChoiceOverlay').hidden = false;
+  } else {
+    openSavePopup();
+  }
 });
 
 $('saveName').addEventListener('input', () => {
@@ -292,10 +339,75 @@ $('saveConfirm').addEventListener('click', () => {
   list.unshift(price);
   persistSaved(list);
   renderSavedList();
+  loadedPriceId = price.id;
+  showLoadedBanner(price.name);
   $('saveOverlay').hidden = true;
   // Avisa quem quiser sincronizar isso com a nuvem (ver sync.js)
   document.dispatchEvent(new CustomEvent('price-saved', { detail: price }));
 });
+
+/* ---- popup: salvar por cima ou como novo ---- */
+
+$('btnCancelChoice').addEventListener('click', () => ($('saveChoiceOverlay').hidden = true));
+
+$('btnSaveAsNew').addEventListener('click', () => {
+  $('saveChoiceOverlay').hidden = true;
+  openSavePopup();
+});
+
+$('btnOverwrite').addEventListener('click', () => {
+  if (!lastCalc) return;
+  const list = loadSaved();
+  const idx = list.findIndex((p) => p.id === loadedPriceId);
+  if (idx === -1) {
+    $('saveChoiceOverlay').hidden = true;
+    return;
+  }
+  list[idx].inputs = readInputs();
+  list[idx].display = {
+    custoFinal: lastCalc.custoProdutoAjustado,
+    valorVenda: lastCalc.preco,
+    margem: lastCalc.margemOperacionalPct,
+    lucro: lastCalc.valorMargem,
+  };
+  list[idx].lastModified = Date.now();
+  persistSaved(list);
+  renderSavedList();
+  $('saveChoiceOverlay').hidden = true;
+  // Avisa quem quiser sincronizar isso com a nuvem (ver sync.js) — atualização, não criação
+  document.dispatchEvent(new CustomEvent('price-updated', { detail: list[idx] }));
+});
+
+/* ---- popup: editar nome do preço carregado ---- */
+
+$('btnEditLoadedName').addEventListener('click', () => {
+  const loaded = loadSaved().find((p) => p.id === loadedPriceId);
+  if (!loaded) return;
+  $('editPriceNameInput').value = loaded.name;
+  $('editNameOverlay').hidden = false;
+  $('editPriceNameInput').focus();
+  $('editPriceNameInput').select();
+});
+
+$('editNameCancel').addEventListener('click', () => ($('editNameOverlay').hidden = true));
+
+$('editNameConfirm').addEventListener('click', () => {
+  const name = $('editPriceNameInput').value.trim();
+  if (!name || !loadedPriceId) return;
+  const list = loadSaved();
+  const idx = list.findIndex((p) => p.id === loadedPriceId);
+  if (idx !== -1) {
+    list[idx].name = name;
+    list[idx].lastModified = Date.now();
+    persistSaved(list);
+    renderSavedList();
+    showLoadedBanner(name);
+    document.dispatchEvent(new CustomEvent('price-updated', { detail: list[idx] }));
+  }
+  $('editNameOverlay').hidden = true;
+});
+
+$('btnClearLoaded').addEventListener('click', clearLoadedPrice);
 
 /* ---- popup excluir ---- */
 
@@ -309,6 +421,7 @@ $('deleteConfirm').addEventListener('click', () => {
     persistSaved(loadSaved().filter((p) => p.id !== deletedId));
     pendingDeleteId = null;
     renderSavedList();
+    if (deletedId === loadedPriceId) clearLoadedPrice();
     // Avisa quem quiser sincronizar isso com a nuvem (ver sync.js)
     document.dispatchEvent(new CustomEvent('price-deleted', { detail: { id: deletedId } }));
   }
@@ -316,7 +429,15 @@ $('deleteConfirm').addEventListener('click', () => {
 });
 
 // fechar popups clicando fora ou com Esc
-for (const ov of ['saveOverlay', 'deleteOverlay', 'loadOverlay', 'legalOverlay']) {
+const DISMISSABLE_OVERLAYS = [
+  'saveOverlay',
+  'deleteOverlay',
+  'loadOverlay',
+  'legalOverlay',
+  'saveChoiceOverlay',
+  'editNameOverlay',
+];
+for (const ov of DISMISSABLE_OVERLAYS) {
   $(ov).addEventListener('click', (e) => {
     if (e.target === $(ov)) {
       if (ov === 'legalOverlay') closeLegal();
@@ -326,10 +447,10 @@ for (const ov of ['saveOverlay', 'deleteOverlay', 'loadOverlay', 'legalOverlay']
 }
 document.addEventListener('keydown', (e) => {
   if (e.key === 'Escape') {
-    $('saveOverlay').hidden = true;
-    $('deleteOverlay').hidden = true;
-    $('loadOverlay').hidden = true;
-    closeLegal();
+    for (const ov of DISMISSABLE_OVERLAYS) {
+      if (ov === 'legalOverlay') closeLegal();
+      else $(ov).hidden = true;
+    }
   }
 });
 

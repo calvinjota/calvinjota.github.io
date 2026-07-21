@@ -322,20 +322,100 @@ body {
 
 .pct-controls { display: flex; align-items: center; gap: 12px; }
 .pct-controls input[type="range"] { flex: 1; accent-color: var(--teal-bright); min-width: 0; }
-.pct-controls input:not([type="range"]) {
-  width: 76px;
-  padding: 8px 10px;
-  text-align: right;
+.money-input:focus-within { border-color: var(--teal); }
+
+/* Caixa do valor percentual + setinhas de +/-0,01 (igual ao app) */
+.num-box {
+  display: flex;
+  align-items: stretch;
   background: var(--panel-2);
   border: 1px solid var(--border);
   border-radius: 8px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+.num-box:focus-within { border-color: var(--teal); }
+.num-box input {
+  width: 60px;
+  padding: 8px 10px;
+  text-align: right;
+  background: transparent;
+  border: 0;
   color: var(--text);
   font-size: 14px;
   outline: none;
 }
-.pct-controls input:focus, .money-input:focus-within { border-color: var(--teal); }
+.num-box .steppers {
+  display: flex;
+  flex-direction: column;
+  border-left: 1px solid var(--border);
+}
+.num-box .steppers button {
+  background: none;
+  border: 0;
+  color: var(--muted);
+  width: 22px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 9px;
+  line-height: 0;
+  padding: 0;
+}
+.num-box .steppers button:first-child { border-bottom: 1px solid var(--border); }
+.num-box .steppers button:hover { color: var(--teal); background: rgba(34, 211, 238, 0.1); }
 
 .actions-row { display: flex; gap: 10px; margin-top: 20px; }
+
+/* Banner "preço carregado" (aparece ao carregar um item de Preços Salvos) */
+.loaded-price-banner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 18px;
+  padding: 10px 12px;
+  background: rgba(34, 211, 238, 0.08);
+  border: 1px solid rgba(34, 211, 238, 0.3);
+  border-radius: 10px;
+}
+.loaded-price-banner[hidden] { display: none; }
+.loaded-price-banner > svg { width: 18px; height: 18px; color: var(--teal); flex-shrink: 0; }
+.loaded-price-banner .lp-text { flex: 1; font-size: 14px; color: var(--text); min-width: 0; }
+.loaded-price-banner .lp-text b {
+  font-weight: 700;
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.loaded-price-banner .lp-label {
+  display: block;
+  font-size: 10.5px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--teal);
+  font-weight: 700;
+  margin-bottom: 2px;
+}
+.loaded-price-banner .lp-edit,
+.loaded-price-banner .lp-close {
+  background: none;
+  border: 0;
+  color: var(--muted);
+  cursor: pointer;
+  padding: 5px;
+  flex-shrink: 0;
+  line-height: 0;
+  border-radius: 7px;
+}
+.loaded-price-banner .lp-edit:hover,
+.loaded-price-banner .lp-close:hover { color: var(--text); background: rgba(255, 255, 255, 0.08); }
+.loaded-price-banner .lp-edit svg,
+.loaded-price-banner .lp-close svg { width: 16px; height: 16px; }
+
+.dialog-actions-stack { flex-direction: column; align-items: stretch; }
 
 .btn-primary, .btn-secondary, .btn-danger {
   padding: 10px 18px;
@@ -487,10 +567,12 @@ body {
   background: transparent;
   color: var(--muted);
   cursor: pointer;
-  font-size: 15px;
-  padding: 2px 6px;
+  padding: 4px;
+  line-height: 0;
+  border-radius: 6px;
 }
-.saved-item-del:hover { color: #dc2626; }
+.saved-item-del svg { width: 16px; height: 16px; }
+.saved-item-del:hover { color: #dc2626; background: rgba(220, 38, 38, 0.1); }
 .saved-item-info {
   display: grid;
   grid-template-columns: 1fr 1fr;

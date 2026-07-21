@@ -14,12 +14,13 @@ import {
   where,
   onSnapshot,
   addDoc,
+  updateDoc,
   deleteDoc,
   doc,
   getDocs,
 } from 'https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js';
 import { firebaseConfig } from './firebase-config.js?v=2';
-import { persistSaved, renderSavedList } from './app.js?v=2';
+import { persistSaved, renderSavedList } from './app.js?v=3';
 
 // Reaproveita o app do Firebase já iniciado por auth.js, em vez de criar outro.
 const app = getApps().length ? getApp() : initializeApp(firebaseConfig);
@@ -88,6 +89,29 @@ document.addEventListener('price-saved', async (e) => {
     });
   } catch (err) {
     console.error('Erro ao salvar preço na nuvem:', err);
+  }
+});
+
+// "Salvar por cima" ou renomear (edição de um preço já existente, não criação)
+document.addEventListener('price-updated', async (e) => {
+  const uid = window.currentUser?.uid;
+  if (!uid) return;
+  const price = e.detail;
+  try {
+    const q = query(collection(db, 'userPrices'), where('userId', '==', uid), where('id', '==', price.id));
+    const snap = await getDocs(q);
+    await Promise.all(
+      snap.docs.map((d) =>
+        updateDoc(doc(db, 'userPrices', d.id), {
+          name: price.name,
+          inputs: price.inputs,
+          display: price.display,
+          updatedAt: new Date().toISOString(),
+        })
+      )
+    );
+  } catch (err) {
+    console.error('Erro ao atualizar preço na nuvem:', err);
   }
 });
 

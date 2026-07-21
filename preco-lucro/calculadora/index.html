@@ -28,7 +28,7 @@
        ao publicar (senão ele reaproveita o CSS/JS antigo do cache). Subir
        esse número em TODOS os arquivos locais (aqui e nos imports entre os
        módulos) sempre que qualquer um deles mudar. -->
-  <link rel="stylesheet" href="calculadora.css?v=2">
+  <link rel="stylesheet" href="calculadora.css?v=3">
 </head>
 <body>
 
@@ -133,6 +133,17 @@
       <section class="glass-card card-dados">
         <h2 class="card-title">Dados da Venda</h2>
 
+        <div class="loaded-price-banner" id="loadedPriceBanner" hidden>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
+          <span class="lp-text"><span class="lp-label">Preço carregado</span><b id="loadedPriceName"></b></span>
+          <button class="lp-edit" id="btnEditLoadedName" type="button" aria-label="Editar nome do produto">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"></path><path d="M15 5l4 4"></path></svg>
+          </button>
+          <button class="lp-close" id="btnClearLoaded" type="button" aria-label="Descartar">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+          </button>
+        </div>
+
         <label class="field-label" for="custoProduto">Custo do Produto (R$)</label>
         <div class="money-input">
           <span>R$</span>
@@ -147,7 +158,13 @@
             <div class="pct-head"><label for="icmsNum">ICMS (%)</label><span id="lbl-icms" class="pct-value">0,00%</span></div>
             <div class="pct-controls">
               <input type="range" id="icmsSlider" min="0" max="100" step="0.5" value="0" aria-label="ICMS">
-              <input id="icmsNum" inputmode="decimal" value="0,00" autocomplete="off">
+              <div class="num-box">
+                <input id="icmsNum" inputmode="decimal" value="0,00" autocomplete="off">
+                <div class="steppers">
+                  <button type="button" data-step-key="icms" data-step-delta="0.01" aria-label="Aumentar ICMS">▲</button>
+                  <button type="button" data-step-key="icms" data-step-delta="-0.01" aria-label="Diminuir ICMS">▼</button>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -155,7 +172,13 @@
             <div class="pct-head"><label for="icmsStNum">ICMS-ST (%)</label><span id="lbl-icmsSt" class="pct-value">0,00%</span></div>
             <div class="pct-controls">
               <input type="range" id="icmsStSlider" min="0" max="100" step="0.5" value="0" aria-label="ICMS-ST">
-              <input id="icmsStNum" inputmode="decimal" value="0,00" autocomplete="off">
+              <div class="num-box">
+                <input id="icmsStNum" inputmode="decimal" value="0,00" autocomplete="off">
+                <div class="steppers">
+                  <button type="button" data-step-key="icmsSt" data-step-delta="0.01" aria-label="Aumentar ICMS-ST">▲</button>
+                  <button type="button" data-step-key="icmsSt" data-step-delta="-0.01" aria-label="Diminuir ICMS-ST">▼</button>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -163,7 +186,13 @@
             <div class="pct-head"><label for="ipiNum">IPI (%)</label><span id="lbl-ipi" class="pct-value">0,00%</span></div>
             <div class="pct-controls">
               <input type="range" id="ipiSlider" min="0" max="100" step="0.5" value="0" aria-label="IPI">
-              <input id="ipiNum" inputmode="decimal" value="0,00" autocomplete="off">
+              <div class="num-box">
+                <input id="ipiNum" inputmode="decimal" value="0,00" autocomplete="off">
+                <div class="steppers">
+                  <button type="button" data-step-key="ipi" data-step-delta="0.01" aria-label="Aumentar IPI">▲</button>
+                  <button type="button" data-step-key="ipi" data-step-delta="-0.01" aria-label="Diminuir IPI">▼</button>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -178,7 +207,13 @@
           <div class="pct-head"><label for="comissaoNum">Comissão (%)</label><span id="lbl-comissao" class="pct-value pct-amber">0,00%</span></div>
           <div class="pct-controls">
             <input type="range" id="comissaoSlider" min="0" max="100" step="0.5" value="0" aria-label="Comissão">
-            <input id="comissaoNum" inputmode="decimal" value="0,00" autocomplete="off">
+            <div class="num-box">
+              <input id="comissaoNum" inputmode="decimal" value="0,00" autocomplete="off">
+              <div class="steppers">
+                <button type="button" data-step-key="comissao" data-step-delta="0.01" aria-label="Aumentar Comissão">▲</button>
+                <button type="button" data-step-key="comissao" data-step-delta="-0.01" aria-label="Diminuir Comissão">▼</button>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -186,7 +221,13 @@
           <div class="pct-head"><label for="impostoNum">Imposto sobre a Venda (%)</label><span id="lbl-imposto" class="pct-value pct-pink">0,00%</span></div>
           <div class="pct-controls">
             <input type="range" id="impostoSlider" min="0" max="100" step="0.5" value="0" aria-label="Imposto sobre a venda">
-            <input id="impostoNum" inputmode="decimal" value="0,00" autocomplete="off">
+            <div class="num-box">
+              <input id="impostoNum" inputmode="decimal" value="0,00" autocomplete="off">
+              <div class="steppers">
+                <button type="button" data-step-key="imposto" data-step-delta="0.01" aria-label="Aumentar Imposto sobre a Venda">▲</button>
+                <button type="button" data-step-key="imposto" data-step-delta="-0.01" aria-label="Diminuir Imposto sobre a Venda">▼</button>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -194,7 +235,13 @@
           <div class="pct-head"><label for="margemNum">Margem de Lucro Desejada (%)</label><span id="lbl-margem" class="pct-value pct-teal">0,00%</span></div>
           <div class="pct-controls">
             <input type="range" id="margemSlider" min="0" max="100" step="0.5" value="0" aria-label="Margem de lucro">
-            <input id="margemNum" inputmode="decimal" value="0,00" autocomplete="off">
+            <div class="num-box">
+              <input id="margemNum" inputmode="decimal" value="0,00" autocomplete="off">
+              <div class="steppers">
+                <button type="button" data-step-key="margem" data-step-delta="0.01" aria-label="Aumentar Margem">▲</button>
+                <button type="button" data-step-key="margem" data-step-delta="-0.01" aria-label="Diminuir Margem">▼</button>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -298,6 +345,32 @@
     </div>
   </div>
 
+  <!-- ===== Popup: salvar por cima ou como novo (preço já carregado) ===== -->
+  <div id="saveChoiceOverlay" class="overlay" hidden>
+    <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="saveChoiceTitle">
+      <h3 id="saveChoiceTitle">Salvar alterações</h3>
+      <p class="dialog-text">"<strong id="saveChoiceName"></strong>" já está salvo. O que deseja fazer?</p>
+      <div class="dialog-actions dialog-actions-stack">
+        <button id="btnOverwrite" class="btn-primary" type="button">Salvar por cima</button>
+        <button id="btnSaveAsNew" class="btn-secondary" type="button">Salvar como novo</button>
+        <button id="btnCancelChoice" class="btn-secondary" type="button">Cancelar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== Popup: editar nome do preço carregado ===== -->
+  <div id="editNameOverlay" class="overlay" hidden>
+    <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="editNameTitle">
+      <h3 id="editNameTitle">Editar nome</h3>
+      <label class="field-label" for="editPriceNameInput">Nome do produto</label>
+      <input id="editPriceNameInput" maxlength="40" autocomplete="off">
+      <div class="dialog-actions">
+        <button id="editNameCancel" class="btn-secondary" type="button">Cancelar</button>
+        <button id="editNameConfirm" class="btn-primary" type="button">Salvar</button>
+      </div>
+    </div>
+  </div>
+
   <!-- ===== Popup: carregar preço salvo ===== -->
   <div id="loadOverlay" class="overlay" hidden>
     <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="loadTitle">
@@ -329,9 +402,9 @@
     </div>
   </div>
 
-  <script type="module" src="app.js?v=2"></script>
+  <script type="module" src="app.js?v=3"></script>
   <script type="module" src="auth.js?v=2"></script>
-  <script type="module" src="sync.js?v=2"></script>
+  <script type="module" src="sync.js?v=3"></script>
   <script type="module" src="paywall.js?v=2"></script>
 </body>
 </html>
