@@ -303,7 +303,7 @@ export function renderSavedList() {
       <div class="saved-item-info">
         <span>Custo final: <strong>${brl(p.display.custoFinal)}</strong></span>
         <span>Venda: <strong>${brl(p.display.valorVenda)}</strong></span>
-        <span>Margem: <strong>${pct(p.display.margem)}</strong></span>
+        <span>Margem: <strong>${pct(p.display.margem ?? p.display.margemPct)}</strong></span>
         <span>Lucro: <strong>${brl(p.display.lucro)}</strong></span>
       </div>
     </div>`
