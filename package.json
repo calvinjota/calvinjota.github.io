@@ -1,0 +1,19 @@
+{
+  "name": "calvinjota.github.io",
+  "version": "1.0.0",
+  "description": "Site institucional Calvin Jota e calculadora web Preco & Lucro",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/calvinjota/calvinjota.github.io.git"
+  },
+  "license": "UNLICENSED",
+  "devDependencies": {
+    "vitest": "^4.1.10"
+  }
+}
