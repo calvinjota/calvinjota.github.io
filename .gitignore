@@ -15,3 +15,7 @@ coverage/
 Thumbs.db
 .vscode/
 .idea/
+
+# Instrucoes de trabalho internas: repo e publico via GitHub Pages,
+# esse arquivo nao precisa estar visivel pra qualquer um.
+INSTRUCOES-SITE.md
