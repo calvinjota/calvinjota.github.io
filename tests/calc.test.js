@@ -8,16 +8,16 @@
  */
 
 import { describe, it, expect } from 'vitest';
-import { calcular, brl, pct } from '../preco-lucro/calculadora/calc.js';
+import { calculate, brl, pct } from '../preco-lucro/calculadora/calc.js';
 import { scenarios, inputParsingScenarios } from './calc.scenarios.js';
 
 // Money is compared to the cent: two decimal places is what the user sees.
 const CENT_PRECISION = 2;
 
-describe('calcular: canonical pricing scenarios', () => {
+describe('calculate: canonical pricing scenarios', () => {
   for (const scenario of scenarios) {
     it(scenario.name, () => {
-      const result = calcular(scenario.inputs);
+      const result = calculate(scenario.inputs);
 
       for (const [field, expectedValue] of Object.entries(scenario.expected)) {
         expect(result[field], `field "${field}"`).toBeCloseTo(expectedValue, CENT_PRECISION);
@@ -26,10 +26,10 @@ describe('calcular: canonical pricing scenarios', () => {
   }
 });
 
-describe('calcular: user input parsing', () => {
+describe('calculate: user input parsing', () => {
   for (const scenario of inputParsingScenarios) {
     it(scenario.name, () => {
-      const result = calcular(scenario.inputs);
+      const result = calculate(scenario.inputs);
 
       for (const [field, expectedValue] of Object.entries(scenario.expected)) {
         expect(result[field], `field "${field}"`).toBeCloseTo(expectedValue, CENT_PRECISION);
@@ -38,59 +38,59 @@ describe('calcular: user input parsing', () => {
   }
 });
 
-describe('calcular: internal consistency', () => {
+describe('calculate: internal consistency', () => {
   const inputs = {
-    custoProduto: 100,
-    taxaFixa: 26,
-    comissao: 11.5,
-    imposto: 8.47,
-    margem: 10,
-    icms: 5,
-    icmsSt: 2,
-    ipi: 3,
+    productCost: 100,
+    fixedFee: 26,
+    commissionPct: 11.5,
+    salesTaxPct: 8.47,
+    marginPct: 10,
+    icmsPct: 5,
+    icmsStPct: 2,
+    ipiPct: 3,
   };
 
   it('price equals the sum of its parts', () => {
-    const r = calcular(inputs);
+    const r = calculate(inputs);
     const sumOfParts =
-      r.custoProdutoAjustado + r.taxaFixa + r.valorComissao + r.valorImposto + r.valorMargem;
+      r.adjustedProductCost + r.fixedFee + r.commissionAmount + r.salesTaxAmount + r.marginAmount;
 
-    expect(sumOfParts).toBeCloseTo(r.preco, CENT_PRECISION);
+    expect(sumOfParts).toBeCloseTo(r.price, CENT_PRECISION);
   });
 
   it('component percentages of the price add up to 100%', () => {
-    const r = calcular(inputs);
+    const r = calculate(inputs);
     const sumOfPercentages =
-      r.custoFinalPctOfPreco + r.taxaFixaPctOfPreco + r.comissaoPct + r.impostoPct + r.margemPct;
+      r.finalCostPctOfPrice + r.fixedFeePctOfPrice + r.commissionPct + r.salesTaxPct + r.marginPct;
 
     expect(sumOfPercentages).toBeCloseTo(100, CENT_PRECISION);
   });
 
   it('adjusted product cost equals base cost plus its taxes', () => {
-    const r = calcular(inputs);
+    const r = calculate(inputs);
 
-    expect(r.custoProdutoAjustado).toBeCloseTo(
-      r.custoProduto + r.icmsValor + r.icmsStValor + r.ipiValor,
+    expect(r.adjustedProductCost).toBeCloseTo(
+      r.productCost + r.icmsAmount + r.icmsStAmount + r.ipiAmount,
       CENT_PRECISION
     );
   });
 
   it('markup is the price divided by the total cost', () => {
-    const r = calcular(inputs);
-    const totalCost = r.custoProdutoAjustado + r.taxaFixa;
+    const r = calculate(inputs);
+    const totalCost = r.adjustedProductCost + r.fixedFee;
 
-    expect(r.markup).toBeCloseTo(r.preco / totalCost, 4);
+    expect(r.markup).toBeCloseTo(r.price / totalCost, 4);
   });
 
   it('never returns a non-finite price', () => {
     const extremes = [
-      { custoProduto: 1e6, taxaFixa: 1e6, comissao: 100, imposto: 100, margem: 100 },
-      { custoProduto: 0, taxaFixa: 0, comissao: 100, imposto: 0, margem: 0 },
-      { custoProduto: 1, taxaFixa: 0, comissao: 33.33, imposto: 33.33, margem: 33.34 },
+      { productCost: 1e6, fixedFee: 1e6, commissionPct: 100, salesTaxPct: 100, marginPct: 100 },
+      { productCost: 0, fixedFee: 0, commissionPct: 100, salesTaxPct: 0, marginPct: 0 },
+      { productCost: 1, fixedFee: 0, commissionPct: 33.33, salesTaxPct: 33.33, marginPct: 33.34 },
     ];
 
     for (const inputs of extremes) {
-      expect(Number.isFinite(calcular(inputs).preco)).toBe(true);
+      expect(Number.isFinite(calculate(inputs).price)).toBe(true);
     }
   });
 });

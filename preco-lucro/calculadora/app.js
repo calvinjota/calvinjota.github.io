@@ -7,7 +7,7 @@
  * Worker + RevenueCat) + sincronização dos preços com o Firestore do app.
  */
 
-import { calcular, brl, pct } from './calc.js?v=2';
+import { calculate, brl, pct } from './calc.js?v=3';
 import { sortPricesByName } from './price-sort.js?v=1';
 import { copyText } from './clipboard.js?v=1';
 import { showToast } from './toast.js?v=1';
@@ -40,16 +40,28 @@ function fmtNum(v) {
 const PCT_KEYS = ['icms', 'icmsSt', 'ipi', 'comissao', 'imposto', 'margem'];
 const MONEY_MAX = 1000000;
 
+// O id do campo na tela e o nome do dado guardado são coisas diferentes: o campo
+// se chama "comissao" no HTML e o dado se chama commissionPct, que é o nome que
+// o cálculo usa. Esta tabela é a única ponte entre os dois.
+const INPUT_KEY_BY_FIELD = {
+  icms: 'icmsPct',
+  icmsSt: 'icmsStPct',
+  ipi: 'ipiPct',
+  comissao: 'commissionPct',
+  imposto: 'salesTaxPct',
+  margem: 'marginPct',
+};
+
 function readInputs() {
   return {
-    custoProduto: Math.min(parseNum($('custoProduto').value), MONEY_MAX),
-    taxaFixa: Math.min(parseNum($('taxaFixa').value), MONEY_MAX),
-    comissao: parseNum($('comissaoNum').value),
-    imposto: parseNum($('impostoNum').value),
-    margem: parseNum($('margemNum').value),
-    icms: parseNum($('icmsNum').value),
-    icmsSt: parseNum($('icmsStNum').value),
-    ipi: parseNum($('ipiNum').value),
+    productCost: Math.min(parseNum($('custoProduto').value), MONEY_MAX),
+    fixedFee: Math.min(parseNum($('taxaFixa').value), MONEY_MAX),
+    commissionPct: parseNum($('comissaoNum').value),
+    salesTaxPct: parseNum($('impostoNum').value),
+    marginPct: parseNum($('margemNum').value),
+    icmsPct: parseNum($('icmsNum').value),
+    icmsStPct: parseNum($('icmsStNum').value),
+    ipiPct: parseNum($('ipiNum').value),
   };
 }
 
@@ -58,57 +70,57 @@ function readInputs() {
 let lastCalc = null;
 
 function render() {
-  const r = calcular(readInputs());
+  const r = calculate(readInputs());
   lastCalc = r;
 
   // labels dos percentuais
-  $('lbl-comissao').textContent = pct(r.comissaoPct);
-  $('lbl-imposto').textContent = pct(r.impostoPct);
-  $('lbl-margem').textContent = pct(r.margemPct);
+  $('lbl-comissao').textContent = pct(r.commissionPct);
+  $('lbl-imposto').textContent = pct(r.salesTaxPct);
+  $('lbl-margem').textContent = pct(r.marginPct);
   $('lbl-icms').textContent = pct(r.icmsPct);
   $('lbl-icmsSt').textContent = pct(r.icmsStPct);
   $('lbl-ipi').textContent = pct(r.ipiPct);
 
   // card principal
-  $('hero-preco').textContent = fmtNum(r.preco);
+  $('hero-preco').textContent = fmtNum(r.price);
   $('hero-markup').textContent = fmtNum(r.markup) + 'x';
-  $('hero-voce-recebe').textContent = brl(r.receitaAposTaxas);
-  $('stat-lucro').textContent = brl(r.valorMargem);
-  $('stat-margem-pct').textContent = pct(r.margemOperacionalPct);
+  $('hero-voce-recebe').textContent = brl(r.revenueAfterFees);
+  $('stat-lucro').textContent = brl(r.marginAmount);
+  $('stat-margem-pct').textContent = pct(r.operatingMarginPct);
 
   // tabela de detalhamento
-  $('tbl-preco').textContent = brl(r.preco);
-  $('tbl-comissao-pct').textContent = pct(r.comissaoPct);
-  $('tbl-comissao-val').textContent = brl(r.valorComissao);
-  $('tbl-taxaFixa-pct').textContent = pct(r.taxaFixaPctOfPreco);
-  $('tbl-taxaFixa-val').textContent = brl(r.taxaFixa);
-  $('tbl-receita-pct').textContent = pct(r.receitaPctOfPreco);
-  $('tbl-receita-val').textContent = brl(r.receitaAposTaxas);
-  $('tbl-custoprod-pct').textContent = pct(r.custoProdPctOfPreco);
-  $('tbl-custoprod-val').textContent = brl(r.custoProduto);
-  $('tbl-icms-pct').textContent = pct(r.icmsPctOfPreco);
-  $('tbl-icms-val').textContent = brl(r.icmsValor);
-  $('tbl-icmsst-pct').textContent = pct(r.icmsStPctOfPreco);
-  $('tbl-icmsst-val').textContent = brl(r.icmsStValor);
-  $('tbl-ipi-pct').textContent = pct(r.ipiPctOfPreco);
-  $('tbl-ipi-val').textContent = brl(r.ipiValor);
-  $('tbl-custofinal-pct').textContent = pct(r.custoFinalPctOfPreco);
-  $('tbl-custofinal-val').textContent = brl(r.custoProdutoAjustado);
-  $('tbl-lucro-pct').textContent = pct(r.margemOperacionalPct);
-  $('tbl-lucro-val').textContent = brl(r.valorMargem);
+  $('tbl-preco').textContent = brl(r.price);
+  $('tbl-comissao-pct').textContent = pct(r.commissionPct);
+  $('tbl-comissao-val').textContent = brl(r.commissionAmount);
+  $('tbl-taxaFixa-pct').textContent = pct(r.fixedFeePctOfPrice);
+  $('tbl-taxaFixa-val').textContent = brl(r.fixedFee);
+  $('tbl-receita-pct').textContent = pct(r.revenuePctOfPrice);
+  $('tbl-receita-val').textContent = brl(r.revenueAfterFees);
+  $('tbl-custoprod-pct').textContent = pct(r.productCostPctOfPrice);
+  $('tbl-custoprod-val').textContent = brl(r.productCost);
+  $('tbl-icms-pct').textContent = pct(r.icmsPctOfPrice);
+  $('tbl-icms-val').textContent = brl(r.icmsAmount);
+  $('tbl-icmsst-pct').textContent = pct(r.icmsStPctOfPrice);
+  $('tbl-icmsst-val').textContent = brl(r.icmsStAmount);
+  $('tbl-ipi-pct').textContent = pct(r.ipiPctOfPrice);
+  $('tbl-ipi-val').textContent = brl(r.ipiAmount);
+  $('tbl-custofinal-pct').textContent = pct(r.finalCostPctOfPrice);
+  $('tbl-custofinal-val').textContent = brl(r.adjustedProductCost);
+  $('tbl-lucro-pct').textContent = pct(r.operatingMarginPct);
+  $('tbl-lucro-val').textContent = brl(r.marginAmount);
 
   // barra de composição + legenda
   const bar = $('compBar');
   bar.innerHTML = '';
   const segments = [
-    { v: r.custoProdPctOfPreco, c: 'var(--grey)' },
-    { v: r.comissaoPct, c: 'var(--amber)' },
-    { v: r.taxaFixaPctOfPreco, c: 'var(--orange)' },
-    { v: r.impostoPct, c: 'var(--pink)' },
-    { v: r.icmsPctOfPreco, c: 'var(--purple)' },
-    { v: r.icmsStPctOfPreco, c: 'var(--sky)' },
-    { v: r.ipiPctOfPreco, c: 'var(--rose)' },
-    { v: r.margemOperacionalPct, c: 'var(--teal)' },
+    { v: r.productCostPctOfPrice, c: 'var(--grey)' },
+    { v: r.commissionPct, c: 'var(--amber)' },
+    { v: r.fixedFeePctOfPrice, c: 'var(--orange)' },
+    { v: r.salesTaxPct, c: 'var(--pink)' },
+    { v: r.icmsPctOfPrice, c: 'var(--purple)' },
+    { v: r.icmsStPctOfPrice, c: 'var(--sky)' },
+    { v: r.ipiPctOfPrice, c: 'var(--rose)' },
+    { v: r.operatingMarginPct, c: 'var(--teal)' },
   ];
   for (const s of segments) {
     if (s.v > 0) {
@@ -176,7 +188,7 @@ const COPY_FEEDBACK_MS = 2000;
 // Formato que campo de preço de marketplace aceita colado direto: vírgula
 // decimal, sem "R$" e sem separador de milhar.
 function priceForClipboard() {
-  const price = lastCalc ? lastCalc.preco : 0;
+  const price = lastCalc ? lastCalc.price : 0;
   return price.toLocaleString('pt-BR', {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
@@ -409,11 +421,12 @@ function handleSavedListClick(e) {
   }
 
   // carregar na calculadora
-  $('custoProduto').value = fmtNum(price.inputs.custoProduto);
-  $('taxaFixa').value = fmtNum(price.inputs.taxaFixa);
-  for (const key of PCT_KEYS) {
-    $(key + 'Slider').value = price.inputs[key];
-    $(key + 'Num').value = fmtNum(price.inputs[key]);
+  $('custoProduto').value = fmtNum(price.inputs.productCost);
+  $('taxaFixa').value = fmtNum(price.inputs.fixedFee);
+  for (const field of PCT_KEYS) {
+    const value = price.inputs[INPUT_KEY_BY_FIELD[field]];
+    $(field + 'Slider').value = value;
+    $(field + 'Num').value = fmtNum(value);
   }
   render();
   loadedPriceId = id;
@@ -467,10 +480,10 @@ $('saveConfirm').addEventListener('click', () => {
     name,
     inputs,
     display: {
-      custoFinal: lastCalc.custoProdutoAjustado,
-      valorVenda: lastCalc.preco,
-      margem: lastCalc.margemOperacionalPct,
-      lucro: lastCalc.valorMargem,
+      custoFinal: lastCalc.adjustedProductCost,
+      valorVenda: lastCalc.price,
+      margem: lastCalc.operatingMarginPct,
+      lucro: lastCalc.marginAmount,
     },
     lastModified: Date.now(),
   };
@@ -504,10 +517,10 @@ $('btnOverwrite').addEventListener('click', () => {
   }
   list[idx].inputs = readInputs();
   list[idx].display = {
-    custoFinal: lastCalc.custoProdutoAjustado,
-    valorVenda: lastCalc.preco,
-    margem: lastCalc.margemOperacionalPct,
-    lucro: lastCalc.valorMargem,
+    custoFinal: lastCalc.adjustedProductCost,
+    valorVenda: lastCalc.price,
+    margem: lastCalc.operatingMarginPct,
+    lucro: lastCalc.marginAmount,
   };
   list[idx].lastModified = Date.now();
   persistSaved(list);
