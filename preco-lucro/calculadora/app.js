@@ -31,34 +31,38 @@ function parseNum(raw) {
   return isFinite(v) ? v : 0;
 }
 
+// Preço salvo antes da tradução dos nomes (etapa 4.1) não tem os campos novos,
+// e sem esta guarda o undefined derrubava o carregamento inteiro em vez de
+// apenas zerar os campos, que é o combinado.
 function fmtNum(v) {
-  return v.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  const n = typeof v === 'number' && isFinite(v) ? v : 0;
+  return n.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 }
 
 /* ===================== Leitura dos campos ===================== */
 
-const PCT_KEYS = ['icms', 'icmsSt', 'ipi', 'comissao', 'imposto', 'margem'];
+const PCT_KEYS = ['icms', 'icmsSt', 'ipi', 'commission', 'salesTax', 'margin'];
 const MONEY_MAX = 1000000;
 
 // O id do campo na tela e o nome do dado guardado são coisas diferentes: o campo
-// se chama "comissao" no HTML e o dado se chama commissionPct, que é o nome que
+// se chama "commission" no HTML e o dado se chama commissionPct, que é o nome que
 // o cálculo usa. Esta tabela é a única ponte entre os dois.
 const INPUT_KEY_BY_FIELD = {
   icms: 'icmsPct',
   icmsSt: 'icmsStPct',
   ipi: 'ipiPct',
-  comissao: 'commissionPct',
-  imposto: 'salesTaxPct',
-  margem: 'marginPct',
+  commission: 'commissionPct',
+  salesTax: 'salesTaxPct',
+  margin: 'marginPct',
 };
 
 function readInputs() {
   return {
-    productCost: Math.min(parseNum($('custoProduto').value), MONEY_MAX),
-    fixedFee: Math.min(parseNum($('taxaFixa').value), MONEY_MAX),
-    commissionPct: parseNum($('comissaoNum').value),
-    salesTaxPct: parseNum($('impostoNum').value),
-    marginPct: parseNum($('margemNum').value),
+    productCost: Math.min(parseNum($('productCost').value), MONEY_MAX),
+    fixedFee: Math.min(parseNum($('fixedFee').value), MONEY_MAX),
+    commissionPct: parseNum($('commissionNum').value),
+    salesTaxPct: parseNum($('salesTaxNum').value),
+    marginPct: parseNum($('marginNum').value),
     icmsPct: parseNum($('icmsNum').value),
     icmsStPct: parseNum($('icmsStNum').value),
     ipiPct: parseNum($('ipiNum').value),
@@ -74,40 +78,42 @@ function render() {
   lastCalc = r;
 
   // labels dos percentuais
-  $('lbl-comissao').textContent = pct(r.commissionPct);
-  $('lbl-imposto').textContent = pct(r.salesTaxPct);
-  $('lbl-margem').textContent = pct(r.marginPct);
+  $('lbl-commission').textContent = pct(r.commissionPct);
+  $('lbl-salesTax').textContent = pct(r.salesTaxPct);
+  $('lbl-margin').textContent = pct(r.marginPct);
   $('lbl-icms').textContent = pct(r.icmsPct);
   $('lbl-icmsSt').textContent = pct(r.icmsStPct);
   $('lbl-ipi').textContent = pct(r.ipiPct);
 
   // card principal
-  $('hero-preco').textContent = fmtNum(r.price);
+  $('hero-price').textContent = fmtNum(r.price);
   $('hero-markup').textContent = fmtNum(r.markup) + 'x';
-  $('hero-voce-recebe').textContent = brl(r.revenueAfterFees);
-  $('stat-lucro').textContent = brl(r.marginAmount);
-  $('stat-margem-pct').textContent = pct(r.operatingMarginPct);
+  $('hero-revenue').textContent = brl(r.revenueAfterFees);
+  $('stat-profit').textContent = brl(r.marginAmount);
+  $('stat-margin-pct').textContent = pct(r.operatingMarginPct);
 
   // tabela de detalhamento
-  $('tbl-preco').textContent = brl(r.price);
-  $('tbl-comissao-pct').textContent = pct(r.commissionPct);
-  $('tbl-comissao-val').textContent = brl(r.commissionAmount);
-  $('tbl-taxaFixa-pct').textContent = pct(r.fixedFeePctOfPrice);
-  $('tbl-taxaFixa-val').textContent = brl(r.fixedFee);
-  $('tbl-receita-pct').textContent = pct(r.revenuePctOfPrice);
-  $('tbl-receita-val').textContent = brl(r.revenueAfterFees);
-  $('tbl-custoprod-pct').textContent = pct(r.productCostPctOfPrice);
-  $('tbl-custoprod-val').textContent = brl(r.productCost);
+  $('tbl-price').textContent = brl(r.price);
+  $('tbl-commission-pct').textContent = pct(r.commissionPct);
+  $('tbl-commission-val').textContent = brl(r.commissionAmount);
+  $('tbl-fixedFee-pct').textContent = pct(r.fixedFeePctOfPrice);
+  $('tbl-fixedFee-val').textContent = brl(r.fixedFee);
+  $('tbl-revenue-pct').textContent = pct(r.revenuePctOfPrice);
+  $('tbl-revenue-val').textContent = brl(r.revenueAfterFees);
+  $('tbl-salesTax-pct').textContent = pct(r.salesTaxPct);
+  $('tbl-salesTax-val').textContent = brl(r.salesTaxAmount);
+  $('tbl-productCost-pct').textContent = pct(r.productCostPctOfPrice);
+  $('tbl-productCost-val').textContent = brl(r.productCost);
   $('tbl-icms-pct').textContent = pct(r.icmsPctOfPrice);
   $('tbl-icms-val').textContent = brl(r.icmsAmount);
-  $('tbl-icmsst-pct').textContent = pct(r.icmsStPctOfPrice);
-  $('tbl-icmsst-val').textContent = brl(r.icmsStAmount);
+  $('tbl-icmsSt-pct').textContent = pct(r.icmsStPctOfPrice);
+  $('tbl-icmsSt-val').textContent = brl(r.icmsStAmount);
   $('tbl-ipi-pct').textContent = pct(r.ipiPctOfPrice);
   $('tbl-ipi-val').textContent = brl(r.ipiAmount);
-  $('tbl-custofinal-pct').textContent = pct(r.finalCostPctOfPrice);
-  $('tbl-custofinal-val').textContent = brl(r.adjustedProductCost);
-  $('tbl-lucro-pct').textContent = pct(r.operatingMarginPct);
-  $('tbl-lucro-val').textContent = brl(r.marginAmount);
+  $('tbl-finalCost-pct').textContent = pct(r.finalCostPctOfPrice);
+  $('tbl-finalCost-val').textContent = brl(r.adjustedProductCost);
+  $('tbl-profit-pct').textContent = pct(r.operatingMarginPct);
+  $('tbl-profit-val').textContent = brl(r.marginAmount);
 
   // barra de composição + legenda
   const bar = $('compBar');
@@ -150,14 +156,14 @@ function render() {
 // A margem termina no botão de copiar: o preço é um <span> e não recebe foco.
 const COPY_BUTTON_ID = 'copyPriceBtn';
 const ENTER_NEXT = {
-  custoProduto: 'icmsNum',
+  productCost: 'icmsNum',
   icmsNum: 'icmsStNum',
   icmsStNum: 'ipiNum',
-  ipiNum: 'taxaFixa',
-  taxaFixa: 'comissaoNum',
-  comissaoNum: 'impostoNum',
-  impostoNum: 'margemNum',
-  margemNum: COPY_BUTTON_ID,
+  ipiNum: 'fixedFee',
+  fixedFee: 'commissionNum',
+  commissionNum: 'salesTaxNum',
+  salesTaxNum: 'marginNum',
+  marginNum: COPY_BUTTON_ID,
 };
 function focusField(id) {
   const el = $(id);
@@ -227,7 +233,7 @@ copyPriceButton.addEventListener('keydown', (e) => {
   // Sem isto o navegador ainda transformaria o Enter num clique, copiando duas vezes.
   e.preventDefault();
   if (priceCopiedSinceFocus) {
-    focusField('custoProduto');
+    focusField('productCost');
     return;
   }
   copyPrice();
@@ -320,7 +326,7 @@ document.querySelectorAll('[data-step-key]').forEach((btn) => {
   });
 });
 
-for (const id of ['custoProduto', 'taxaFixa']) {
+for (const id of ['productCost', 'fixedFee']) {
   const el = $(id);
   el.addEventListener('input', render);
   el.addEventListener('blur', () => {
@@ -333,8 +339,8 @@ for (const id of ['custoProduto', 'taxaFixa']) {
 /* ===================== Resetar ===================== */
 
 $('btnReset').addEventListener('click', () => {
-  $('custoProduto').value = '0,00';
-  $('taxaFixa').value = '0,00';
+  $('productCost').value = '0,00';
+  $('fixedFee').value = '0,00';
   for (const key of PCT_KEYS) {
     $(key + 'Slider').value = 0;
     $(key + 'Num').value = '0,00';
@@ -421,8 +427,8 @@ function handleSavedListClick(e) {
   }
 
   // carregar na calculadora
-  $('custoProduto').value = fmtNum(price.inputs.productCost);
-  $('taxaFixa').value = fmtNum(price.inputs.fixedFee);
+  $('productCost').value = fmtNum(price.inputs.productCost);
+  $('fixedFee').value = fmtNum(price.inputs.fixedFee);
   for (const field of PCT_KEYS) {
     const value = price.inputs[INPUT_KEY_BY_FIELD[field]];
     $(field + 'Slider').value = value;
@@ -438,7 +444,7 @@ $('loadList').addEventListener('click', handleSavedListClick);
 
 /* ---- popup carregar ---- */
 
-$('btnCarregar').addEventListener('click', () => {
+$('btnLoad').addEventListener('click', () => {
   renderSavedList();
   $('loadOverlay').hidden = false;
 });
@@ -455,7 +461,7 @@ function openSavePopup() {
 
 // Se já tem um preço carregado, pergunta "salvar por cima ou como novo?"
 // (igual ao app); senão, pede o nome de um preço novo direto.
-$('btnSalvar').addEventListener('click', () => {
+$('btnSave').addEventListener('click', () => {
   if (loadedPriceId && loadSaved().some((p) => p.id === loadedPriceId)) {
     const loaded = loadSaved().find((p) => p.id === loadedPriceId);
     $('saveChoiceName').textContent = loaded.name;

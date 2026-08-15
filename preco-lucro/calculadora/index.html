@@ -144,10 +144,10 @@
           </button>
         </div>
 
-        <label class="field-label" for="custoProduto">Custo do Produto (R$)</label>
+        <label class="field-label" for="productCost">Custo do Produto (R$)</label>
         <div class="money-input">
           <span>R$</span>
-          <input id="custoProduto" inputmode="decimal" value="0,00" autocomplete="off">
+          <input id="productCost" inputmode="decimal" value="0,00" autocomplete="off">
         </div>
 
         <!-- Impostos sobre o produto: sempre visível no site (nada escondido) -->
@@ -206,66 +206,66 @@
           </div>
         </div>
 
-        <label class="field-label" for="taxaFixa">Taxa fixa (R$)</label>
+        <label class="field-label" for="fixedFee">Taxa fixa (R$)</label>
         <div class="money-input">
           <span>R$</span>
-          <input id="taxaFixa" inputmode="decimal" value="0,00" autocomplete="off">
+          <input id="fixedFee" inputmode="decimal" value="0,00" autocomplete="off">
         </div>
 
         <div class="pct-field">
-          <div class="pct-head"><label for="comissaoNum">Comissão (%)</label><span id="lbl-comissao" class="pct-value pct-amber">0,00%</span></div>
+          <div class="pct-head"><label for="commissionNum">Comissão (%)</label><span id="lbl-commission" class="pct-value pct-amber">0,00%</span></div>
           <div class="pct-controls">
             <div class="slider-touch-wrap">
-              <input type="range" id="comissaoSlider" min="0" max="100" step="0.5" value="0" aria-label="Comissão">
+              <input type="range" id="commissionSlider" min="0" max="100" step="0.5" value="0" aria-label="Comissão">
               <div class="slider-touch-overlay"></div>
             </div>
             <div class="num-box">
-              <input id="comissaoNum" inputmode="decimal" value="0,00" autocomplete="off">
+              <input id="commissionNum" inputmode="decimal" value="0,00" autocomplete="off">
               <div class="steppers">
-                <button type="button" data-step-key="comissao" data-step-delta="0.01" aria-label="Aumentar Comissão">▲</button>
-                <button type="button" data-step-key="comissao" data-step-delta="-0.01" aria-label="Diminuir Comissão">▼</button>
+                <button type="button" data-step-key="commission" data-step-delta="0.01" aria-label="Aumentar Comissão">▲</button>
+                <button type="button" data-step-key="commission" data-step-delta="-0.01" aria-label="Diminuir Comissão">▼</button>
               </div>
             </div>
           </div>
         </div>
 
         <div class="pct-field">
-          <div class="pct-head"><label for="impostoNum">Imposto sobre a Venda (%)</label><span id="lbl-imposto" class="pct-value pct-pink">0,00%</span></div>
+          <div class="pct-head"><label for="salesTaxNum">Imposto sobre a Venda (%)</label><span id="lbl-salesTax" class="pct-value pct-pink">0,00%</span></div>
           <div class="pct-controls">
             <div class="slider-touch-wrap">
-              <input type="range" id="impostoSlider" min="0" max="100" step="0.5" value="0" aria-label="Imposto sobre a venda">
+              <input type="range" id="salesTaxSlider" min="0" max="100" step="0.5" value="0" aria-label="Imposto sobre a venda">
               <div class="slider-touch-overlay"></div>
             </div>
             <div class="num-box">
-              <input id="impostoNum" inputmode="decimal" value="0,00" autocomplete="off">
+              <input id="salesTaxNum" inputmode="decimal" value="0,00" autocomplete="off">
               <div class="steppers">
-                <button type="button" data-step-key="imposto" data-step-delta="0.01" aria-label="Aumentar Imposto sobre a Venda">▲</button>
-                <button type="button" data-step-key="imposto" data-step-delta="-0.01" aria-label="Diminuir Imposto sobre a Venda">▼</button>
+                <button type="button" data-step-key="salesTax" data-step-delta="0.01" aria-label="Aumentar Imposto sobre a Venda">▲</button>
+                <button type="button" data-step-key="salesTax" data-step-delta="-0.01" aria-label="Diminuir Imposto sobre a Venda">▼</button>
               </div>
             </div>
           </div>
         </div>
 
         <div class="pct-field">
-          <div class="pct-head"><label for="margemNum">Margem de Lucro Desejada (%)</label><span id="lbl-margem" class="pct-value pct-teal">0,00%</span></div>
+          <div class="pct-head"><label for="marginNum">Margem de Lucro Desejada (%)</label><span id="lbl-margin" class="pct-value pct-teal">0,00%</span></div>
           <div class="pct-controls">
             <div class="slider-touch-wrap">
-              <input type="range" id="margemSlider" min="0" max="100" step="0.5" value="0" aria-label="Margem de lucro">
+              <input type="range" id="marginSlider" min="0" max="100" step="0.5" value="0" aria-label="Margem de lucro">
               <div class="slider-touch-overlay"></div>
             </div>
             <div class="num-box">
-              <input id="margemNum" inputmode="decimal" value="0,00" autocomplete="off">
+              <input id="marginNum" inputmode="decimal" value="0,00" autocomplete="off">
               <div class="steppers">
-                <button type="button" data-step-key="margem" data-step-delta="0.01" aria-label="Aumentar Margem">▲</button>
-                <button type="button" data-step-key="margem" data-step-delta="-0.01" aria-label="Diminuir Margem">▼</button>
+                <button type="button" data-step-key="margin" data-step-delta="0.01" aria-label="Aumentar Margem">▲</button>
+                <button type="button" data-step-key="margin" data-step-delta="-0.01" aria-label="Diminuir Margem">▼</button>
               </div>
             </div>
           </div>
         </div>
 
         <div class="actions-row">
-          <button id="btnSalvar" class="btn-secondary" type="button">💾 Salvar</button>
-          <button id="btnCarregar" class="btn-secondary" type="button">📂 Carregar</button>
+          <button id="btnSave" class="btn-secondary" type="button">💾 Salvar</button>
+          <button id="btnLoad" class="btn-secondary" type="button">📂 Carregar</button>
         </div>
       </section>
 
@@ -281,13 +281,13 @@
           </div>
           <div class="preco-body">
             <div class="preco-main">
-              <div class="preco-big"><span class="currency">R$</span><span id="hero-preco">0,00</span><button type="button" class="copy-price-btn" id="copyPriceBtn" aria-label="Copiar preço" title="Copiar preço"><svg class="copy-price-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><svg class="copy-price-done" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></button></div>
-              <p class="voce-recebe">você recebe <strong id="hero-voce-recebe">R$ 0,00</strong></p>
+              <div class="preco-big"><span class="currency">R$</span><span id="hero-price">0,00</span><button type="button" class="copy-price-btn" id="copyPriceBtn" aria-label="Copiar preço" title="Copiar preço"><svg class="copy-price-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><svg class="copy-price-done" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></button></div>
+              <p class="voce-recebe">você recebe <strong id="hero-revenue">R$ 0,00</strong></p>
             </div>
             <div class="lucro-box">
               <span class="lucro-label">Lucro Operacional</span>
-              <span id="stat-lucro" class="lucro-value">R$ 0,00</span>
-              <span id="stat-margem-pct" class="lucro-pct">0,00%</span>
+              <span id="stat-profit" class="lucro-value">R$ 0,00</span>
+              <span id="stat-margin-pct" class="lucro-pct">0,00%</span>
             </div>
           </div>
         </section>
@@ -298,18 +298,18 @@
           <div class="legend"></div>
           <table class="detail-table">
             <tbody>
-              <tr class="row-strong"><td>PREÇO DE VENDA</td><td id="tbl-preco-pct">100,00%</td><td id="tbl-preco">R$ 0,00</td></tr>
-              <tr><td><i class="dot dot-amber"></i>Comissão</td><td id="tbl-comissao-pct">0,00%</td><td id="tbl-comissao-val">R$ 0,00</td></tr>
-              <tr><td><i class="dot dot-orange"></i>Taxa fixa</td><td id="tbl-taxaFixa-pct">0,00%</td><td id="tbl-taxaFixa-val">R$ 0,00</td></tr>
-              <tr class="row-muted"><td>Receita pós Taxa e Comissão</td><td id="tbl-receita-pct">0,00%</td><td id="tbl-receita-val">R$ 0,00</td></tr>
-              <tr class="row-strong"><td><i class="dot dot-grey"></i>Custo final do produto</td><td id="tbl-custofinal-pct">0,00%</td><td id="tbl-custofinal-val">R$ 0,00</td></tr>
+              <tr class="row-strong"><td>PREÇO DE VENDA</td><td id="tbl-price-pct">100,00%</td><td id="tbl-price">R$ 0,00</td></tr>
+              <tr><td><i class="dot dot-amber"></i>Comissão</td><td id="tbl-commission-pct">0,00%</td><td id="tbl-commission-val">R$ 0,00</td></tr>
+              <tr><td><i class="dot dot-orange"></i>Taxa fixa</td><td id="tbl-fixedFee-pct">0,00%</td><td id="tbl-fixedFee-val">R$ 0,00</td></tr>
+              <tr class="row-muted"><td>Receita pós Taxa e Comissão</td><td id="tbl-revenue-pct">0,00%</td><td id="tbl-revenue-val">R$ 0,00</td></tr>
+              <tr class="row-strong"><td><i class="dot dot-grey"></i>Custo final do produto</td><td id="tbl-finalCost-pct">0,00%</td><td id="tbl-finalCost-val">R$ 0,00</td></tr>
               <!-- Componentes do custo final: sempre visíveis no site (nada escondido) -->
-              <tr class="row-sub"><td>Custo do Produto</td><td id="tbl-custoprod-pct">0,00%</td><td id="tbl-custoprod-val">R$ 0,00</td></tr>
+              <tr class="row-sub"><td>Custo do Produto</td><td id="tbl-productCost-pct">0,00%</td><td id="tbl-productCost-val">R$ 0,00</td></tr>
               <tr class="row-sub"><td><i class="dot dot-purple"></i>ICMS</td><td id="tbl-icms-pct">0,00%</td><td id="tbl-icms-val">R$ 0,00</td></tr>
-              <tr class="row-sub"><td><i class="dot dot-sky"></i>ICMS-ST</td><td id="tbl-icmsst-pct">0,00%</td><td id="tbl-icmsst-val">R$ 0,00</td></tr>
+              <tr class="row-sub"><td><i class="dot dot-sky"></i>ICMS-ST</td><td id="tbl-icmsSt-pct">0,00%</td><td id="tbl-icmsSt-val">R$ 0,00</td></tr>
               <tr class="row-sub"><td><i class="dot dot-rose"></i>IPI</td><td id="tbl-ipi-pct">0,00%</td><td id="tbl-ipi-val">R$ 0,00</td></tr>
-              <tr><td><i class="dot dot-pink"></i>Imposto sobre a Venda</td><td id="tbl-imposto-pct">0,00%</td><td id="tbl-imposto-val">R$ 0,00</td></tr>
-              <tr class="row-lucro"><td><i class="dot dot-teal"></i>Lucro Operacional da Venda</td><td id="tbl-lucro-pct">0,00%</td><td id="tbl-lucro-val">R$ 0,00</td></tr>
+              <tr><td><i class="dot dot-pink"></i>Imposto sobre a Venda</td><td id="tbl-salesTax-pct">0,00%</td><td id="tbl-salesTax-val">R$ 0,00</td></tr>
+              <tr class="row-lucro"><td><i class="dot dot-teal"></i>Lucro Operacional da Venda</td><td id="tbl-profit-pct">0,00%</td><td id="tbl-profit-val">R$ 0,00</td></tr>
             </tbody>
           </table>
         </section>
@@ -420,7 +420,7 @@
     </div>
   </div>
 
-  <script type="module" src="app.js?v=9"></script>
+  <script type="module" src="app.js?v=11"></script>
   <script type="module" src="auth.js?v=2"></script>
   <script type="module" src="sync.js?v=7"></script>
   <script type="module" src="paywall.js?v=2"></script>

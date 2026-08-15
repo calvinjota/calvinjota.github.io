@@ -39,6 +39,7 @@ preco-lucro/
     calc.js                     cálculo puro, espelhado do app
     clipboard.js                copiar texto, espelhado do app
     toast.js                    aviso flutuante, espelhado do app
+    price-sort.js               ordem alfabética dos salvos, espelhado do app
     app.js                      interface
     auth.js                     login com Google (Firebase)
     sync.js                     sincronização dos preços salvos (Firestore)
@@ -54,7 +55,8 @@ tests/                          testes do cálculo (Vitest)
 ## Regras técnicas específicas deste projeto
 
 - **`calc.js` precisa calcular exatamente igual ao app.** Os dois projetos rodam a mesma bateria de testes (`tests/calc.scenarios.js` é espelhado entre eles). Ao editar os casos em um, copiar para o outro.
-- **`clipboard.js` e `toast.js` também são espelhados do app**, byte a byte. Ao mexer em um dos dois, copiar para o outro projeto.
+- **`clipboard.js`, `toast.js` e `price-sort.js` também são espelhados do app**, byte a byte. Ao mexer em um dos três, copiar para o outro projeto.
+- **Os ids da calculadora estão em inglês desde a fatia 4.2** (16/08), e o id do campo na tela não é o nome do dado guardado: `commissionNum` é o campo, `commissionPct` é o dado, e a ponte entre os dois é a tabela `INPUT_KEY_BY_FIELD` do `app.js`, única de propósito.
 - **Cache (`?v=N`)**: ao alterar qualquer `.js` ou `.css` da calculadora, subir o número da versão no `index.html` **e** em todos os `import` que apontam para o arquivo. Conferir o número atual antes:
   ```bash
   grep -n "?v=" preco-lucro/calculadora/index.html preco-lucro/calculadora/sync.js
