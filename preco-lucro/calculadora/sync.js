@@ -20,7 +20,7 @@ import {
   getDocs,
 } from 'https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js';
 import { firebaseConfig } from './firebase-config.js?v=2';
-import { persistSaved, renderSavedList } from './app.js?v=7';
+import { persistSaved, renderSavedList } from './app.js?v=8';
 
 // Reaproveita o app do Firebase já iniciado por auth.js, em vez de criar outro.
 const app = getApps().length ? getApp() : initializeApp(firebaseConfig);
@@ -45,7 +45,9 @@ function startListening(uid) {
   unsubscribe = onSnapshot(
     q,
     (snapshot) => {
-      const list = snapshot.docs.map(cloudDocToLocal).sort((a, b) => b.lastModified - a.lastModified);
+      // Sem ordenação aqui: quem ordena é o renderSavedList, senão ficam duas
+      // ordens competindo e só a lista vinda da nuvem obedeceria a esta.
+      const list = snapshot.docs.map(cloudDocToLocal);
       persistSaved(list);
       renderSavedList();
     },

@@ -8,6 +8,7 @@
  */
 
 import { calcular, brl, pct } from './calc.js?v=2';
+import { sortPricesByName } from './price-sort.js?v=1';
 import { copyText } from './clipboard.js?v=1';
 import { showToast } from './toast.js?v=1';
 
@@ -349,7 +350,9 @@ export function persistSaved(list) {
 
 // Renderiza a lista nos dois lugares: coluna "Preços Salvos" e popup "Carregar"
 export function renderSavedList() {
-  const list = loadSaved();
+  // A ordem é decidida aqui, nunca no array guardado: aquele array é da
+  // sincronia com a nuvem e chega na ordem que o Firestore devolver.
+  const list = sortPricesByName(loadSaved());
   const html =
     list.length === 0
       ? '<p class="saved-empty">Nenhum preço salvo ainda.</p>'
