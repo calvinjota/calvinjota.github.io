@@ -57,11 +57,12 @@ tests/                          testes do cálculo (Vitest)
 - **`calc.js` precisa calcular exatamente igual ao app.** Os dois projetos rodam a mesma bateria de testes (`tests/calc.scenarios.js` é espelhado entre eles). Ao editar os casos em um, copiar para o outro.
 - **`clipboard.js`, `toast.js` e `price-sort.js` também são espelhados do app**, byte a byte. Ao mexer em um dos três, copiar para o outro projeto.
 - **Os ids da calculadora estão em inglês desde a fatia 4.2** (16/08), e o id do campo na tela não é o nome do dado guardado: `commissionNum` é o campo, `commissionPct` é o dado, e a ponte entre os dois é a tabela `INPUT_KEY_BY_FIELD` do `app.js`, única de propósito.
-- **Cache (`?v=N`)**: ao alterar qualquer `.js` ou `.css` da calculadora, subir o número da versão no `index.html` **e** em todos os `import` que apontam para o arquivo. Conferir o número atual antes:
+- **O preço salvo tem o mesmo formato do app desde a fatia 4.3** (16/08): `inputs` com as 8 chaves do `calc.js` e `display` com `adjustedProductCost`, `price`, `marginAmount` e `operatingMarginPct`. Mexeu no formato aqui, mexa no app junto, senão os dois divergem no Firestore.
+- **Cache (`?v=N`)**: ao alterar qualquer `.js` ou `.css` da calculadora, subir o número da versão no `index.html` **e** em todo `import` que aponta para o arquivo, na mesma edição. Conferir o número atual antes, varrendo a pasta inteira e não só o `index.html`:
   ```bash
-  grep -n "?v=" preco-lucro/calculadora/index.html preco-lucro/calculadora/sync.js
+  grep -rn "?v=" preco-lucro/calculadora/
   ```
-  Sem isso, o navegador continua servindo a versão antiga (já causou um bug real).
+  **Esquecer um `import` é pior do que esquecer o `index.html`**: com dois números diferentes para o mesmo arquivo o navegador o trata como dois módulos e o executa duas vezes, o que registra dois jogos de listener e faz cada clique acontecer em dobro. Em 16/08 isso apagou um preço duas vezes e apareceu como `Missing or insufficient permissions` do Firestore, um erro que parece de segurança e é de cache. Arquivo cujo conteúdo mudou sobe o próprio número também, senão o navegador serve a versão velha dele.
 - **As chaves do Firebase em `firebase-config.js` são públicas por design.** Isso está correto, não é falha de segurança. A proteção real vem das regras do Firestore (cada usuário só acessa os próprios preços).
 - **O paywall tem proteção contra falha**: qualquer erro mantém a calculadora **trancada**, nunca liberada. Preservar esse comportamento.
 

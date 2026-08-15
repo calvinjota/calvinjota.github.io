@@ -385,10 +385,10 @@ export function renderSavedList() {
         </button>
       </div>
       <div class="saved-item-info">
-        <span>Custo final: <strong>${brl(p.display.custoFinal)}</strong></span>
-        <span>Venda: <strong>${brl(p.display.valorVenda)}</strong></span>
-        <span>Margem: <strong>${pct(p.display.margem ?? p.display.margemPct)}</strong></span>
-        <span>Lucro: <strong>${brl(p.display.lucro)}</strong></span>
+        <span>Custo final: <strong>${brl(p.display.adjustedProductCost)}</strong></span>
+        <span>Venda: <strong>${brl(p.display.price)}</strong></span>
+        <span>Margem: <strong>${pct(p.display.operatingMarginPct)}</strong></span>
+        <span>Lucro: <strong>${brl(p.display.marginAmount)}</strong></span>
       </div>
     </div>`
           )
@@ -486,10 +486,10 @@ $('saveConfirm').addEventListener('click', () => {
     name,
     inputs,
     display: {
-      custoFinal: lastCalc.adjustedProductCost,
-      valorVenda: lastCalc.price,
-      margem: lastCalc.operatingMarginPct,
-      lucro: lastCalc.marginAmount,
+      adjustedProductCost: lastCalc.adjustedProductCost,
+      price: lastCalc.price,
+      operatingMarginPct: lastCalc.operatingMarginPct,
+      marginAmount: lastCalc.marginAmount,
     },
     lastModified: Date.now(),
   };
@@ -523,10 +523,10 @@ $('btnOverwrite').addEventListener('click', () => {
   }
   list[idx].inputs = readInputs();
   list[idx].display = {
-    custoFinal: lastCalc.adjustedProductCost,
-    valorVenda: lastCalc.price,
-    margem: lastCalc.operatingMarginPct,
-    lucro: lastCalc.marginAmount,
+    adjustedProductCost: lastCalc.adjustedProductCost,
+    price: lastCalc.price,
+    operatingMarginPct: lastCalc.operatingMarginPct,
+    marginAmount: lastCalc.marginAmount,
   };
   list[idx].lastModified = Date.now();
   persistSaved(list);
