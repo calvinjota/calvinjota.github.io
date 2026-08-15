@@ -28,7 +28,7 @@
        ao publicar (senão ele reaproveita o CSS/JS antigo do cache). Subir
        esse número em TODOS os arquivos locais (aqui e nos imports entre os
        módulos) sempre que qualquer um deles mudar. -->
-  <link rel="stylesheet" href="calculadora.css?v=4">
+  <link rel="stylesheet" href="calculadora.css?v=5">
 </head>
 <body>
 
@@ -281,7 +281,7 @@
           </div>
           <div class="preco-body">
             <div class="preco-main">
-              <div class="preco-big"><span class="currency">R$</span><span id="hero-preco">0,00</span></div>
+              <div class="preco-big"><span class="currency">R$</span><span id="hero-preco">0,00</span><button type="button" class="copy-price-btn" id="copyPriceBtn" aria-label="Copiar preço" title="Copiar preço"><svg class="copy-price-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><svg class="copy-price-done" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></button></div>
               <p class="voce-recebe">você recebe <strong id="hero-voce-recebe">R$ 0,00</strong></p>
             </div>
             <div class="lucro-box">
@@ -420,9 +420,9 @@
     </div>
   </div>
 
-  <script type="module" src="app.js?v=6"></script>
+  <script type="module" src="app.js?v=7"></script>
   <script type="module" src="auth.js?v=2"></script>
-  <script type="module" src="sync.js?v=4"></script>
+  <script type="module" src="sync.js?v=5"></script>
   <script type="module" src="paywall.js?v=2"></script>
 </body>
 </html>

@@ -8,6 +8,8 @@
  */
 
 import { calcular, brl, pct } from './calc.js?v=2';
+import { copyText } from './clipboard.js?v=1';
+import { showToast } from './toast.js?v=1';
 
 const $ = (id) => document.getElementById(id);
 
@@ -130,7 +132,10 @@ function render() {
 
 // Enter pula pro próximo campo: quem só usa teclado consegue preencher tudo
 // apertando Enter em sequência, sem precisar clicar em nada. Ordem = ordem
-// visual da tela (um ciclo só, diferente do app, que pula o grupo ICMS/ST/IPI).
+// visual da tela (aqui os impostos estão sempre à vista, diferente do app, onde
+// o painel dobrável faz a ordem depender de estar aberto ou fechado).
+// A margem termina no botão de copiar: o preço é um <span> e não recebe foco.
+const COPY_BUTTON_ID = 'copyPriceBtn';
 const ENTER_NEXT = {
   custoProduto: 'icmsNum',
   icmsNum: 'icmsStNum',
@@ -139,22 +144,80 @@ const ENTER_NEXT = {
   taxaFixa: 'comissaoNum',
   comissaoNum: 'impostoNum',
   impostoNum: 'margemNum',
-  margemNum: 'custoProduto',
+  margemNum: COPY_BUTTON_ID,
 };
+function focusField(id) {
+  const el = $(id);
+  if (!el) return;
+  el.focus();
+  // Um botão não tem o que selecionar, por isso a pergunta em vez da suposição.
+  if (el.select) el.select();
+}
 function goToNextField(e, nextId) {
   if (e.key !== 'Enter') return;
   e.preventDefault();
-  const el = nextId ? $(nextId) : null;
-  if (el) {
-    el.focus();
-    el.select();
-  } else {
-    e.target.blur();
-  }
+  focusField(nextId);
 }
 document.querySelectorAll('input[id]').forEach((el) => {
   const nextId = ENTER_NEXT[el.id];
   if (nextId) el.addEventListener('keydown', (e) => goToNextField(e, nextId));
+});
+
+/* ===================== Copiar o preço ===================== */
+
+// O Enter no botão faz duas coisas em sequência: a primeira copia, a seguinte
+// volta pro custo e recomeça o formulário. Como é a mesma tecla no mesmo botão,
+// o retorno visual é o que avisa o usuário de que a regra mudou.
+let priceCopiedSinceFocus = false;
+let copyFeedbackTimer = null;
+const COPY_FEEDBACK_MS = 2000;
+
+// Formato que campo de preço de marketplace aceita colado direto: vírgula
+// decimal, sem "R$" e sem separador de milhar.
+function priceForClipboard() {
+  const price = lastCalc ? lastCalc.preco : 0;
+  return price.toLocaleString('pt-BR', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+    useGrouping: false,
+  });
+}
+
+function showCopyFeedback() {
+  const button = $(COPY_BUTTON_ID);
+  button.classList.add('copied');
+  if (copyFeedbackTimer) clearTimeout(copyFeedbackTimer);
+  copyFeedbackTimer = setTimeout(() => {
+    button.classList.remove('copied');
+    copyFeedbackTimer = null;
+  }, COPY_FEEDBACK_MS);
+}
+
+async function copyPrice() {
+  priceCopiedSinceFocus = true;
+  const copied = await copyText(priceForClipboard());
+  if (copied) {
+    showCopyFeedback();
+    showToast('Copiado para a área de transferência');
+  } else {
+    showToast('Não foi possível copiar o preço');
+  }
+}
+
+const copyPriceButton = $(COPY_BUTTON_ID);
+copyPriceButton.addEventListener('click', copyPrice);
+copyPriceButton.addEventListener('focus', () => {
+  priceCopiedSinceFocus = false;
+});
+copyPriceButton.addEventListener('keydown', (e) => {
+  if (e.key !== 'Enter') return;
+  // Sem isto o navegador ainda transformaria o Enter num clique, copiando duas vezes.
+  e.preventDefault();
+  if (priceCopiedSinceFocus) {
+    focusField('custoProduto');
+    return;
+  }
+  copyPrice();
 });
 
 for (const key of PCT_KEYS) {
