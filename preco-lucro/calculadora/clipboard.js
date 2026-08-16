@@ -58,8 +58,8 @@ function copyThroughHiddenField(text) {
     field.select();
     field.setSelectionRange(0, field.value.length);
     copied = document.execCommand('copy');
-  } catch (_) {
-    copied = false;
+  } catch {
+    // A WebView that denies the copy leaves the initial false untouched.
   }
 
   field.remove();

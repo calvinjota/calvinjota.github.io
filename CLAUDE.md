@@ -9,7 +9,7 @@
 1. **Leia `INSTRUCOES-SITE.md`** — são as regras de trabalho do Calvin, não são opcionais.
 2. **Leia o diário de bordo principal**: `C:\Dev\precificador-marketplace\preco-e-lucro\CLAUDE.md`.
    O site e o app são reorganizados juntos, e o histórico completo do trabalho fica lá.
-   **As pastas foram renomeadas em 19/08**, depois do commit da fatia 4.4c: `Precificador Markeplace` virou `precificador-marketplace`, `android-project` virou `preco-e-lucro` e `C:\Dev\Site` virou `C:\Dev\site`. Achou o caminho velho escrito em algum lugar, corrija.
+   **As pastas foram renomeadas em 16/08**, depois do commit da fatia 4.4c: `Precificador Markeplace` virou `precificador-marketplace`, `android-project` virou `preco-e-lucro` e `C:\Dev\Site` virou `C:\Dev\site`. Achou o caminho velho escrito em algum lugar, corrija.
 3. **Confira o estado real do código** antes de afirmar qualquer coisa.
 
 ### Regras que mais pesam aqui
@@ -64,8 +64,8 @@ tests/                          testes do cálculo (Vitest)
   grep -rn "?v=" preco-lucro/calculadora/
   ```
   **Esquecer um `import` é pior do que esquecer o `index.html`**: com dois números diferentes para o mesmo arquivo o navegador o trata como dois módulos e o executa duas vezes, o que registra dois jogos de listener e faz cada clique acontecer em dobro. Em 16/08 isso apagou um preço duas vezes e apareceu como `Missing or insufficient permissions` do Firestore, um erro que parece de segurança e é de cache. Arquivo cujo conteúdo mudou sobe o próprio número também, senão o navegador serve a versão velha dele.
-- **O JS, o HTML e o CSS da calculadora estão em inglês desde a fatia 4.4c** (19/08), comentários e nomes de classe incluídos: código novo nasce em inglês, e o único português que resta no `calculadora.css` é "Preço & Lucro" no cabeçalho, que é o nome da marca.
-- **As classes do CSS do site não são espelhadas com as do app** (19/08), ao contrário de `calc.js`, `clipboard.js`, `toast.js` e `price-sort.js`: as duas folhas são arquivos independentes, então `card-breakdown` aqui e `card-sale-breakdown` lá é esperado, cada um com o vocabulário do próprio projeto.
+- **O JS, o HTML e o CSS da calculadora estão em inglês desde a fatia 4.4c** (15/08), comentários e nomes de classe incluídos: código novo nasce em inglês, e o único português que resta no `calculadora.css` é "Preço & Lucro" no cabeçalho, que é o nome da marca.
+- **As classes do CSS do site não são espelhadas com as do app** (15/08), ao contrário de `calc.js`, `clipboard.js`, `toast.js` e `price-sort.js`: as duas folhas são arquivos independentes, então `card-breakdown` aqui e `card-sale-breakdown` lá é esperado, cada um com o vocabulário do próprio projeto.
 - **As chaves do Firebase em `firebase-config.js` são públicas por design.** Isso está correto, não é falha de segurança. A proteção real vem das regras do Firestore (cada usuário só acessa os próprios preços).
 - **O paywall tem proteção contra falha**: qualquer erro mantém a calculadora **trancada**, nunca liberada. Preservar esse comportamento.
 

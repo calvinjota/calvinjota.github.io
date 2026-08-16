@@ -8,7 +8,7 @@
 
 import { calculate, brl, pct } from './calc.js?v=3';
 import { sortPricesByName } from './price-sort.js?v=1';
-import { copyText } from './clipboard.js?v=1';
+import { copyText } from './clipboard.js?v=2';
 import { showToast } from './toast.js?v=1';
 
 const $ = (id) => document.getElementById(id);

@@ -8,7 +8,8 @@
   <meta name="robots" content="noindex">
   <link rel="icon" type="image/svg+xml" href="../../assets/favicon.svg">
   <script>
-    // Aplica o tema salvo antes da página desenhar (evita "piscada" de tema errado)
+    // Applies the saved theme before the page paints, which is what keeps the
+    // wrong theme from flashing for an instant on load.
     (function () {
       try {
         var t = localStorage.getItem('theme');
