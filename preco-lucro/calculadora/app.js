@@ -655,7 +655,9 @@ themeSwitch.addEventListener('change', () => {
   document.documentElement.setAttribute('data-theme', theme);
   try {
     localStorage.setItem('theme', theme);
-  } catch {}
+  } catch {
+    // Private browsing can deny storage; the theme still applies for this visit.
+  }
 });
 
 /* ===================== Hamburger menu (narrow screens) ===================== */

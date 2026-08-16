@@ -68,6 +68,9 @@ tests/                          testes do cálculo (Vitest)
 - **As classes do CSS do site não são espelhadas com as do app** (15/08), ao contrário de `calc.js`, `clipboard.js`, `toast.js` e `price-sort.js`: as duas folhas são arquivos independentes, então `card-breakdown` aqui e `card-sale-breakdown` lá é esperado, cada um com o vocabulário do próprio projeto.
 - **As chaves do Firebase em `firebase-config.js` são públicas por design.** Isso está correto, não é falha de segurança. A proteção real vem das regras do Firestore (cada usuário só acessa os próprios preços).
 - **O paywall tem proteção contra falha**: qualquer erro mantém a calculadora **trancada**, nunca liberada. Preservar esse comportamento.
+- **O lint é `npm run lint` e roda junto com o `npm test`** (desde a fatia 5.2, 16/08): o `eslint.config.mjs` tem 2 blocos (calculadora com globais de browser, testes com globais de Node) e usa o `eslint-plugin-import-x`, que abre o módulo vizinho e confere se o nome importado existe mesmo lá, coisa que o ESLint de fábrica não faz e nenhum teste daqui pega.
+- **O resolver de cache-busting do `eslint.config.mjs` não é enfeite**: sem ele o `import-x/no-unresolved` acusaria erro falso em todo import, porque `./calc.js?v=3` não é caminho no disco e o Firebase vem por URL. Ele tira a query, resolve o arquivo real e responde "externo" para `https:`. Não troque isso por desligar a regra: é ela que acusa arquivo movido ou renomeado, o risco número 1 da reorganização de pastas.
+- **`catch` vazio se comenta, não se silencia** (`app.js`, tema x `localStorage`): a regra `no-empty` ignora bloco que tem comentário dentro, então o porquê fica escrito e o lint fica limpo sem exceção na config, igual ao `clipboard.js` do app.
 
 ---
 

@@ -20,7 +20,7 @@ import {
   getDocs,
 } from 'https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js';
 import { firebaseConfig } from './firebase-config.js?v=3';
-import { persistSaved, renderSavedList } from './app.js?v=13';
+import { persistSaved, renderSavedList } from './app.js?v=14';
 
 // Reuses the Firebase app already started by auth.js instead of creating another.
 const app = getApps().length ? getApp() : initializeApp(firebaseConfig);
