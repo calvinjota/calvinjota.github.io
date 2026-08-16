@@ -79,7 +79,10 @@ export function calculate(inputs) {
     icmsStPctOfPrice: pctOfPrice(icmsStAmount),
     ipiPctOfPrice: pctOfPrice(ipiAmount),
     finalCostPctOfPrice:
-      pctOfPrice(productCost) + pctOfPrice(icmsAmount) + pctOfPrice(icmsStAmount) + pctOfPrice(ipiAmount),
+      pctOfPrice(productCost) +
+      pctOfPrice(icmsAmount) +
+      pctOfPrice(icmsStAmount) +
+      pctOfPrice(ipiAmount),
   };
 }
 
@@ -90,10 +93,21 @@ function toNumber(v) {
 
 /** Formats a number as Brazilian currency: R$ 1.234,56 */
 export function brl(v) {
-  return 'R$ ' + (isFinite(v) ? v : 0).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  return (
+    'R$ ' +
+    (isFinite(v) ? v : 0).toLocaleString('pt-BR', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    })
+  );
 }
 
 /** Formats a number as a Brazilian percentage: 12,34% */
 export function pct(v) {
-  return (isFinite(v) ? v : 0).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + '%';
+  return (
+    (isFinite(v) ? v : 0).toLocaleString('pt-BR', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    }) + '%'
+  );
 }

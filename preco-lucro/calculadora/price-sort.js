@@ -28,6 +28,6 @@ const NAME_COLLATOR = new Intl.Collator('pt-BR', { sensitivity: 'base' });
  */
 export function sortPricesByName(prices) {
   return [...prices].sort((first, second) =>
-    NAME_COLLATOR.compare(first.name || '', second.name || '')
+    NAME_COLLATOR.compare(first.name || '', second.name || ''),
   );
 }

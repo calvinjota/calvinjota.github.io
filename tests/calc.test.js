@@ -71,7 +71,7 @@ describe('calculate: internal consistency', () => {
 
     expect(r.adjustedProductCost).toBeCloseTo(
       r.productCost + r.icmsAmount + r.icmsStAmount + r.ipiAmount,
-      CENT_PRECISION
+      CENT_PRECISION,
     );
   });
 

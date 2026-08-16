@@ -184,7 +184,13 @@ export const scenarios = [
 export const inputParsingScenarios = [
   {
     name: 'comma decimal separator is accepted',
-    inputs: { productCost: '100', fixedFee: '26', commissionPct: '11,5', salesTaxPct: '8,47', marginPct: '10' },
+    inputs: {
+      productCost: '100',
+      fixedFee: '26',
+      commissionPct: '11,5',
+      salesTaxPct: '8,47',
+      marginPct: '10',
+    },
     expected: { price: 179.9229 },
   },
   {

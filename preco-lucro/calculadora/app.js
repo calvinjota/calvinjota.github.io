@@ -6,8 +6,8 @@
  * fills it from Firestore and listens to the events dispatched here.
  */
 
-import { calculate, brl, pct } from './calc.js?v=3';
-import { sortPricesByName } from './price-sort.js?v=1';
+import { calculate, brl, pct } from './calc.js?v=4';
+import { sortPricesByName } from './price-sort.js?v=2';
 import { copyText } from './clipboard.js?v=2';
 import { showToast } from './toast.js?v=1';
 
@@ -391,7 +391,7 @@ export function renderSavedList() {
         <span>Margem: <strong>${pct(p.display.operatingMarginPct)}</strong></span>
         <span>Lucro: <strong>${brl(p.display.marginAmount)}</strong></span>
       </div>
-    </div>`
+    </div>`,
           )
           .join('');
   $('savedList').innerHTML = html;

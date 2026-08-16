@@ -6,7 +6,11 @@
  * or deleting on the site writes straight to the cloud.
  */
 
-import { getApps, getApp, initializeApp } from 'https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js';
+import {
+  getApps,
+  getApp,
+  initializeApp,
+} from 'https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js';
 import {
   getFirestore,
   collection,
@@ -20,7 +24,7 @@ import {
   getDocs,
 } from 'https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js';
 import { firebaseConfig } from './firebase-config.js?v=3';
-import { persistSaved, renderSavedList } from './app.js?v=14';
+import { persistSaved, renderSavedList } from './app.js?v=15';
 
 // Reuses the Firebase app already started by auth.js instead of creating another.
 const app = getApps().length ? getApp() : initializeApp(firebaseConfig);
@@ -51,7 +55,7 @@ function startListening(uid) {
       persistSaved(list);
       renderSavedList();
     },
-    (e) => console.error('Erro ao sincronizar preços com a nuvem:', e)
+    (e) => console.error('Erro ao sincronizar preços com a nuvem:', e),
   );
 }
 
@@ -100,7 +104,11 @@ document.addEventListener('price-updated', async (e) => {
   if (!uid) return;
   const price = e.detail;
   try {
-    const q = query(collection(db, 'userPrices'), where('userId', '==', uid), where('id', '==', price.id));
+    const q = query(
+      collection(db, 'userPrices'),
+      where('userId', '==', uid),
+      where('id', '==', price.id),
+    );
     const snap = await getDocs(q);
     await Promise.all(
       snap.docs.map((d) =>
@@ -109,8 +117,8 @@ document.addEventListener('price-updated', async (e) => {
           inputs: price.inputs,
           display: price.display,
           updatedAt: new Date().toISOString(),
-        })
-      )
+        }),
+      ),
     );
   } catch (err) {
     console.error('Erro ao atualizar preço na nuvem:', err);
@@ -122,7 +130,11 @@ document.addEventListener('price-deleted', async (e) => {
   if (!uid) return;
   const { id } = e.detail;
   try {
-    const q = query(collection(db, 'userPrices'), where('userId', '==', uid), where('id', '==', id));
+    const q = query(
+      collection(db, 'userPrices'),
+      where('userId', '==', uid),
+      where('id', '==', id),
+    );
     const snap = await getDocs(q);
     await Promise.all(snap.docs.map((d) => deleteDoc(doc(db, 'userPrices', d.id))));
   } catch (err) {

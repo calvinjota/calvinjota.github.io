@@ -57,12 +57,16 @@ async function checkSubscription(user) {
       $('planStatus').textContent = 'Pro ativo ✓';
     } else {
       $('planStatus').textContent = 'Sem assinatura ativa.';
-      showGate('Esta calculadora é exclusiva para assinantes Pro do Preço & Lucro.', { showAppLink: true });
+      showGate('Esta calculadora é exclusiva para assinantes Pro do Preço & Lucro.', {
+        showAppLink: true,
+      });
     }
   } catch (e) {
     console.error('Erro ao verificar assinatura:', e);
     $('planStatus').textContent = 'Não foi possível verificar.';
-    showGate('Não foi possível verificar sua assinatura agora. Tente novamente.', { showRetry: true });
+    showGate('Não foi possível verificar sua assinatura agora. Tente novamente.', {
+      showRetry: true,
+    });
   }
 }
 
