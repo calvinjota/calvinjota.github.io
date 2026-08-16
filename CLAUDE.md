@@ -36,7 +36,7 @@ preco-lucro/
   deletar-conta.html
   calculadora/                  a calculadora web (exclusiva para assinantes Pro)
     index.html
-    calculadora.css
+    calculator.css
     calc.js                     cálculo puro, espelhado do app
     clipboard.js                copiar texto, espelhado do app
     toast.js                    aviso flutuante, espelhado do app
@@ -73,6 +73,11 @@ tests/                          testes do cálculo (Vitest)
 - **O Prettier roda com `npm run format` e a configuração é idêntica à do app** (desde a fatia 5.3, 16/08): `printWidth` 100, aspas simples no JS e duplas no CSS, e o `.prettierrc.json` precisa continuar **idêntico byte a byte** ao do outro repositório, senão os arquivos espelhados divergem em silêncio na primeira formatação. HTML e Markdown ficam de fora, o motivo está escrito no `.prettierignore`.
 - **Arquivo reformatado é arquivo alterado**: rodou o Prettier, suba o `?v=N` de tudo que ele tocou e dos `import` que apontam pra lá, igual a qualquer outra mudança.
 - **O aviso de `Cross-Origin-Opener-Policy` no login está aceito desde 16/08 e não se reabre**: o teste A/B em servidor local provou que mandar `same-origin-allow-popups` na resposta **não muda nada**, porque quem dispara o relatório é a página que o popup abre (`accounts.google.com/signin/v2/identifier` responde `Cross-Origin-Opener-Policy-Report-Only: same-origin`). **Report-Only é modo relatório**, nada é bloqueado, o login entra normalmente e o app Android nem passa por aqui (lá é plugin nativo). Não troque o `signInWithPopup` do `auth.js:35` por `signInWithRedirect` para calar o aviso: o `authDomain` é `preco-e-lucro.firebaseapp.com`, outro site, e o redirect é justamente o fluxo que quebra com storage particionado. Histórico completo no `preco-e-lucro/HISTORICO.md`, 16/08 19h30.
+- **O próximo trabalho aqui é a Etapa 9, dividir o `app.js` em módulos** (decidido em 16/08 20h, **antes** de publicar o app): 680 linhas já seccionadas em 13 blocos por comentário que batem com os módulos do app, **zero handler inline e zero global** (41 `addEventListener`, 45 ids), então falta só a divisão. Fatias, de baixo pra cima: 9.0 rede de teste, 9.1 `format.js` e `field-order.js`, 9.2 `theme.js` e `menu.js`, 9.3 `legal.js` e `overlays.js`, 9.4 `calculator.js`, 9.5 `saved-prices.js`, 9.6 `app.js` vira arranque. O plano completo está no `preco-e-lucro/HISTORICO.md`, 16/08 20h.
+- **A fatia 9.0 não se pula**: o site não tem o equivalente ao `handlers.test.js` do app e os 28 testes daqui não cobrem nenhum botão, então dividir sem essa rede é trabalhar no escuro. Agrava que **tudo que entra aqui vai pro ar**, sem build nem aparelho no caminho.
+- **O ciclo que a Etapa 9 pode criar**: o `sync.js` importa `persistSaved` e `renderSavedList` do `app.js`, e quando as duas mudarem para `saved-prices.js` a conversa de volta tem que ser por callback, nunca import de volta.
+- **As URLs públicas não se tocam** (decisão de 16/08): são quatro endereços cadastrados no Google (Política de Privacidade, os dois campos de eliminação no questionário de Segurança dos dados, e o Website do app), e a única forma segura de mudar exigiria deixar redirect no endereço antigo para sempre, o que deixaria a estrutura mais bagunçada do que está.
+- **O botão "Assinar pelo app" do overlay funciona desde 16/08**: o `APP_STORE_URL` do `paywall.js` tem o mesmo link do botão do menu lateral (`preco-lucro/calculadora/index.html:84`). São duas cópias de propósito, uma é HTML estático e a outra só existe quando o gate decide mostrar. Quem vê a do overlay é usuário logado sem Pro.
 - **`catch` vazio se comenta, não se silencia** (`app.js`, tema x `localStorage`): a regra `no-empty` ignora bloco que tem comentário dentro, então o porquê fica escrito e o lint fica limpo sem exceção na config, igual ao `clipboard.js` do app.
 
 ---

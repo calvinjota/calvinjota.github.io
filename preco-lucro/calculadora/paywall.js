@@ -11,8 +11,9 @@
 
 const WORKER_URL = 'https://api.calvinjota.com.br/check-pro';
 
-// TODO: fill in with the Play Store link now that the app is live in production.
-const APP_STORE_URL = '';
+// Same target as the store button in the side menu, kept here because this one
+// is only rendered when the gate decides to show it.
+const APP_STORE_URL = 'https://play.google.com/store/apps/details?id=com.calvinjota.precoelucro';
 
 const $ = (id) => document.getElementById(id);
 
@@ -27,13 +28,7 @@ function showGate(message, { showAppLink = false, showRetry = false } = {}) {
   $('gateAppLink').hidden = !showAppLink;
   $('gateRetry').hidden = !showRetry;
   if (showAppLink) {
-    if (APP_STORE_URL) {
-      $('gateAppLink').href = APP_STORE_URL;
-    } else {
-      // Link not available yet: show the button in a disabled state.
-      $('gateAppLink').removeAttribute('href');
-      $('gateAppLink').setAttribute('aria-disabled', 'true');
-    }
+    $('gateAppLink').href = APP_STORE_URL;
   }
 }
 
