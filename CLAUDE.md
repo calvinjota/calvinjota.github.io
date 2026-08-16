@@ -63,6 +63,7 @@ tests/                          testes do cálculo (Vitest)
   grep -rn "?v=" preco-lucro/calculadora/
   ```
   **Esquecer um `import` é pior do que esquecer o `index.html`**: com dois números diferentes para o mesmo arquivo o navegador o trata como dois módulos e o executa duas vezes, o que registra dois jogos de listener e faz cada clique acontecer em dobro. Em 16/08 isso apagou um preço duas vezes e apareceu como `Missing or insufficient permissions` do Firestore, um erro que parece de segurança e é de cache. Arquivo cujo conteúdo mudou sobe o próprio número também, senão o navegador serve a versão velha dele.
+- **O JS e o HTML da calculadora estão em inglês desde a fatia 4.4b** (18/08), comentários incluídos: comentário novo nasce em inglês, e o `calculadora.css` é o único que ainda tem português, pendente da 4.4c.
 - **As chaves do Firebase em `firebase-config.js` são públicas por design.** Isso está correto, não é falha de segurança. A proteção real vem das regras do Firestore (cada usuário só acessa os próprios preços).
 - **O paywall tem proteção contra falha**: qualquer erro mantém a calculadora **trancada**, nunca liberada. Preservar esse comportamento.
 

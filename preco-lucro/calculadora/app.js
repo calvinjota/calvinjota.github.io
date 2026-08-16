@@ -1,10 +1,9 @@
 /*
- * app.js: interface da calculadora web: liga campos, tema, preços salvos.
- * A matemática vive em calc.js (módulo separado, idêntico ao app Android).
+ * app.js: the web calculator's interface: fields, theme and saved prices.
+ * The math lives in calc.js (separate module, identical to the Android app).
  *
- * Fase atual: página aberta, preços salvos apenas neste navegador (localStorage).
- * Fases seguintes: login Google (Firebase) + checagem de assinatura (Cloudflare
- * Worker + RevenueCat) + sincronização dos preços com o Firestore do app.
+ * localStorage is the local cache of the saved prices, not their home: sync.js
+ * fills it from Firestore and listens to the events dispatched here.
  */
 
 import { calculate, brl, pct } from './calc.js?v=3';
@@ -14,9 +13,9 @@ import { showToast } from './toast.js?v=1';
 
 const $ = (id) => document.getElementById(id);
 
-/* ===================== Utilidades ===================== */
+/* ===================== Helpers ===================== */
 
-// Proteção contra injeção de HTML em nomes digitados pelo usuário (XSS)
+// Guards against HTML injection through user-typed names (XSS)
 function escapeHtml(s) {
   return String(s)
     .replaceAll('&', '&amp;')
@@ -31,22 +30,23 @@ function parseNum(raw) {
   return isFinite(v) ? v : 0;
 }
 
-// Preço salvo antes da tradução dos nomes (etapa 4.1) não tem os campos novos,
-// e sem esta guarda o undefined derrubava o carregamento inteiro em vez de
-// apenas zerar os campos, que é o combinado.
+// Prices saved before the field names were translated (step 4.1) lack the new
+// keys, and without this guard the resulting undefined broke the whole load
+// instead of just zeroing the fields, which is the agreed behaviour.
 function fmtNum(v) {
   const n = typeof v === 'number' && isFinite(v) ? v : 0;
   return n.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 }
 
-/* ===================== Leitura dos campos ===================== */
+/* ===================== Reading the fields ===================== */
 
 const PCT_KEYS = ['icms', 'icmsSt', 'ipi', 'commission', 'salesTax', 'margin'];
 const MONEY_MAX = 1000000;
 
-// O id do campo na tela e o nome do dado guardado são coisas diferentes: o campo
-// se chama "commission" no HTML e o dado se chama commissionPct, que é o nome que
-// o cálculo usa. Esta tabela é a única ponte entre os dois.
+// The on-screen field and the stored value do not share a name: the field is
+// "commissionNum" in the HTML (PCT_KEYS holds the "commission" prefix) while the
+// stored key is commissionPct, the name calc.js expects. This table is the only
+// bridge between the two.
 const INPUT_KEY_BY_FIELD = {
   icms: 'icmsPct',
   icmsSt: 'icmsStPct',
@@ -69,7 +69,7 @@ function readInputs() {
   };
 }
 
-/* ===================== Renderização ===================== */
+/* ===================== Rendering ===================== */
 
 let lastCalc = null;
 
@@ -77,7 +77,7 @@ function render() {
   const r = calculate(readInputs());
   lastCalc = r;
 
-  // labels dos percentuais
+  // percentage labels
   $('lbl-commission').textContent = pct(r.commissionPct);
   $('lbl-salesTax').textContent = pct(r.salesTaxPct);
   $('lbl-margin').textContent = pct(r.marginPct);
@@ -85,14 +85,14 @@ function render() {
   $('lbl-icmsSt').textContent = pct(r.icmsStPct);
   $('lbl-ipi').textContent = pct(r.ipiPct);
 
-  // card principal
+  // main card
   $('hero-price').textContent = fmtNum(r.price);
   $('hero-markup').textContent = fmtNum(r.markup) + 'x';
   $('hero-revenue').textContent = brl(r.revenueAfterFees);
   $('stat-profit').textContent = brl(r.marginAmount);
   $('stat-margin-pct').textContent = pct(r.operatingMarginPct);
 
-  // tabela de detalhamento
+  // breakdown table
   $('tbl-price').textContent = brl(r.price);
   $('tbl-commission-pct').textContent = pct(r.commissionPct);
   $('tbl-commission-val').textContent = brl(r.commissionAmount);
@@ -115,7 +115,7 @@ function render() {
   $('tbl-profit-pct').textContent = pct(r.operatingMarginPct);
   $('tbl-profit-val').textContent = brl(r.marginAmount);
 
-  // barra de composição + legenda
+  // composition bar and legend
   const bar = $('compBar');
   bar.innerHTML = '';
   const segments = [
@@ -147,13 +147,13 @@ function render() {
     <span><i class="dot dot-teal"></i>Lucro Operacional</span>`;
 }
 
-/* ===================== Sincronização slider ↔ número ===================== */
+/* ===================== Slider and number field sync ===================== */
 
-// Enter pula pro próximo campo: quem só usa teclado consegue preencher tudo
-// apertando Enter em sequência, sem precisar clicar em nada. Ordem = ordem
-// visual da tela (aqui os impostos estão sempre à vista, diferente do app, onde
-// o painel dobrável faz a ordem depender de estar aberto ou fechado).
-// A margem termina no botão de copiar: o preço é um <span> e não recebe foco.
+// Enter jumps to the next field, so a keyboard-only user can fill the whole form
+// by pressing Enter over and over without clicking anything. The order follows
+// the visual order of the screen (taxes are always visible here, unlike the app,
+// where the collapsible panel makes the order depend on being open or closed).
+// Margin ends on the copy button: the price is a <span> and takes no focus.
 const COPY_BUTTON_ID = 'copyPriceBtn';
 const ENTER_NEXT = {
   productCost: 'icmsNum',
@@ -169,7 +169,7 @@ function focusField(id) {
   const el = $(id);
   if (!el) return;
   el.focus();
-  // Um botão não tem o que selecionar, por isso a pergunta em vez da suposição.
+  // A button has nothing to select, hence the check instead of a blind call.
   if (el.select) el.select();
 }
 function goToNextField(e, nextId) {
@@ -182,17 +182,18 @@ document.querySelectorAll('input[id]').forEach((el) => {
   if (nextId) el.addEventListener('keydown', (e) => goToNextField(e, nextId));
 });
 
-/* ===================== Copiar o preço ===================== */
+/* ===================== Copying the price ===================== */
 
-// O Enter no botão faz duas coisas em sequência: a primeira copia, a seguinte
-// volta pro custo e recomeça o formulário. Como é a mesma tecla no mesmo botão,
-// o retorno visual é o que avisa o usuário de que a regra mudou.
+// Enter on the button does two things in sequence: the first press copies, the
+// next one goes back to the cost field and restarts the form. Since it is the
+// same key on the same button, the visual feedback is what tells the user the
+// rule has changed.
 let priceCopiedSinceFocus = false;
 let copyFeedbackTimer = null;
 const COPY_FEEDBACK_MS = 2000;
 
-// Formato que campo de preço de marketplace aceita colado direto: vírgula
-// decimal, sem "R$" e sem separador de milhar.
+// The format a marketplace price field accepts when pasted as is: decimal
+// comma, no "R$" and no thousands separator.
 function priceForClipboard() {
   const price = lastCalc ? lastCalc.price : 0;
   return price.toLocaleString('pt-BR', {
@@ -230,7 +231,7 @@ copyPriceButton.addEventListener('focus', () => {
 });
 copyPriceButton.addEventListener('keydown', (e) => {
   if (e.key !== 'Enter') return;
-  // Sem isto o navegador ainda transformaria o Enter num clique, copiando duas vezes.
+  // Without this the browser would still turn Enter into a click, copying twice.
   e.preventDefault();
   if (priceCopiedSinceFocus) {
     focusField('productCost');
@@ -265,10 +266,10 @@ for (const key of PCT_KEYS) {
   numEl.addEventListener('focus', () => numEl.select());
 }
 
-// Overlay de arrasto com sensibilidade reduzida (igual ao app): em vez de
-// arrastar o slider nativo direto (muito sensível, difícil de acertar um
-// valor exato), um overlay invisível por cima escala o movimento do
-// mouse/dedo por um fator < 1, então precisa mover mais pra mudar o valor.
+// Drag overlay with reduced sensitivity (same as the app): dragging the native
+// slider directly is too sensitive to land on an exact value, so an invisible
+// overlay on top scales the pointer movement by a factor below 1, meaning the
+// user has to move further to change the value.
 function attachSliderSensitivity(sliderId, sensitivity) {
   const slider = $(sliderId);
   const overlay = slider.nextElementSibling;
@@ -309,7 +310,7 @@ for (const key of PCT_KEYS) {
   attachSliderSensitivity(key + 'Slider', 0.35);
 }
 
-// Setinhas ▲▼ ao lado do valor, para ajuste fino de 0,01 em 0,01 (igual ao app)
+// ▲▼ arrows next to the value, for fine tuning in 0.01 steps (same as the app)
 document.querySelectorAll('[data-step-key]').forEach((btn) => {
   btn.addEventListener('click', () => {
     const key = btn.dataset.stepKey;
@@ -336,7 +337,7 @@ for (const id of ['productCost', 'fixedFee']) {
   el.addEventListener('focus', () => el.select());
 }
 
-/* ===================== Resetar ===================== */
+/* ===================== Reset ===================== */
 
 $('btnReset').addEventListener('click', () => {
   $('productCost').value = '0,00';
@@ -349,7 +350,7 @@ $('btnReset').addEventListener('click', () => {
   clearLoadedPrice();
 });
 
-/* ===================== Preços salvos (localStorage) ===================== */
+/* ===================== Saved prices (localStorage) ===================== */
 
 const STORAGE_KEY = 'savedPrices';
 
@@ -366,10 +367,10 @@ export function persistSaved(list) {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
 }
 
-// Renderiza a lista nos dois lugares: coluna "Preços Salvos" e popup "Carregar"
+// Renders the list in both places: the "Preços Salvos" column and the load popup
 export function renderSavedList() {
-  // A ordem é decidida aqui, nunca no array guardado: aquele array é da
-  // sincronia com a nuvem e chega na ordem que o Firestore devolver.
+  // The order is decided here, never in the stored array: that array belongs to
+  // the cloud sync and arrives in whatever order Firestore returns.
   const list = sortPricesByName(loadSaved());
   const html =
     list.length === 0
@@ -397,7 +398,7 @@ export function renderSavedList() {
   $('loadList').innerHTML = html;
 }
 
-/* ---- estado do preço carregado (banner no topo da coluna 1, igual ao app) ---- */
+/* ---- loaded price state (banner on top of column 1, same as the app) ---- */
 
 let loadedPriceId = null;
 
@@ -410,7 +411,7 @@ function clearLoadedPrice() {
   $('loadedPriceBanner').hidden = true;
 }
 
-// carregar / excluir via delegação de eventos (mesma lógica nas duas listas)
+// load and delete through event delegation (same logic for both lists)
 function handleSavedListClick(e) {
   const item = e.target.closest('.saved-item');
   if (!item) return;
@@ -426,7 +427,7 @@ function handleSavedListClick(e) {
     return;
   }
 
-  // carregar na calculadora
+  // load into the calculator
   $('productCost').value = fmtNum(price.inputs.productCost);
   $('fixedFee').value = fmtNum(price.inputs.fixedFee);
   for (const field of PCT_KEYS) {
@@ -442,7 +443,7 @@ function handleSavedListClick(e) {
 $('savedList').addEventListener('click', handleSavedListClick);
 $('loadList').addEventListener('click', handleSavedListClick);
 
-/* ---- popup carregar ---- */
+/* ---- load popup ---- */
 
 $('btnLoad').addEventListener('click', () => {
   renderSavedList();
@@ -450,7 +451,7 @@ $('btnLoad').addEventListener('click', () => {
 });
 $('loadClose').addEventListener('click', () => ($('loadOverlay').hidden = true));
 
-/* ---- popup salvar (preço novo, sem nada carregado) ---- */
+/* ---- save popup (new price, nothing loaded) ---- */
 
 function openSavePopup() {
   $('saveName').value = '';
@@ -459,8 +460,8 @@ function openSavePopup() {
   $('saveName').focus();
 }
 
-// Se já tem um preço carregado, pergunta "salvar por cima ou como novo?"
-// (igual ao app); senão, pede o nome de um preço novo direto.
+// With a price already loaded, ask whether to overwrite it or save as new (same
+// as the app); otherwise go straight to asking for the new price's name.
 $('btnSave').addEventListener('click', () => {
   if (loadedPriceId && loadSaved().some((p) => p.id === loadedPriceId)) {
     const loaded = loadSaved().find((p) => p.id === loadedPriceId);
@@ -500,11 +501,11 @@ $('saveConfirm').addEventListener('click', () => {
   loadedPriceId = price.id;
   showLoadedBanner(price.name);
   $('saveOverlay').hidden = true;
-  // Avisa quem quiser sincronizar isso com a nuvem (ver sync.js)
+  // Notifies whoever syncs this to the cloud (see sync.js)
   document.dispatchEvent(new CustomEvent('price-saved', { detail: price }));
 });
 
-/* ---- popup: salvar por cima ou como novo ---- */
+/* ---- popup: overwrite or save as new ---- */
 
 $('btnCancelChoice').addEventListener('click', () => ($('saveChoiceOverlay').hidden = true));
 
@@ -532,11 +533,11 @@ $('btnOverwrite').addEventListener('click', () => {
   persistSaved(list);
   renderSavedList();
   $('saveChoiceOverlay').hidden = true;
-  // Avisa quem quiser sincronizar isso com a nuvem (ver sync.js) — atualização, não criação
+  // Notifies whoever syncs this to the cloud (see sync.js): update, not creation
   document.dispatchEvent(new CustomEvent('price-updated', { detail: list[idx] }));
 });
 
-/* ---- popup: editar nome do preço carregado ---- */
+/* ---- popup: rename the loaded price ---- */
 
 $('btnEditLoadedName').addEventListener('click', () => {
   const loaded = loadSaved().find((p) => p.id === loadedPriceId);
@@ -567,7 +568,7 @@ $('editNameConfirm').addEventListener('click', () => {
 
 $('btnClearLoaded').addEventListener('click', clearLoadedPrice);
 
-/* ---- popup excluir ---- */
+/* ---- delete popup ---- */
 
 let pendingDeleteId = null;
 
@@ -580,13 +581,13 @@ $('deleteConfirm').addEventListener('click', () => {
     pendingDeleteId = null;
     renderSavedList();
     if (deletedId === loadedPriceId) clearLoadedPrice();
-    // Avisa quem quiser sincronizar isso com a nuvem (ver sync.js)
+    // Notifies whoever syncs this to the cloud (see sync.js)
     document.dispatchEvent(new CustomEvent('price-deleted', { detail: { id: deletedId } }));
   }
   $('deleteOverlay').hidden = true;
 });
 
-// fechar popups clicando fora ou com Esc
+// close popups by clicking outside or pressing Esc
 const DISMISSABLE_OVERLAYS = [
   'saveOverlay',
   'deleteOverlay',
@@ -612,11 +613,11 @@ document.addEventListener('keydown', (e) => {
   }
 });
 
-/* ===================== Documentos legais (popup) ===================== */
+/* ===================== Legal documents (popup) ===================== */
 
-// Abre a página legal dentro de um popup (iframe), igual ao app. O link normal
-// continua no href como reserva: se o JS falhar ou o usuário abrir em nova aba
-// (Ctrl+clique), a página ainda carrega normalmente.
+// Opens the legal page inside a popup (iframe), same as the app. The plain link
+// stays in the href as a fallback: if the JS fails or the user opens a new tab
+// (Ctrl+click), the page still loads normally.
 const LEGAL_DOCS = {
   politica: '../politica-privacidade.html',
   termos: '../termos-servico.html',
@@ -631,12 +632,12 @@ function openLegal(key) {
 }
 function closeLegal() {
   $('legalOverlay').hidden = true;
-  $('legalFrame').src = 'about:blank'; // descarrega o conteúdo ao fechar
+  $('legalFrame').src = 'about:blank'; // unloads the content on close
 }
 
 document.querySelectorAll('[data-legal]').forEach((a) => {
   a.addEventListener('click', (e) => {
-    // respeita Ctrl/Cmd+clique e clique do meio (abrir em nova aba)
+    // respects Ctrl/Cmd+click and middle click (open in a new tab)
     if (e.ctrlKey || e.metaKey || e.button === 1) return;
     e.preventDefault();
     openLegal(a.dataset.legal);
@@ -644,9 +645,9 @@ document.querySelectorAll('[data-legal]').forEach((a) => {
 });
 $('legalClose').addEventListener('click', closeLegal);
 
-/* ===================== Tema ===================== */
+/* ===================== Theme ===================== */
 
-// Switch dia/noite igual ao app: marcado = dia (tema claro), desmarcado = noite (escuro)
+// Day/night switch, same as the app: checked = day (light), unchecked = night (dark)
 const themeSwitch = $('themeSwitch');
 themeSwitch.checked = document.documentElement.getAttribute('data-theme') === 'light';
 themeSwitch.addEventListener('change', () => {
@@ -657,7 +658,7 @@ themeSwitch.addEventListener('change', () => {
   } catch {}
 });
 
-/* ===================== Menu hambúrguer (telas estreitas) ===================== */
+/* ===================== Hamburger menu (narrow screens) ===================== */
 
 const sidebar = $('sidebar');
 const menuToggle = $('menuToggle');
@@ -671,7 +672,7 @@ function setMenu(open) {
 menuToggle.addEventListener('click', () => setMenu(!sidebar.classList.contains('open')));
 backdrop.addEventListener('click', () => setMenu(false));
 
-/* ===================== Início ===================== */
+/* ===================== Startup ===================== */
 
 render();
 renderSavedList();

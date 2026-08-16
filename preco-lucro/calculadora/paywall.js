@@ -1,16 +1,17 @@
 /*
- * paywall.js: decide se a calculadora fica visível ou trancada.
- * Escuta o evento 'authchange' disparado por auth.js (Fase 2) e, quando há
- * usuário logado, pergunta pro Cloudflare Worker se ele tem assinatura Pro
- * ativa no RevenueCat. A calculadora só é liberada com {pro:true}.
+ * paywall.js: decides whether the calculator stays visible or locked.
+ * Listens to the 'authchange' event dispatched by auth.js and, once a user is
+ * signed in, asks the Cloudflare Worker whether that user has an active Pro
+ * subscription on RevenueCat. The calculator is unlocked only on {pro:true}.
  *
- * Fail-safe: qualquer erro (rede, worker fora do ar, token inválido) mantém a
- * calculadora TRANCADA. Nunca libera por falha, só por confirmação positiva.
+ * Fail-safe: any failure (network, worker down, invalid token) keeps the
+ * calculator LOCKED. Access is never granted by error, only by explicit
+ * confirmation.
  */
 
 const WORKER_URL = 'https://api.calvinjota.com.br/check-pro';
 
-// TODO: preencher com o link da Play Store quando o app for aprovado em produção.
+// TODO: fill in with the Play Store link now that the app is live in production.
 const APP_STORE_URL = '';
 
 const $ = (id) => document.getElementById(id);
@@ -29,7 +30,7 @@ function showGate(message, { showAppLink = false, showRetry = false } = {}) {
     if (APP_STORE_URL) {
       $('gateAppLink').href = APP_STORE_URL;
     } else {
-      // Link ainda não disponível (app em revisão) — mostra o botão desabilitado.
+      // Link not available yet: show the button in a disabled state.
       $('gateAppLink').removeAttribute('href');
       $('gateAppLink').setAttribute('aria-disabled', 'true');
     }
