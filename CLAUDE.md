@@ -7,8 +7,9 @@
 ## ⚠️ ANTES DE COMEÇAR QUALQUER TRABALHO (obrigatório, toda vez)
 
 1. **Leia `INSTRUCOES-SITE.md`** — são as regras de trabalho do Calvin, não são opcionais.
-2. **Leia o diário de bordo principal**: `C:\Dev\Precificador Markeplace\android-project\CLAUDE.md`.
+2. **Leia o diário de bordo principal**: `C:\Dev\precificador-marketplace\preco-e-lucro\CLAUDE.md`.
    O site e o app são reorganizados juntos, e o histórico completo do trabalho fica lá.
+   **As pastas foram renomeadas em 19/08**, depois do commit da fatia 4.4c: `Precificador Markeplace` virou `precificador-marketplace`, `android-project` virou `preco-e-lucro` e `C:\Dev\Site` virou `C:\Dev\site`. Achou o caminho velho escrito em algum lugar, corrija.
 3. **Confira o estado real do código** antes de afirmar qualquer coisa.
 
 ### Regras que mais pesam aqui
