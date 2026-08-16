@@ -28,7 +28,7 @@
        publish (otherwise it reuses the cached CSS/JS). Bump this number on ALL
        local files (here and in the imports between modules) whenever any one
        of them changes. -->
-  <link rel="stylesheet" href="calculadora.css?v=5">
+  <link rel="stylesheet" href="calculadora.css?v=6">
 </head>
 <body>
 
@@ -272,27 +272,27 @@
       <!-- ==== Column 2: price and breakdown ==== -->
       <div class="col-mid">
         <section class="glass-card card-preco">
-          <div class="preco-head">
+          <div class="price-head">
             <div>
               <h2 class="card-title">Preço de Venda Sugerido</h2>
               <p class="card-sub">Valor calculado com base em todos os custos e margem desejada.</p>
             </div>
             <div class="markup-badge">MARKUP <strong id="hero-markup">0,00x</strong></div>
           </div>
-          <div class="preco-body">
+          <div class="price-body">
             <div class="preco-main">
-              <div class="preco-big"><span class="currency">R$</span><span id="hero-price">0,00</span><button type="button" class="copy-price-btn" id="copyPriceBtn" aria-label="Copiar preço" title="Copiar preço"><svg class="copy-price-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><svg class="copy-price-done" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></button></div>
-              <p class="voce-recebe">você recebe <strong id="hero-revenue">R$ 0,00</strong></p>
+              <div class="price-big"><span class="currency">R$</span><span id="hero-price">0,00</span><button type="button" class="copy-price-btn" id="copyPriceBtn" aria-label="Copiar preço" title="Copiar preço"><svg class="copy-price-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><svg class="copy-price-done" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></button></div>
+              <p class="payout">você recebe <strong id="hero-revenue">R$ 0,00</strong></p>
             </div>
-            <div class="lucro-box">
-              <span class="lucro-label">Lucro Operacional</span>
-              <span id="stat-profit" class="lucro-value">R$ 0,00</span>
-              <span id="stat-margin-pct" class="lucro-pct">0,00%</span>
+            <div class="profit-box">
+              <span class="profit-label">Lucro Operacional</span>
+              <span id="stat-profit" class="profit-value">R$ 0,00</span>
+              <span id="stat-margin-pct" class="profit-pct">0,00%</span>
             </div>
           </div>
         </section>
 
-        <section class="glass-card card-detalhe">
+        <section class="glass-card card-breakdown">
           <h2 class="card-title">Detalhamento da Venda</h2>
           <div id="compBar" class="comp-bar"></div>
           <div class="legend"></div>
@@ -309,14 +309,14 @@
               <tr class="row-sub"><td><i class="dot dot-sky"></i>ICMS-ST</td><td id="tbl-icmsSt-pct">0,00%</td><td id="tbl-icmsSt-val">R$ 0,00</td></tr>
               <tr class="row-sub"><td><i class="dot dot-rose"></i>IPI</td><td id="tbl-ipi-pct">0,00%</td><td id="tbl-ipi-val">R$ 0,00</td></tr>
               <tr><td><i class="dot dot-pink"></i>Imposto sobre a Venda</td><td id="tbl-salesTax-pct">0,00%</td><td id="tbl-salesTax-val">R$ 0,00</td></tr>
-              <tr class="row-lucro"><td><i class="dot dot-teal"></i>Lucro Operacional da Venda</td><td id="tbl-profit-pct">0,00%</td><td id="tbl-profit-val">R$ 0,00</td></tr>
+              <tr class="row-profit"><td><i class="dot dot-teal"></i>Lucro Operacional da Venda</td><td id="tbl-profit-pct">0,00%</td><td id="tbl-profit-val">R$ 0,00</td></tr>
             </tbody>
           </table>
         </section>
       </div>
 
       <!-- ==== Column 3: saved prices ==== -->
-      <section class="glass-card card-salvos">
+      <section class="glass-card card-saved">
         <h2 class="card-title">Preços Salvos</h2>
         <div id="savedList" class="saved-list">
           <p class="saved-empty">Nenhum preço salvo ainda.</p>

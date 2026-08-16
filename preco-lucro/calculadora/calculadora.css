@@ -1,6 +1,7 @@
 /*
- * calculadora.css: visual da calculadora web Preço & Lucro.
- * Tokens de cor idênticos aos do app (temas claro/escuro) para manter a marca.
+ * calculadora.css: the looks of the Preço & Lucro web calculator.
+ * Color tokens identical to the app ones (light and dark themes), so that both
+ * carry the same brand.
  */
 
 :root {
@@ -50,7 +51,7 @@ body {
   background: radial-gradient(1200px 600px at 20% -10%, #e7ecf7 0%, var(--bg) 55%);
 }
 
-/* ===================== Menu lateral ===================== */
+/* ===================== Side menu ===================== */
 .sidebar {
   position: fixed;
   inset: 0 auto 0 0;
@@ -96,7 +97,7 @@ body {
 }
 .side-link-btn:hover { background: rgba(34, 211, 238, .12); }
 
-/* Botão oficial "Entrar com Google" */
+/* Official "Sign in with Google" button */
 .google-btn {
   display: inline-flex;
   align-items: center;
@@ -117,7 +118,7 @@ body {
 .google-btn:hover { background: #f7f8f8; box-shadow: 0 1px 3px rgba(0, 0, 0, .12); }
 .google-icon { width: 18px; height: 18px; flex-shrink: 0; }
 
-/* Perfil logado */
+/* Profile of the signed in user */
 .profile-user { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
 .profile-photo { width: 40px; height: 40px; border-radius: 50%; flex-shrink: 0; object-fit: cover; }
 .profile-meta { display: flex; flex-direction: column; min-width: 0; }
@@ -132,7 +133,7 @@ body {
 }
 .theme-row-label { font-size: 13.5px; color: var(--text); }
 
-/* Switch dia/noite, mesmo visual do app */
+/* Day and night switch, the same looks as the app one */
 .theme-switch { position: relative; display: inline-block; width: 64px; height: 32px; flex-shrink: 0; cursor: pointer; }
 .theme-switch input { position: absolute; opacity: 0; width: 0; height: 0; }
 .theme-switch-track {
@@ -185,7 +186,7 @@ body {
 .sidebar-footer a { font-size: 12px; color: var(--muted); text-decoration: none; }
 .sidebar-footer a:hover { color: var(--teal); }
 
-/* Hambúrguer, escondido em telas largas */
+/* Hamburger button, hidden on wide screens */
 .menu-toggle {
   display: none;
   position: fixed;
@@ -207,7 +208,7 @@ body {
   z-index: 25;
 }
 
-/* ===================== Conteúdo ===================== */
+/* ===================== Content ===================== */
 .content {
   margin-left: var(--sidebar-w);
   padding: 28px 28px 0;
@@ -242,7 +243,7 @@ body {
 .btn-reset svg { width: 16px; height: 16px; }
 .btn-reset:hover { border-color: var(--teal); color: var(--teal); }
 
-/* Grade de 3 colunas em telas largas */
+/* Three column grid on wide screens */
 .grid {
   display: grid;
   grid-template-columns: minmax(300px, 400px) minmax(360px, 1fr) minmax(260px, 360px);
@@ -250,10 +251,10 @@ body {
   align-items: stretch;
 }
 .col-mid { display: flex; flex-direction: column; gap: 20px; min-width: 0; }
-/* O card de detalhamento cresce pra alinhar o fundo da coluna 2 com a 1 */
-.col-mid .card-detalhe { flex: 1; }
-/* Preços Salvos mantém altura natural, cresce conforme os preços adicionados */
-.card-salvos { align-self: start; }
+/* The breakdown card grows so that the bottom of column 2 lines up with column 1 */
+.col-mid .card-breakdown { flex: 1; }
+/* Saved prices keeps its natural height, growing as prices are added */
+.card-saved { align-self: start; }
 
 /* ===================== Cards ===================== */
 .glass-card {
@@ -272,7 +273,7 @@ body {
 .card-title { margin: 0 0 6px; font-size: 16px; font-weight: 700; }
 .card-sub { margin: 0; font-size: 12.5px; color: var(--muted); }
 
-/* ===================== Campos ===================== */
+/* ===================== Fields ===================== */
 .field-label {
   display: block;
   margin: 16px 0 6px;
@@ -323,10 +324,10 @@ body {
 .pct-controls { display: flex; align-items: center; gap: 12px; }
 .money-input:focus-within { border-color: var(--teal); }
 
-/* Slider com overlay de arrasto: reduz a sensibilidade do arrasto (igual ao
-   app), pra facilitar acertar valores precisos em vez de pular demais.
-   O input nativo fica só decorativo (pointer-events:none); quem responde ao
-   arrasto é o .slider-touch-overlay por cima, com uma área de toque maior. */
+/* Slider with a drag overlay: it lowers the drag sensitivity (same as the app)
+   so that hitting a precise value is easier than overshooting it.
+   The native input is left decorative (pointer-events:none); what answers the
+   drag is the .slider-touch-overlay on top, with a larger touch area. */
 .slider-touch-wrap { position: relative; flex: 1; display: flex; align-items: center; min-width: 0; }
 .slider-touch-wrap input[type="range"] {
   width: 100%;
@@ -343,7 +344,7 @@ body {
   cursor: pointer;
 }
 
-/* Caixa do valor percentual + setinhas de +/-0,01 (igual ao app) */
+/* Box of the percentage value plus the +/-0.01 arrows (same as the app) */
 .num-box {
   display: flex;
   align-items: stretch;
@@ -388,7 +389,7 @@ body {
 
 .actions-row { display: flex; gap: 10px; margin-top: 20px; }
 
-/* Banner "preço carregado" (aparece ao carregar um item de Preços Salvos) */
+/* The "loaded price" banner (shows up when an item of the saved list is loaded) */
 .loaded-price-banner {
   display: flex;
   align-items: center;
@@ -455,8 +456,8 @@ body {
 .btn-danger { background: #dc2626; color: #fff; }
 .btn-danger:hover { filter: brightness(1.1); }
 
-/* ===================== Card Preço ===================== */
-.preco-head {
+/* ===================== Price card ===================== */
+.price-head {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
@@ -474,7 +475,7 @@ body {
 }
 .markup-badge strong { display: block; font-size: 15px; color: var(--amber); }
 
-.preco-body {
+.price-body {
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
@@ -482,7 +483,7 @@ body {
   margin-top: 14px;
   flex-wrap: wrap;
 }
-.preco-big {
+.price-big {
   font-size: clamp(40px, 4.5vw, 62px);
   font-weight: 800;
   line-height: 1;
@@ -490,10 +491,10 @@ body {
   align-items: baseline;
   gap: 8px;
 }
-.preco-big .currency { font-size: .45em; color: var(--muted); font-weight: 600; }
+.price-big .currency { font-size: .45em; color: var(--muted); font-weight: 600; }
 
-/* Copiar o preço: o número é um <span> e não recebe foco, então o botão é
-   também o destino do Enter que vem da Margem. */
+/* Copying the price: the number is a <span> and takes no focus, so the button
+   is also where the Enter coming from the Margin field lands. */
 .copy-price-btn {
   background: none;
   border: none;
@@ -514,7 +515,7 @@ body {
 .copy-price-btn.copied .copy-price-icon { display: none; }
 .copy-price-btn.copied .copy-price-done { display: block; }
 
-/* Aviso flutuante que some sozinho (toast.js cria o elemento) */
+/* Floating notice that fades on its own (toast.js builds the element) */
 .toast {
   position: fixed;
   left: 50%;
@@ -534,18 +535,18 @@ body {
   transition: opacity .2s ease, transform .2s ease;
 }
 .toast.show { opacity: 1; transform: translate(-50%, 0); }
-.voce-recebe { margin: 8px 0 0; font-size: 14px; color: var(--muted); }
-.voce-recebe strong { color: var(--text); }
+.payout { margin: 8px 0 0; font-size: 14px; color: var(--muted); }
+.payout strong { color: var(--text); }
 
-.lucro-box {
+.profit-box {
   display: flex;
   flex-direction: column;
   align-items: flex-end;
   gap: 4px;
 }
-.lucro-label { font-size: 12px; color: var(--muted); }
-.lucro-value { font-size: 22px; font-weight: 700; color: var(--teal); }
-.lucro-pct {
+.profit-label { font-size: 12px; color: var(--muted); }
+.profit-value { font-size: 22px; font-weight: 700; color: var(--teal); }
+.profit-pct {
   font-size: 12px;
   font-weight: 700;
   color: var(--teal);
@@ -554,7 +555,7 @@ body {
   border-radius: 999px;
 }
 
-/* ===================== Detalhamento ===================== */
+/* ===================== Breakdown ===================== */
 .comp-bar {
   display: flex;
   height: 10px;
@@ -602,9 +603,9 @@ body {
 .row-strong td:first-child { font-weight: 700; }
 .row-muted td { color: var(--muted); font-style: italic; }
 .row-sub td:first-child { padding-left: 26px; color: var(--muted); }
-.row-lucro td { color: var(--teal); font-weight: 700; }
+.row-profit td { color: var(--teal); font-weight: 700; }
 
-/* ===================== Preços Salvos ===================== */
+/* ===================== Saved prices ===================== */
 .saved-list { display: flex; flex-direction: column; gap: 10px; margin-top: 10px; }
 .saved-empty { font-size: 13px; color: var(--muted); }
 .saved-item {
@@ -680,7 +681,7 @@ body {
 .char-count { text-align: right; font-size: 11px; color: var(--muted-2); margin-top: 4px; }
 .dialog-list { max-height: 55vh; overflow-y: auto; margin-top: 4px; }
 
-/* Popup de documento legal (iframe), mesmo padrão do app */
+/* Legal document popup (iframe), the same pattern as the app */
 .legal-modal {
   position: relative;
   width: 100%;
@@ -715,7 +716,7 @@ body {
   margin-top: 18px;
 }
 
-/* ===================== Trava de assinante ===================== */
+/* ===================== Subscriber gate ===================== */
 .gate-wrap { position: relative; }
 
 #calcGate[data-locked="true"] {
@@ -753,7 +754,7 @@ body {
 .gate-cta[hidden] { display: none; }
 .gate-cta[aria-disabled="true"] { opacity: 0.6; cursor: not-allowed; }
 
-/* ===================== Rodapé padrão do site ===================== */
+/* ===================== Standard site footer ===================== */
 .footer {
   text-align: center;
   padding: 40px 20px;
@@ -772,10 +773,10 @@ body {
 .footer-links a:hover { color: var(--teal); }
 .footer-links span { color: var(--border); margin: 0 8px; }
 
-/* ===================== Responsivo ===================== */
+/* ===================== Responsive ===================== */
 @media (max-width: 1279px) {
   .grid { grid-template-columns: minmax(300px, 420px) minmax(360px, 1fr); }
-  .card-salvos { grid-column: 1 / -1; }
+  .card-saved { grid-column: 1 / -1; }
 }
 @media (max-width: 1023px) {
   .menu-toggle { display: inline-flex; }
