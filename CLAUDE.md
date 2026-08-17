@@ -41,7 +41,15 @@ preco-lucro/
     clipboard.js                copiar texto, espelhado do app
     toast.js                    aviso flutuante, espelhado do app
     price-sort.js               ordem alfabética dos salvos, espelhado do app
-    app.js                      interface
+    app.js                      arranque, só liga os módulos (28 linhas)
+    format.js                   formatação de número e moeda
+    field-order.js              ordem do Enter entre os campos
+    theme.js                    tema claro/escuro
+    menu.js                     menu lateral
+    overlays.js                 popups e fechamento pelo fundo escuro
+    legal.js                    abertura das páginas legais
+    calculator.js               leitura dos campos e pintura da tela
+    saved-prices.js             lista de preços salvos e seus popups
     auth.js                     login com Google (Firebase)
     sync.js                     sincronização dos preços salvos (Firestore)
     paywall.js                  libera ou trava conforme a assinatura
@@ -73,11 +81,13 @@ tests/                          testes do cálculo (Vitest)
 - **O Prettier roda com `npm run format` e a configuração é idêntica à do app** (desde a fatia 5.3, 16/08): `printWidth` 100, aspas simples no JS e duplas no CSS, e o `.prettierrc.json` precisa continuar **idêntico byte a byte** ao do outro repositório, senão os arquivos espelhados divergem em silêncio na primeira formatação. HTML e Markdown ficam de fora, o motivo está escrito no `.prettierignore`.
 - **Arquivo reformatado é arquivo alterado**: rodou o Prettier, suba o `?v=N` de tudo que ele tocou e dos `import` que apontam pra lá, igual a qualquer outra mudança.
 - **O aviso de `Cross-Origin-Opener-Policy` no login está aceito desde 16/08 e não se reabre**: o teste A/B em servidor local provou que mandar `same-origin-allow-popups` na resposta **não muda nada**, porque quem dispara o relatório é a página que o popup abre (`accounts.google.com/signin/v2/identifier` responde `Cross-Origin-Opener-Policy-Report-Only: same-origin`). **Report-Only é modo relatório**, nada é bloqueado, o login entra normalmente e o app Android nem passa por aqui (lá é plugin nativo). Não troque o `signInWithPopup` do `auth.js:35` por `signInWithRedirect` para calar o aviso: o `authDomain` é `preco-e-lucro.firebaseapp.com`, outro site, e o redirect é justamente o fluxo que quebra com storage particionado. Histórico completo no `preco-e-lucro/HISTORICO.md`, 16/08 19h30.
-- **O próximo trabalho aqui é a Etapa 9, dividir o `app.js` em módulos** (decidido em 16/08 20h, **antes** de publicar o app): 680 linhas já seccionadas em 13 blocos por comentário que batem com os módulos do app, **zero handler inline e zero global** (41 `addEventListener`, 45 ids), então falta só a divisão. Fatias, de baixo pra cima: 9.0 rede de teste, 9.1 `format.js` e `field-order.js`, 9.2 `theme.js` e `menu.js`, 9.3 `legal.js` e `overlays.js`, 9.4 `calculator.js`, 9.5 `saved-prices.js`, 9.6 `app.js` vira arranque. O plano completo está no `preco-e-lucro/HISTORICO.md`, 16/08 20h.
-- **A fatia 9.0 não se pula**: o site não tem o equivalente ao `handlers.test.js` do app e os 28 testes daqui não cobrem nenhum botão, então dividir sem essa rede é trabalhar no escuro. Agrava que **tudo que entra aqui vai pro ar**, sem build nem aparelho no caminho.
-- **O ciclo que a Etapa 9 pode criar**: o `sync.js` importa `persistSaved` e `renderSavedList` do `app.js`, e quando as duas mudarem para `saved-prices.js` a conversa de volta tem que ser por callback, nunca import de volta.
+- **A Etapa 9 está fechada** (16/08): o `app.js` saiu de 680 para 28 linhas em 8 módulos e hoje é só arranque, com a mesma regra do app (dado tem dono único, dependência anda pra baixo, quem está embaixo avisa por callback). Provas fatia a fatia no `preco-e-lucro/HISTORICO.md`.
+- **A rede de segurança daqui é o `tests/handlers.test.js`**, 9 dos 37 testes: ids, ids montados de `PCT_KEYS`, classes, seletores de atributo, ordem do Enter, `?v=` coerente entre HTML e imports, nenhum handler inline e nenhuma global nova. Quem busca id aqui é o helper `$()`, não `getElementById` literal, então o regex procura os dois.
+- **O site tem uma global proposital, `window.currentUser`** (`auth.js` escreve, `paywall.js` e `sync.js` leem), ao contrário do app, que é zero globais. A rede aceita essa uma e barra qualquer outra.
+- **O `sync.js` importa direto do `saved-prices.js`** e a volta é por `CustomEvent` no `document`, nunca import de retorno: é isso que impede o ciclo entre os dois.
 - **As URLs públicas não se tocam** (decisão de 16/08): são quatro endereços cadastrados no Google (Política de Privacidade, os dois campos de eliminação no questionário de Segurança dos dados, e o Website do app), e a única forma segura de mudar exigiria deixar redirect no endereço antigo para sempre, o que deixaria a estrutura mais bagunçada do que está.
 - **O botão "Assinar pelo app" do overlay funciona desde 16/08**: o `APP_STORE_URL` do `paywall.js` tem o mesmo link do botão do menu lateral (`preco-lucro/calculadora/index.html:84`). São duas cópias de propósito, uma é HTML estático e a outra só existe quando o gate decide mostrar. Quem vê a do overlay é usuário logado sem Pro.
+- **A Política de Privacidade está na versão 1.2 desde 17/08**, com RevenueCat e Cloudflare declarados como operadores e a frase de transferência internacional cobrindo os três. Mexeu em quem recebe dado do usuário, atualize a seção 4 dessa página junto, é exigência da LGPD e o endereço dela é campo obrigatório no Play Console.
 - **`catch` vazio se comenta, não se silencia** (`app.js`, tema x `localStorage`): a regra `no-empty` ignora bloco que tem comentário dentro, então o porquê fica escrito e o lint fica limpo sem exceção na config, igual ao `clipboard.js` do app.
 
 ---
