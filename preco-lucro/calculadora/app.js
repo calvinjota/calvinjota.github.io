@@ -10,33 +10,10 @@ import { calculate, brl, pct } from './calc.js?v=4';
 import { sortPricesByName } from './price-sort.js?v=2';
 import { copyText } from './clipboard.js?v=2';
 import { showToast } from './toast.js?v=1';
+import { escapeHtml, parseNum, fmtNum } from './format.js?v=1';
+import { COPY_BUTTON_ID, focusField, attachEnterNavigation } from './field-order.js?v=1';
 
 const $ = (id) => document.getElementById(id);
-
-/* ===================== Helpers ===================== */
-
-// Guards against HTML injection through user-typed names (XSS)
-function escapeHtml(s) {
-  return String(s)
-    .replaceAll('&', '&amp;')
-    .replaceAll('<', '&lt;')
-    .replaceAll('>', '&gt;')
-    .replaceAll('"', '&quot;')
-    .replaceAll("'", '&#039;');
-}
-
-function parseNum(raw) {
-  const v = parseFloat(String(raw).replace(',', '.'));
-  return isFinite(v) ? v : 0;
-}
-
-// Prices saved before the field names were translated (step 4.1) lack the new
-// keys, and without this guard the resulting undefined broke the whole load
-// instead of just zeroing the fields, which is the agreed behaviour.
-function fmtNum(v) {
-  const n = typeof v === 'number' && isFinite(v) ? v : 0;
-  return n.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-}
 
 /* ===================== Reading the fields ===================== */
 
@@ -147,41 +124,6 @@ function render() {
     <span><i class="dot dot-teal"></i>Lucro Operacional</span>`;
 }
 
-/* ===================== Slider and number field sync ===================== */
-
-// Enter jumps to the next field, so a keyboard-only user can fill the whole form
-// by pressing Enter over and over without clicking anything. The order follows
-// the visual order of the screen (taxes are always visible here, unlike the app,
-// where the collapsible panel makes the order depend on being open or closed).
-// Margin ends on the copy button: the price is a <span> and takes no focus.
-const COPY_BUTTON_ID = 'copyPriceBtn';
-const ENTER_NEXT = {
-  productCost: 'icmsNum',
-  icmsNum: 'icmsStNum',
-  icmsStNum: 'ipiNum',
-  ipiNum: 'fixedFee',
-  fixedFee: 'commissionNum',
-  commissionNum: 'salesTaxNum',
-  salesTaxNum: 'marginNum',
-  marginNum: COPY_BUTTON_ID,
-};
-function focusField(id) {
-  const el = $(id);
-  if (!el) return;
-  el.focus();
-  // A button has nothing to select, hence the check instead of a blind call.
-  if (el.select) el.select();
-}
-function goToNextField(e, nextId) {
-  if (e.key !== 'Enter') return;
-  e.preventDefault();
-  focusField(nextId);
-}
-document.querySelectorAll('input[id]').forEach((el) => {
-  const nextId = ENTER_NEXT[el.id];
-  if (nextId) el.addEventListener('keydown', (e) => goToNextField(e, nextId));
-});
-
 /* ===================== Copying the price ===================== */
 
 // Enter on the button does two things in sequence: the first press copies, the
@@ -239,6 +181,8 @@ copyPriceButton.addEventListener('keydown', (e) => {
   }
   copyPrice();
 });
+
+/* ===================== Slider and number field sync ===================== */
 
 for (const key of PCT_KEYS) {
   const slider = $(key + 'Slider');
@@ -676,5 +620,6 @@ backdrop.addEventListener('click', () => setMenu(false));
 
 /* ===================== Startup ===================== */
 
+attachEnterNavigation();
 render();
 renderSavedList();
