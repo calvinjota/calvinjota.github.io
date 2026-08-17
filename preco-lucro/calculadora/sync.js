@@ -1,12 +1,16 @@
 /*
- * sync.js: sincroniza os preços salvos com a mesma coleção Firestore que o
- * app Android usa ("userPrices"). Diferente do app (offline-first, com fila
- * de pendências), o site assume que quase sempre tem internet: a nuvem é a
- * fonte da verdade. Ao logar, buscamos os preços de lá; ao salvar/excluir no
- * site, escrevemos direto na nuvem.
+ * sync.js: keeps saved prices in sync with the same Firestore collection the
+ * Android app uses ("userPrices"). Unlike the app (offline-first, with a queue
+ * of pending writes), the site assumes a connection is almost always there, so
+ * the cloud is the source of truth: prices are fetched on sign-in, and saving
+ * or deleting on the site writes straight to the cloud.
  */
 
-import { getApps, getApp, initializeApp } from 'https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js';
+import {
+  getApps,
+  getApp,
+  initializeApp,
+} from 'https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js';
 import {
   getFirestore,
   collection,
@@ -19,10 +23,10 @@ import {
   doc,
   getDocs,
 } from 'https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js';
-import { firebaseConfig } from './firebase-config.js?v=2';
-import { persistSaved, renderSavedList } from './app.js?v=6';
+import { firebaseConfig } from './firebase-config.js?v=3';
+import { persistSaved, renderSavedList } from './saved-prices.js?v=1';
 
-// Reaproveita o app do Firebase já iniciado por auth.js, em vez de criar outro.
+// Reuses the Firebase app already started by auth.js instead of creating another.
 const app = getApps().length ? getApp() : initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
@@ -45,11 +49,13 @@ function startListening(uid) {
   unsubscribe = onSnapshot(
     q,
     (snapshot) => {
-      const list = snapshot.docs.map(cloudDocToLocal).sort((a, b) => b.lastModified - a.lastModified);
+      // No sorting here: renderSavedList owns the order. Sorting in both places
+      // would leave two competing orders, and only the cloud list would obey this one.
+      const list = snapshot.docs.map(cloudDocToLocal);
       persistSaved(list);
       renderSavedList();
     },
-    (e) => console.error('Erro ao sincronizar preços com a nuvem:', e)
+    (e) => console.error('Erro ao sincronizar preços com a nuvem:', e),
   );
 }
 
@@ -66,8 +72,8 @@ document.addEventListener('authchange', (e) => {
     startListening(user.uid);
   } else {
     stopListening();
-    // Limpa o cache local ao sair, para não deixar dados de uma conta
-    // visíveis (mesmo que travados) para quem usar o navegador depois.
+    // Clears the local cache on sign-out so one account's data is not left
+    // visible (even if locked) to whoever uses the browser next.
     persistSaved([]);
     renderSavedList();
   }
@@ -92,13 +98,17 @@ document.addEventListener('price-saved', async (e) => {
   }
 });
 
-// "Salvar por cima" ou renomear (edição de um preço já existente, não criação)
+// Overwrite or rename (editing an existing price, not creating one)
 document.addEventListener('price-updated', async (e) => {
   const uid = window.currentUser?.uid;
   if (!uid) return;
   const price = e.detail;
   try {
-    const q = query(collection(db, 'userPrices'), where('userId', '==', uid), where('id', '==', price.id));
+    const q = query(
+      collection(db, 'userPrices'),
+      where('userId', '==', uid),
+      where('id', '==', price.id),
+    );
     const snap = await getDocs(q);
     await Promise.all(
       snap.docs.map((d) =>
@@ -107,8 +117,8 @@ document.addEventListener('price-updated', async (e) => {
           inputs: price.inputs,
           display: price.display,
           updatedAt: new Date().toISOString(),
-        })
-      )
+        }),
+      ),
     );
   } catch (err) {
     console.error('Erro ao atualizar preço na nuvem:', err);
@@ -120,7 +130,11 @@ document.addEventListener('price-deleted', async (e) => {
   if (!uid) return;
   const { id } = e.detail;
   try {
-    const q = query(collection(db, 'userPrices'), where('userId', '==', uid), where('id', '==', id));
+    const q = query(
+      collection(db, 'userPrices'),
+      where('userId', '==', uid),
+      where('id', '==', id),
+    );
     const snap = await getDocs(q);
     await Promise.all(snap.docs.map((d) => deleteDoc(doc(db, 'userPrices', d.id))));
   } catch (err) {

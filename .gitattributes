@@ -1,0 +1,12 @@
+# The repository is already LF everywhere (git ls-files --eol confirms it), and
+# Prettier is configured with endOfLine: lf. Without this file, core.autocrlf on
+# Windows hands out CRLF on the next clone and every single file then reads as
+# unformatted. Declaring it here keeps disk, index and Prettier telling the same
+# story on any machine.
+* text=auto eol=lf
+
+# Binary assets, so Git never tries to translate line endings inside them.
+*.png binary
+*.jpg binary
+*.svg text
+*.webp binary

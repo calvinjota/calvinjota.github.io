@@ -1,13 +1,13 @@
 /*
- * firebase-config.js: configuração pública do Firebase (app Web "Preço & Lucro").
+ * firebase-config.js: public Firebase configuration for the "Preço & Lucro" web app.
  *
- * Estas chaves são PÚBLICAS por design (aparecem em qualquer app Firebase no
- * navegador). A segurança real vem das regras do Firestore, que restringem o
- * acesso por usuário autenticado, não destas chaves.
+ * These keys are PUBLIC by design (they ship with every browser-side Firebase
+ * app). Real security comes from the Firestore rules, which scope access to the
+ * authenticated user, not from hiding these values.
  *
- * measurementId (Google Analytics) foi omitido de propósito: não usamos
- * Analytics no site, para evitar cookies de rastreamento e a obrigação de
- * banner de consentimento (LGPD). Só usamos a parte de autenticação.
+ * measurementId (Google Analytics) is left out on purpose: the site does not use
+ * Analytics, which avoids tracking cookies and the consent banner they would
+ * require under the Brazilian data protection law (LGPD).
  */
 export const firebaseConfig = {
   apiKey: 'AIzaSyB8NW5jsuS1cBKlEt4JRL20MIV6FJkrowA',

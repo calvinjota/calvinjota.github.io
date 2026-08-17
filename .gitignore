@@ -1,0 +1,21 @@
+# Dependencias de desenvolvimento (reinstala com "npm install").
+# Critico: o GitHub Pages publica tudo que entra no repositorio, entao
+# node_modules NUNCA pode ser versionado aqui.
+node_modules/
+
+# Relatorios de cobertura de testes
+coverage/
+
+# Arquivos de ambiente e segredos
+.env
+.env.*
+
+# Lixo de sistema operacional e editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Instrucoes de trabalho internas: repo e publico via GitHub Pages,
+# esse arquivo nao precisa estar visivel pra qualquer um.
+INSTRUCOES-SITE.md

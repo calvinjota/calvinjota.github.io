@@ -1,17 +1,19 @@
 /*
- * paywall.js: decide se a calculadora fica visível ou trancada.
- * Escuta o evento 'authchange' disparado por auth.js (Fase 2) e, quando há
- * usuário logado, pergunta pro Cloudflare Worker se ele tem assinatura Pro
- * ativa no RevenueCat. A calculadora só é liberada com {pro:true}.
+ * paywall.js: decides whether the calculator stays visible or locked.
+ * Listens to the 'authchange' event dispatched by auth.js and, once a user is
+ * signed in, asks the Cloudflare Worker whether that user has an active Pro
+ * subscription on RevenueCat. The calculator is unlocked only on {pro:true}.
  *
- * Fail-safe: qualquer erro (rede, worker fora do ar, token inválido) mantém a
- * calculadora TRANCADA. Nunca libera por falha, só por confirmação positiva.
+ * Fail-safe: any failure (network, worker down, invalid token) keeps the
+ * calculator LOCKED. Access is never granted by error, only by explicit
+ * confirmation.
  */
 
 const WORKER_URL = 'https://api.calvinjota.com.br/check-pro';
 
-// TODO: preencher com o link da Play Store quando o app for aprovado em produção.
-const APP_STORE_URL = '';
+// Same target as the store button in the side menu, kept here because this one
+// is only rendered when the gate decides to show it.
+const APP_STORE_URL = 'https://play.google.com/store/apps/details?id=com.calvinjota.precoelucro';
 
 const $ = (id) => document.getElementById(id);
 
@@ -26,13 +28,7 @@ function showGate(message, { showAppLink = false, showRetry = false } = {}) {
   $('gateAppLink').hidden = !showAppLink;
   $('gateRetry').hidden = !showRetry;
   if (showAppLink) {
-    if (APP_STORE_URL) {
-      $('gateAppLink').href = APP_STORE_URL;
-    } else {
-      // Link ainda não disponível (app em revisão) — mostra o botão desabilitado.
-      $('gateAppLink').removeAttribute('href');
-      $('gateAppLink').setAttribute('aria-disabled', 'true');
-    }
+    $('gateAppLink').href = APP_STORE_URL;
   }
 }
 
@@ -56,12 +52,16 @@ async function checkSubscription(user) {
       $('planStatus').textContent = 'Pro ativo ✓';
     } else {
       $('planStatus').textContent = 'Sem assinatura ativa.';
-      showGate('Esta calculadora é exclusiva para assinantes Pro do Preço & Lucro.', { showAppLink: true });
+      showGate('Esta calculadora é exclusiva para assinantes Pro do Preço & Lucro.', {
+        showAppLink: true,
+      });
     }
   } catch (e) {
     console.error('Erro ao verificar assinatura:', e);
     $('planStatus').textContent = 'Não foi possível verificar.';
-    showGate('Não foi possível verificar sua assinatura agora. Tente novamente.', { showRetry: true });
+    showGate('Não foi possível verificar sua assinatura agora. Tente novamente.', {
+      showRetry: true,
+    });
   }
 }
 

@@ -1,13 +1,14 @@
 /*
- * auth.js: login com Google no site (Firebase Web SDK, modular via CDN oficial).
+ * auth.js: Google sign-in for the site (modular Firebase Web SDK via the
+ * official CDN).
  *
- * No app Android o login usa um plugin nativo; no navegador usamos o Firebase
- * Web SDK com popup do Google. Mesmo projeto Firebase ("preco-e-lucro").
+ * The Android app signs in through a native plugin; the browser uses the
+ * Firebase Web SDK with a Google popup. Both hit the same Firebase project
+ * ("preco-e-lucro").
  *
- * Fase atual (2): só autenticação (mostra/esconde o perfil no menu lateral).
- * A checagem de assinatura Pro (liberar/bloquear a calculadora) é a Fase 3,
- * feita por um Cloudflare Worker que valida o token abaixo. Por isso já
- * disparamos o evento 'authchange' e expomos window.currentUser.
+ * This module only handles identity. It publishes the result through the
+ * 'authchange' event and window.currentUser so paywall.js can trade the token
+ * for a subscription check and sync.js can start listening to the user's data.
  */
 
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js';
@@ -18,22 +19,22 @@ import {
   signOut,
   onAuthStateChanged,
 } from 'https://www.gstatic.com/firebasejs/10.13.0/firebase-auth.js';
-import { firebaseConfig } from './firebase-config.js?v=2';
+import { firebaseConfig } from './firebase-config.js?v=3';
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
-auth.languageCode = 'pt-BR'; // popup do Google em português
+auth.languageCode = 'pt-BR'; // Google popup in Brazilian Portuguese
 const provider = new GoogleAuthProvider();
 
 const $ = (id) => document.getElementById(id);
 
-/* ===================== Entrar ===================== */
+/* ===================== Sign in ===================== */
 
 $('btnGoogleLogin').addEventListener('click', async () => {
   try {
     await signInWithPopup(auth, provider);
   } catch (e) {
-    // Fechar o popup ou clicar duas vezes não é erro real, ignora em silêncio
+    // Closing the popup or double-clicking is not a real failure, stay silent
     if (e.code !== 'auth/popup-closed-by-user' && e.code !== 'auth/cancelled-popup-request') {
       console.error('Falha no login:', e);
       alert('Não foi possível entrar com o Google: ' + (e.message || e.code));
@@ -41,7 +42,7 @@ $('btnGoogleLogin').addEventListener('click', async () => {
   }
 });
 
-/* ===================== Sair ===================== */
+/* ===================== Sign out ===================== */
 
 $('btnLogout').addEventListener('click', async () => {
   try {
@@ -51,16 +52,16 @@ $('btnLogout').addEventListener('click', async () => {
   }
 });
 
-/* ===================== Reagir a login/logout ===================== */
+/* ===================== React to sign in/out ===================== */
 
 onAuthStateChanged(auth, (user) => {
   const loggedIn = !!user;
 
-  // alterna os dois estados do menu lateral (Perfil)
+  // Toggles the two profile states of the side menu
   $('profileLoggedOut').hidden = loggedIn;
   $('profileLoggedIn').hidden = !loggedIn;
   $('planStatus').textContent = loggedIn
-    ? 'Verificando sua assinatura…' // a Fase 3 substituirá por Ativo/Inativo
+    ? 'Verificando sua assinatura…' // paywall.js replaces this with the real status
     : 'Exclusivo para assinantes do app.';
 
   if (user) {
@@ -72,8 +73,8 @@ onAuthStateChanged(auth, (user) => {
     }
   }
 
-  // Disponibiliza o usuário para o resto do site (a Fase 3 lê isto para
-  // pedir o token e consultar a assinatura no Cloudflare Worker).
+  // Publishes the user to the rest of the site (paywall.js reads it to request
+  // the token and check the subscription on the Cloudflare Worker).
   window.currentUser = user;
   document.dispatchEvent(new CustomEvent('authchange', { detail: user }));
 });
