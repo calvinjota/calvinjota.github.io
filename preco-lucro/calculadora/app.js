@@ -14,6 +14,8 @@ import { escapeHtml, parseNum, fmtNum } from './format.js?v=1';
 import { COPY_BUTTON_ID, focusField, attachEnterNavigation } from './field-order.js?v=1';
 import { attachThemeSwitch } from './theme.js?v=1';
 import { attachMenu } from './menu.js?v=1';
+import { attachOverlayDismissal } from './overlays.js?v=1';
+import { attachLegalLinks } from './legal.js?v=1';
 
 const $ = (id) => document.getElementById(id);
 
@@ -533,67 +535,11 @@ $('deleteConfirm').addEventListener('click', () => {
   $('deleteOverlay').hidden = true;
 });
 
-// close popups by clicking outside or pressing Esc
-const DISMISSABLE_OVERLAYS = [
-  'saveOverlay',
-  'deleteOverlay',
-  'loadOverlay',
-  'legalOverlay',
-  'saveChoiceOverlay',
-  'editNameOverlay',
-];
-for (const ov of DISMISSABLE_OVERLAYS) {
-  $(ov).addEventListener('click', (e) => {
-    if (e.target === $(ov)) {
-      if (ov === 'legalOverlay') closeLegal();
-      else $(ov).hidden = true;
-    }
-  });
-}
-document.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape') {
-    for (const ov of DISMISSABLE_OVERLAYS) {
-      if (ov === 'legalOverlay') closeLegal();
-      else $(ov).hidden = true;
-    }
-  }
-});
-
-/* ===================== Legal documents (popup) ===================== */
-
-// Opens the legal page inside a popup (iframe), same as the app. The plain link
-// stays in the href as a fallback: if the JS fails or the user opens a new tab
-// (Ctrl+click), the page still loads normally.
-const LEGAL_DOCS = {
-  politica: '../politica-privacidade.html',
-  termos: '../termos-servico.html',
-  excluir: '../deletar-conta.html',
-};
-
-function openLegal(key) {
-  const src = LEGAL_DOCS[key];
-  if (!src) return;
-  $('legalFrame').src = src;
-  $('legalOverlay').hidden = false;
-}
-function closeLegal() {
-  $('legalOverlay').hidden = true;
-  $('legalFrame').src = 'about:blank'; // unloads the content on close
-}
-
-document.querySelectorAll('[data-legal]').forEach((a) => {
-  a.addEventListener('click', (e) => {
-    // respects Ctrl/Cmd+click and middle click (open in a new tab)
-    if (e.ctrlKey || e.metaKey || e.button === 1) return;
-    e.preventDefault();
-    openLegal(a.dataset.legal);
-  });
-});
-$('legalClose').addEventListener('click', closeLegal);
-
 /* ===================== Startup ===================== */
 
 attachEnterNavigation();
+attachOverlayDismissal();
+attachLegalLinks();
 attachThemeSwitch();
 attachMenu();
 render();
