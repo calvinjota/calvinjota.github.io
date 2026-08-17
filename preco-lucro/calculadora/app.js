@@ -12,6 +12,8 @@ import { copyText } from './clipboard.js?v=2';
 import { showToast } from './toast.js?v=1';
 import { escapeHtml, parseNum, fmtNum } from './format.js?v=1';
 import { COPY_BUTTON_ID, focusField, attachEnterNavigation } from './field-order.js?v=1';
+import { attachThemeSwitch } from './theme.js?v=1';
+import { attachMenu } from './menu.js?v=1';
 
 const $ = (id) => document.getElementById(id);
 
@@ -589,37 +591,10 @@ document.querySelectorAll('[data-legal]').forEach((a) => {
 });
 $('legalClose').addEventListener('click', closeLegal);
 
-/* ===================== Theme ===================== */
-
-// Day/night switch, same as the app: checked = day (light), unchecked = night (dark)
-const themeSwitch = $('themeSwitch');
-themeSwitch.checked = document.documentElement.getAttribute('data-theme') === 'light';
-themeSwitch.addEventListener('change', () => {
-  const theme = themeSwitch.checked ? 'light' : 'dark';
-  document.documentElement.setAttribute('data-theme', theme);
-  try {
-    localStorage.setItem('theme', theme);
-  } catch {
-    // Private browsing can deny storage; the theme still applies for this visit.
-  }
-});
-
-/* ===================== Hamburger menu (narrow screens) ===================== */
-
-const sidebar = $('sidebar');
-const menuToggle = $('menuToggle');
-const backdrop = $('menuBackdrop');
-
-function setMenu(open) {
-  sidebar.classList.toggle('open', open);
-  backdrop.hidden = !open;
-  menuToggle.setAttribute('aria-expanded', String(open));
-}
-menuToggle.addEventListener('click', () => setMenu(!sidebar.classList.contains('open')));
-backdrop.addEventListener('click', () => setMenu(false));
-
 /* ===================== Startup ===================== */
 
 attachEnterNavigation();
+attachThemeSwitch();
+attachMenu();
 render();
 renderSavedList();
