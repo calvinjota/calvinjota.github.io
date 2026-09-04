@@ -1,0 +1,168 @@
+/* The legal pages of Capidoku in the game's own palette and fonts (region_palette.gd
+   and home_style.gd of the capidoku repository), not the site's dark theme: the
+   player arrives here from inside the game and should still feel inside it.
+   Same class names as assets/style.css, so a page only swaps the stylesheet. */
+
+* {
+  box-sizing: border-box;
+}
+
+:root {
+  --ground: #d9cdbc; /* bege-capivara, the screen background */
+  --card: #f0eee9; /* bege-claro, the rule cards */
+  --card-border: #ddd6ca; /* the card colour one step darker */
+  --title: #1b1619; /* the black of the capybara's glasses */
+  --tagline: #965c4e; /* the brown of the capybara's paws */
+  --text: #333333; /* cinza-grafite */
+  --caramel: #b5652e; /* the caramel Calvin chose */
+  --warning: #ff7a00; /* laranja-tucano */
+  --highlight: #ffffff;
+}
+
+body {
+  margin: 0;
+  padding: 24px 16px 48px;
+  background: var(--ground) url("wallpaper-capybaras.png") center top / 540px auto repeat;
+  color: var(--text);
+  font-family:
+    "Nunito",
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    sans-serif;
+  font-weight: 600;
+  line-height: 1.7;
+}
+
+/* English pages live one folder down, so the wallpaper path is relative to them. */
+html[lang="en"] body {
+  background-image: url("../wallpaper-capybaras.png");
+}
+
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  background: var(--card);
+  border: 2px solid var(--card-border);
+  border-radius: 32px;
+  padding: 28px 28px 32px;
+  box-shadow: 0 8px 0 rgba(0, 0, 0, 0.08);
+}
+
+.back-link {
+  display: inline-block;
+  margin: 0 12px 20px 0;
+  padding: 8px 18px;
+  background: var(--highlight);
+  border: 2px solid var(--card-border);
+  border-radius: 999px;
+  color: var(--caramel);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.back-link:hover {
+  border-color: var(--caramel);
+}
+
+h1 {
+  font-family: "Fredoka", "Nunito", sans-serif;
+  font-size: 34px;
+  font-weight: 700;
+  margin: 0 0 4px 0;
+  color: var(--title);
+}
+
+.last-updated {
+  font-size: 13px;
+  color: var(--tagline);
+  margin-bottom: 28px;
+}
+
+h2 {
+  font-family: "Fredoka", "Nunito", sans-serif;
+  font-size: 22px;
+  font-weight: 600;
+  margin: 32px 0 12px 0;
+  color: var(--title);
+  padding-top: 20px;
+  border-top: 2px solid var(--card-border);
+}
+
+h3 {
+  font-size: 16px;
+  font-weight: 700;
+  margin: 20px 0 10px 0;
+  color: var(--tagline);
+}
+
+p,
+li {
+  font-size: 15px;
+  color: var(--text);
+  margin: 12px 0;
+}
+
+ul {
+  margin: 12px 0;
+  padding-left: 22px;
+}
+
+li {
+  margin-bottom: 6px;
+}
+
+a {
+  color: var(--caramel);
+  text-decoration: none;
+  font-weight: 700;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+.highlight {
+  background: var(--highlight);
+  border-left: 4px solid var(--caramel);
+  padding: 16px;
+  border-radius: 16px;
+  margin: 16px 0;
+}
+
+.highlight-warning {
+  background: var(--highlight);
+  border-left: 4px solid var(--warning);
+  padding: 16px;
+  border-radius: 16px;
+  margin: 16px 0;
+}
+
+.footer {
+  margin-top: 40px;
+  padding-top: 20px;
+  border-top: 2px solid var(--card-border);
+  font-size: 13px;
+  color: var(--tagline);
+}
+
+@media (max-width: 600px) {
+  h1 {
+    font-size: 28px;
+  }
+
+  h2 {
+    font-size: 19px;
+  }
+
+  body {
+    padding: 16px 10px 32px;
+  }
+
+  .container {
+    padding: 22px 18px 26px;
+    border-radius: 24px;
+  }
+}

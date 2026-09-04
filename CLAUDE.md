@@ -54,6 +54,15 @@ preco-lucro/
     sync.js                     sincronização dos preços salvos (Firestore)
     paywall.js                  libera ou trava conforme a assinatura
     firebase-config.js          configuração pública do Firebase
+capidoku/
+  index.html                    landing do jogo Capidoku (botão da Play Store dorme até a publicação)
+  icon-192.png                  ícone do jogo, cópia de assets/icon do repositório capidoku
+  politica-privacidade.html     páginas legais em português, abertas pelo popup de configurações do jogo
+  termos-servico.html
+  en/                           as mesmas duas em inglês (privacy-policy.html, terms-of-service.html)
+  capidoku.css                  a folha das páginas legais do jogo, na paleta e nas fontes do jogo (mesmas classes do assets/style.css)
+  capybara-menu.png, wallpaper-capybaras.png   artes do jogo pra landing e pro papel de parede das páginas
+app-ads.txt                     vendedores autorizados do AdMob (IAB), na raiz porque calvinjota.com.br é o site do desenvolvedor na Play
 tests/                          testes do cálculo (Vitest)
 ```
 
@@ -86,6 +95,7 @@ tests/                          testes do cálculo (Vitest)
 - **O site tem uma global proposital, `window.currentUser`** (`auth.js` escreve, `paywall.js` e `sync.js` leem), ao contrário do app, que é zero globais. A rede aceita essa uma e barra qualquer outra.
 - **O `sync.js` importa direto do `saved-prices.js`** e a volta é por `CustomEvent` no `document`, nunca import de retorno: é isso que impede o ciclo entre os dois.
 - **As URLs públicas não se tocam** (decisão de 16/08): são quatro endereços cadastrados no Google (Política de Privacidade, os dois campos de eliminação no questionário de Segurança dos dados, e o Website do app), e a única forma segura de mudar exigiria deixar redirect no endereço antigo para sempre, o que deixaria a estrutura mais bagunçada do que está.
+- **As quatro páginas legais do Capidoku também não se tocam** (04/09/2026): `capidoku/politica-privacidade.html`, `capidoku/termos-servico.html`, `capidoku/en/privacy-policy.html` e `capidoku/en/terms-of-service.html` estão gravadas no jogo (`settings_popup.gd` do repositório capidoku) e vão pra ficha da Play. A pasta `capidoku/` inteira veste a paleta e as fontes do jogo (bege-capivara, Fredoka, Nunito pelo Google Fonts) por ordem do Calvin de 04/09/2026, nunca o tema escuro do site: o card dele na home também. O `app-ads.txt` da raiz nasce sem linha de vendedor: a linha `google.com, pub-..., DIRECT, f08c47fec0942fa0` entra com o ID da conta AdMob antes de publicar o jogo, e o texto legal do Capidoku é do Capidoku (nada do Preço & Lucro vale lá, e vice-versa, ordem do Calvin).
 - **O botão "Assinar pelo app" do overlay funciona desde 16/08**: o `APP_STORE_URL` do `paywall.js` tem o mesmo link do botão do menu lateral (`preco-lucro/calculadora/index.html:84`). São duas cópias de propósito, uma é HTML estático e a outra só existe quando o gate decide mostrar. Quem vê a do overlay é usuário logado sem Pro.
 - **A Política de Privacidade está na versão 1.2 desde 17/08**, com RevenueCat e Cloudflare declarados como operadores e a frase de transferência internacional cobrindo os três. Mexeu em quem recebe dado do usuário, atualize a seção 4 dessa página junto, é exigência da LGPD e o endereço dela é campo obrigatório no Play Console.
 - **`catch` vazio se comenta, não se silencia** (`app.js`, tema x `localStorage`): a regra `no-empty` ignora bloco que tem comentário dentro, então o porquê fica escrito e o lint fica limpo sem exceção na config, igual ao `clipboard.js` do app.

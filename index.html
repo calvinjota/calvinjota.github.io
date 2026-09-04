@@ -6,6 +6,9 @@
     <title>Calvin Jota</title>
     <meta name="description" content="Ferramentas para e-commerce e negócios.">
     <link rel="icon" type="image/png" href="assets/favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@700&family=Nunito:wght@600&display=swap" rel="stylesheet">
     <style>
         :root {
             --text: #eef2f8;
@@ -95,6 +98,46 @@
             font-weight: 500;
         }
         .footer-contact a:hover { text-decoration: underline; }
+        /* Capidoku's card in the game's own colours and fonts (bege-claro card,
+           Fredoka title in the black of the capybara's glasses, tagline in the
+           brown of its paws, laranja-tucano pill), so the game looks like
+           itself on the hub. Palette from the capidoku repository. */
+        .app-card-capidoku {
+            background: #f0eee9;
+            border: 2px solid #ddd6ca;
+            box-shadow: 0 6px 0 rgba(0, 0, 0, 0.18);
+        }
+        .app-card-capidoku:hover {
+            border-color: #b5652e;
+            box-shadow: 0 6px 0 rgba(0, 0, 0, 0.18);
+        }
+        .app-card-capidoku-icon {
+            width: 72px;
+            height: 72px;
+            border-radius: 18px;
+            margin-bottom: 12px;
+        }
+        .app-card-capidoku .app-name {
+            font-family: 'Fredoka', 'Nunito', sans-serif;
+            font-weight: 700;
+            font-size: 26px;
+            color: #1b1619;
+        }
+        .app-card-capidoku .app-desc {
+            font-family: 'Nunito', sans-serif;
+            font-weight: 600;
+            color: #965c4e;
+        }
+        .app-card-capidoku .app-link {
+            font-family: 'Fredoka', 'Nunito', sans-serif;
+            font-size: 16px;
+            padding: 12px 30px;
+            border-radius: 999px;
+            background: #ff7a00;
+            color: #fff;
+            box-shadow: 0 5px 0 #c65f00;
+        }
+        .app-card-capidoku .app-link:hover { filter: none; transform: translateY(2px); box-shadow: 0 3px 0 #c65f00; }
         .coming-soon {
             background: rgba(34, 211, 238, 0.05);
             border: 1px dashed var(--border);
@@ -122,9 +165,13 @@
                 <a href="preco-lucro/" class="app-link">Acessar página</a>
             </div>
 
-            <div class="coming-soon">
-                <div class="coming-soon-label">Em breve</div>
-                <div class="coming-soon-text">Novo app chegando em breve</div>
+            <!-- The game's card dresses like the game (its own palette and fonts),
+                 not like the site: it is the game's shop window on the hub. -->
+            <div class="app-card app-card-capidoku">
+                <img class="app-card-capidoku-icon" src="capidoku/icon-192.png" alt="" width="72" height="72">
+                <div class="app-name">Capidoku</div>
+                <p class="app-desc">Ache as capivaras escondidas no gramado usando só lógica. Puzzle relaxante com 200 fases.</p>
+                <a href="capidoku/" class="app-link">Acessar página</a>
             </div>
 
             <div class="coming-soon">

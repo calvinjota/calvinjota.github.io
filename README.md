@@ -1,6 +1,6 @@
 # calvinjota.com.br
 
-Site institucional da marca **Calvin Jota**, hospedado no GitHub Pages. Funciona como portada dos aplicativos e hospeda a calculadora web do **Preço & Lucro**, além das páginas legais exigidas pela Google Play.
+Site institucional da marca **Calvin Jota**, hospedado no GitHub Pages. Funciona como portada dos aplicativos, hospeda a calculadora web do **Preço & Lucro** e as páginas legais que a Google Play exige de cada app (Preço & Lucro e o jogo **Capidoku**).
 
 🔗 **No ar em:** [calvinjota.com.br](https://calvinjota.com.br)
 
@@ -12,6 +12,9 @@ Site institucional da marca **Calvin Jota**, hospedado no GitHub Pages. Funciona
 | Landing do app | `/preco-lucro/` | Apresentação do Preço & Lucro, com link para a Play Store |
 | Calculadora web | `/preco-lucro/calculadora/` | A calculadora rodando no navegador, exclusiva para assinantes Pro |
 | Páginas legais | `/preco-lucro/politica-privacidade.html`, `/termos-servico.html`, `/deletar-conta.html` | Documentos exigidos pela Google Play, também abertos dentro do app |
+| Landing do Capidoku | `/capidoku/` | Apresentação do jogo Capidoku, com link para a Play Store |
+| Páginas legais do Capidoku | `/capidoku/politica-privacidade.html`, `/termos-servico.html` e as versões em inglês em `/capidoku/en/` | Documentos exigidos pela Google Play, abertos pelo popup de configurações do jogo |
+| app-ads.txt | `/app-ads.txt` | Vendedores autorizados de anúncio (AdMob), na raiz do site do desenvolvedor |
 
 ## A calculadora web
 
@@ -57,6 +60,12 @@ preco-lucro/
     sync.js                     sincronização dos preços na nuvem
     paywall.js                  libera ou trava conforme a assinatura
     firebase-config.js          configuração pública do Firebase
+capidoku/
+  index.html                    landing do jogo
+  politica-privacidade.html
+  termos-servico.html
+  en/                           privacy-policy.html e terms-of-service.html
+app-ads.txt                     vendedores autorizados do AdMob
 tests/                          testes automatizados do cálculo
 ```
 
