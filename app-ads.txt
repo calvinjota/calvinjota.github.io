@@ -1,5 +1,4 @@
 # Authorized sellers for the apps of calvinjota.com.br (IAB app-ads.txt).
-# The line below is filled in with the publisher ID of the AdMob account
-# (AdMob > Apps > app-ads.txt > "How to set up app-ads.txt") before Capidoku
-# is published. Until then this file is a placeholder with no seller entry.
-# google.com, pub-0000000000000000, DIRECT, f08c47fec0942fa0
+# The line below is the publisher ID of the AdMob account that serves the ads
+# of Capidoku (AdMob > Apps > app-ads.txt > "How to set up app-ads.txt").
+google.com, pub-4996517011345434, DIRECT, f08c47fec0942fa0
