@@ -155,6 +155,31 @@ export function loadInputs(inputs) {
   render();
 }
 
+/* ===================== Announcing a new price ===================== */
+
+// The class the CSS animation hangs on. It is taken off again at the end so a
+// second load can put it back and animate once more.
+const PRICE_FLASH_CLASS = 'price-flash';
+
+/**
+ * Lights up the suggested price card for a moment.
+ *
+ * Loading a saved price changes a number in the middle column while the eye is
+ * on the list in the right one, and a number that changes unseen reads as
+ * nothing having happened. Called from saved-prices.js, which owns the list.
+ */
+export function flashPrice() {
+  const card = $('priceCard');
+  card.classList.remove(PRICE_FLASH_CLASS);
+  // Reading the layout here is what restarts the animation when the class is
+  // put back in the same frame it was taken off, on a second quick click.
+  void card.offsetWidth;
+  card.classList.add(PRICE_FLASH_CLASS);
+  card.addEventListener('animationend', () => card.classList.remove(PRICE_FLASH_CLASS), {
+    once: true,
+  });
+}
+
 /* ===================== Copying the price ===================== */
 
 // Enter on the button does two things in sequence: the first press copies, the

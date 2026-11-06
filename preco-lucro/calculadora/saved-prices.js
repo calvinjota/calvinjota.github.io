@@ -11,12 +11,23 @@
 
 import { brl, pct } from './calc.js?v=4';
 import { sortPricesByName } from './price-sort.js?v=2';
+import { filterPricesByQuery } from './price-search.js?v=1';
 import { escapeHtml } from './format.js?v=1';
-import { readInputs, getLastCalc, loadInputs, setOnReset } from './calculator.js?v=1';
+import { readInputs, getLastCalc, loadInputs, setOnReset, flashPrice } from './calculator.js?v=2';
+import { showToast } from './toast.js?v=1';
 
 const $ = (id) => document.getElementById(id);
 
 const STORAGE_KEY = 'savedPrices';
+
+// The same list is drawn in two places, each with its own search box: the
+// column on the right and the "Carregar" popup. Typing in one must not filter
+// the other, so the box that belongs to each list is named here once and every
+// function below works from this table instead of repeating the two ids.
+const PRICE_LISTS = [
+  { listId: 'savedList', searchId: 'savedSearch', clearId: 'savedSearchClear' },
+  { listId: 'loadList', searchId: 'loadSearch', clearId: 'loadSearchClear' },
+];
 
 function loadSaved() {
   try {
@@ -42,17 +53,16 @@ function displayOf(calc) {
   };
 }
 
-// Renders the list in both places: the "Preços Salvos" column and the load popup
-export function renderSavedList() {
-  // The order is decided here, never in the stored array: that array belongs to
-  // the cloud sync and arrives in whatever order Firestore returns.
-  const list = sortPricesByName(loadSaved());
-  const html =
-    list.length === 0
-      ? '<p class="saved-empty">Nenhum preço salvo ainda.</p>'
-      : list
-          .map(
-            (p) => `
+/** The cards of a list of prices, or the line that explains why there are none. */
+function listHtml(shown, hasAnySaved) {
+  if (shown.length === 0) {
+    return hasAnySaved
+      ? '<p class="saved-empty">Nenhum preço encontrado.</p>'
+      : '<p class="saved-empty">Nenhum preço salvo ainda.</p>';
+  }
+  return shown
+    .map(
+      (p) => `
     <div class="saved-item" data-id="${escapeHtml(p.id)}">
       <div class="saved-item-head">
         <span class="saved-item-name">${escapeHtml(p.name)}</span>
@@ -67,10 +77,27 @@ export function renderSavedList() {
         <span>Lucro: <strong>${brl(p.display.marginAmount)}</strong></span>
       </div>
     </div>`,
-          )
-          .join('');
-  $('savedList').innerHTML = html;
-  $('loadList').innerHTML = html;
+    )
+    .join('');
+}
+
+// Renders the list in both places: the "Preços Salvos" column and the load popup
+export function renderSavedList() {
+  const saved = loadSaved();
+  for (const { listId, searchId, clearId } of PRICE_LISTS) {
+    const query = $(searchId).value;
+    // The order is decided here, never in the stored array: that array belongs
+    // to the cloud sync and arrives in whatever order Firestore returns.
+    const shown = sortPricesByName(filterPricesByQuery(saved, query));
+    $(listId).innerHTML = listHtml(shown, saved.length > 0);
+    $(clearId).hidden = query.length === 0;
+  }
+}
+
+/** Empties a search box and repaints, so nothing stays hidden behind a filter. */
+function clearSearch(searchId) {
+  $(searchId).value = '';
+  renderSavedList();
 }
 
 /* ---- loaded price state (banner on top of column 1, same as the app) ---- */
@@ -108,6 +135,10 @@ function handleSavedListClick(e) {
   loadedPriceId = id;
   showLoadedBanner(price.name);
   $('loadOverlay').hidden = true;
+  // The banner sits in column 1 and the eye is on the list in column 3, so
+  // without these two the price changes with nothing to say that it did.
+  flashPrice();
+  showToast(`${price.name} carregado`);
 }
 
 function openSavePopup() {
@@ -131,6 +162,8 @@ function saveAsNewPrice() {
   const list = loadSaved();
   list.unshift(price);
   persistSaved(list);
+  // A search left over from before would hide the price that was just saved
+  $('savedSearch').value = '';
   renderSavedList();
   loadedPriceId = price.id;
   showLoadedBanner(price.name);
@@ -194,8 +227,18 @@ export function attachSavedPrices() {
   $('savedList').addEventListener('click', handleSavedListClick);
   $('loadList').addEventListener('click', handleSavedListClick);
 
-  // load popup
+  // search boxes: each one filters only its own list
+  for (const { searchId, clearId } of PRICE_LISTS) {
+    $(searchId).addEventListener('input', renderSavedList);
+    $(clearId).addEventListener('click', () => {
+      clearSearch(searchId);
+      $(searchId).focus();
+    });
+  }
+
+  // load popup: opens showing everything, never the previous search
   $('btnLoad').addEventListener('click', () => {
+    $('loadSearch').value = '';
     renderSavedList();
     $('loadOverlay').hidden = false;
   });

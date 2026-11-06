@@ -15,8 +15,8 @@ import { attachThemeSwitch } from './theme.js?v=1';
 import { attachMenu } from './menu.js?v=1';
 import { attachOverlayDismissal } from './overlays.js?v=1';
 import { attachLegalLinks } from './legal.js?v=1';
-import { attachCalculator } from './calculator.js?v=1';
-import { attachSavedPrices } from './saved-prices.js?v=1';
+import { attachCalculator } from './calculator.js?v=2';
+import { attachSavedPrices } from './saved-prices.js?v=2';
 
 attachEnterNavigation();
 attachOverlayDismissal();

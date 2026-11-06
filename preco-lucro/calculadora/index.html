@@ -29,7 +29,7 @@
        publish (otherwise it reuses the cached CSS/JS). Bump this number on ALL
        local files (here and in the imports between modules) whenever any one
        of them changes. -->
-  <link rel="stylesheet" href="calculator.css?v=7">
+  <link rel="stylesheet" href="calculator.css?v=8">
 </head>
 <body>
 
@@ -272,7 +272,7 @@
 
       <!-- ==== Column 2: price and breakdown ==== -->
       <div class="col-mid">
-        <section class="glass-card card-preco">
+        <section id="priceCard" class="glass-card card-preco">
           <div class="price-head">
             <div>
               <h2 class="card-title">Preço de Venda Sugerido</h2>
@@ -316,13 +316,24 @@
         </section>
       </div>
 
-      <!-- ==== Column 3: saved prices ==== -->
-      <section class="glass-card card-saved">
-        <h2 class="card-title">Preços Salvos</h2>
-        <div id="savedList" class="saved-list">
-          <p class="saved-empty">Nenhum preço salvo ainda.</p>
-        </div>
-      </section>
+      <!-- ==== Column 3: saved prices ====
+           The wrapper is what holds the column: the card itself is taken out of
+           the flow in CSS so that a long list stops stretching columns 1 and 2. -->
+      <div class="card-saved-wrap">
+        <section class="glass-card card-saved">
+          <h2 class="card-title">Preços Salvos</h2>
+          <div class="search-box">
+            <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            <input id="savedSearch" class="search-input" type="search" autocomplete="off" placeholder="Buscar pelo nome" aria-label="Buscar nos preços salvos">
+            <button id="savedSearchClear" class="search-clear" type="button" aria-label="Limpar busca" hidden>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            </button>
+          </div>
+          <div id="savedList" class="saved-list">
+            <p class="saved-empty">Nenhum preço salvo ainda.</p>
+          </div>
+        </section>
+      </div>
 
     </div>
 
@@ -394,6 +405,13 @@
   <div id="loadOverlay" class="overlay" hidden>
     <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="loadTitle">
       <h3 id="loadTitle">Preços salvos</h3>
+      <div class="search-box">
+        <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        <input id="loadSearch" class="search-input" type="search" autocomplete="off" placeholder="Buscar pelo nome" aria-label="Buscar nos preços salvos">
+        <button id="loadSearchClear" class="search-clear" type="button" aria-label="Limpar busca" hidden>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      </div>
       <div id="loadList" class="saved-list dialog-list"></div>
       <div class="dialog-actions">
         <button id="loadClose" class="btn-secondary" type="button">Fechar</button>
@@ -421,9 +439,9 @@
     </div>
   </div>
 
-  <script type="module" src="app.js?v=20"></script>
+  <script type="module" src="app.js?v=21"></script>
   <script type="module" src="auth.js?v=3"></script>
-  <script type="module" src="sync.js?v=11"></script>
+  <script type="module" src="sync.js?v=12"></script>
   <script type="module" src="paywall.js?v=5"></script>
 </body>
 </html>

@@ -418,9 +418,34 @@ body {
 .col-mid .card-breakdown {
   flex: 1;
 }
-/* Saved prices keeps its natural height, growing as prices are added */
+/* Saved prices must never decide how tall the row is. A long list used to set
+   the row height and stretch columns 1 and 2 along with it, leaving both cards
+   with hundreds of empty pixels under their content. Taking the card out of the
+   flow (absolute inside a wrapper that is itself the grid item) means only
+   columns 1 and 2 count: the card grows with its content up to the height they
+   settled on, and from there the list scrolls inside it. */
+.card-saved-wrap {
+  position: relative;
+  min-width: 0;
+  min-height: 0;
+}
 .card-saved {
-  align-self: start;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  max-height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+/* min-height: 0 is what allows a flex child to be smaller than its content,
+   which is the difference between the list scrolling and it overflowing. */
+.card-saved .saved-list {
+  overflow-y: auto;
+  min-height: 0;
+  /* Breathing room between the cards and the scrollbar, so the bar never sits
+     on top of the delete buttons */
+  padding-right: 8px;
 }
 
 /* ===================== Cards ===================== */
@@ -715,6 +740,27 @@ body {
 }
 
 /* ===================== Price card ===================== */
+
+/* Loading a saved price changes this card while the eye is on the list in the
+   other column, so the card announces itself for a moment. Border and glow
+   only, nothing that moves or resizes: the numbers being read stay put, and
+   there is no motion for prefers-reduced-motion to object to. color-mix keeps
+   the glow on the theme's own accent instead of a colour typed in by hand; a
+   browser too old for it drops the glow and still shows the border. */
+@keyframes price-flash {
+  0% {
+    border-color: var(--teal);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--teal) 35%, transparent);
+  }
+  100% {
+    border-color: var(--border);
+    box-shadow: 0 0 0 0 transparent;
+  }
+}
+.card-preco.price-flash {
+  animation: price-flash 1s ease-out;
+}
+
 .price-head {
   display: flex;
   align-items: flex-start;
@@ -801,11 +847,16 @@ body {
 }
 
 /* Floating notice that fades on its own (toast.js builds the element) */
+/* Centred on the screen, which is where the app's copy of this component is
+   not: on a phone the message belongs at the bottom, by the thumb and by the
+   convention of the system. On a desktop monitor the bottom of the window can
+   be a thousand pixels below what is being read, and a message nobody sees is
+   the same as no message. Same component, different place, on purpose. */
 .toast {
   position: fixed;
   left: 50%;
-  bottom: 28px;
-  transform: translate(-50%, 12px);
+  top: 50%;
+  transform: translate(-50%, calc(-50% + 12px));
   background: var(--panel);
   color: var(--text);
   border: 1px solid var(--border);
@@ -823,7 +874,7 @@ body {
 }
 .toast.show {
   opacity: 1;
-  transform: translate(-50%, 0);
+  transform: translate(-50%, -50%);
 }
 .payout {
   margin: 8px 0 0;
@@ -958,11 +1009,103 @@ body {
 }
 
 /* ===================== Saved prices ===================== */
+
+/* Search box over the list, in the column and in the load popup */
+.search-box {
+  position: relative;
+  display: flex;
+  align-items: center;
+  margin-top: 10px;
+}
+.search-icon {
+  position: absolute;
+  left: 10px;
+  width: 16px;
+  height: 16px;
+  color: var(--muted);
+  pointer-events: none;
+}
+.search-input {
+  width: 100%;
+  padding: 9px 34px;
+  background: var(--panel-2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  color: var(--text);
+  font-family: inherit;
+  font-size: 13px;
+  outline: none;
+}
+.search-input::placeholder {
+  color: var(--muted-2);
+}
+.search-input:focus {
+  border-color: var(--teal);
+}
+/* The browser's own clear button would sit beside ours and does not match the
+   rest of the page, so the one in the HTML is the only one shown. */
+.search-input::-webkit-search-cancel-button {
+  display: none;
+}
+.search-clear {
+  position: absolute;
+  right: 6px;
+  display: inline-flex;
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  padding: 4px;
+  line-height: 0;
+  border-radius: 6px;
+}
+.search-clear[hidden] {
+  display: none;
+}
+.search-clear svg {
+  width: 14px;
+  height: 14px;
+}
+.search-clear:hover {
+  color: var(--text);
+  background: var(--border);
+}
+
 .saved-list {
   display: flex;
   flex-direction: column;
   gap: 10px;
   margin-top: 10px;
+}
+
+/* Scrollbar of the lists that scroll (the column and the load popup). The
+   browser's default one is a wide grey block that belongs to the system, not
+   to the page. The two spellings are exclusive on purpose: a browser that
+   understands ::-webkit-scrollbar gets the rounded thumb, and one that does not
+   (Firefox) gets the thin themed bar, which is all the standard property can
+   express. Declaring both would be worse than either: a browser that supports
+   both ignores the pseudo-elements as soon as scrollbar-width is set. */
+.saved-list::-webkit-scrollbar {
+  width: 8px;
+}
+.saved-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+/* --muted-2, not --border: the border tone disappears against the light
+   theme's white card, and a scrollbar nobody can see does not say that the
+   list continues below. */
+.saved-list::-webkit-scrollbar-thumb {
+  background: var(--muted-2);
+  border-radius: 999px;
+}
+.saved-list::-webkit-scrollbar-thumb:hover {
+  background: var(--muted);
+}
+@supports not selector(::-webkit-scrollbar) {
+  .saved-list {
+    scrollbar-width: thin;
+    scrollbar-color: var(--muted-2) transparent;
+  }
 }
 .saved-empty {
   font-size: 13px;
@@ -1211,8 +1354,17 @@ body {
   .grid {
     grid-template-columns: minmax(300px, 420px) minmax(360px, 1fr);
   }
-  .card-saved {
+  .card-saved-wrap {
     grid-column: 1 / -1;
+  }
+  /* On its own row the card has no column to match, so it goes back to being a
+     normal block that grows with the list. */
+  .card-saved {
+    position: static;
+    max-height: none;
+  }
+  .card-saved .saved-list {
+    overflow-y: visible;
   }
 }
 @media (max-width: 1023px) {
