@@ -23,6 +23,7 @@
 import { describe, it, expect } from 'vitest';
 import { readFileSync, readdirSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
+import { BOARD_CARD_IDS, BOARD_COLUMN_COUNT } from '../preco-lucro/calculadora/board-layout.js';
 
 const CALCULATOR_DIR = 'preco-lucro/calculadora';
 
@@ -215,6 +216,49 @@ describe('cache-busting stays consistent', () => {
     const missing = sorted(imported.filter((file) => !existing.has(file)));
 
     expect(missing).toEqual([]);
+  });
+});
+
+describe('the board the cards are dragged around', () => {
+  /** The card ids written in the HTML, from every data-card="x". */
+  function cardsInHtml() {
+    return [...html.matchAll(/\sdata-card="([\w-]+)"/g)].map(([, cardId]) => cardId);
+  }
+
+  it('every card the layout knows exists in the HTML, and no other', () => {
+    // The two lists are written in different files and have to say the same
+    // thing: a card that is in the HTML and not in the layout is never placed,
+    // and one that is in the layout and not in the HTML is a column that comes
+    // out one card short on load.
+    expect(sorted(cardsInHtml())).toEqual(sorted(BOARD_CARD_IDS));
+  });
+
+  it('every card carries a grip, which is the only way to drag it', () => {
+    const grips = [...html.matchAll(/class="card-grip"/g)];
+
+    expect(grips).toHaveLength(BOARD_CARD_IDS.length);
+  });
+
+  it('the columns are the ones the layout counts on, numbered from zero', () => {
+    const columns = [...html.matchAll(/class="board-col" data-column="(\d+)"/g)].map(([, index]) =>
+      Number(index),
+    );
+
+    expect(columns).toEqual([...Array(BOARD_COLUMN_COUNT).keys()]);
+  });
+
+  it('the widths where a column is dropped agree between the CSS and the code', () => {
+    // board.js collapses the arrangement at the same widths the stylesheet
+    // drops a column. Two numbers that drift apart leave a card in a column
+    // nobody can see, or an empty gap where one was expected.
+    const css = readProjectFile(`${CALCULATOR_DIR}/calculator.css`);
+    const board = readProjectFile(`${CALCULATOR_DIR}/board.js`);
+    const widthsIn = (source) =>
+      sorted([...source.matchAll(/max-width:\s*(\d+)px/g)].map(([, width]) => width));
+
+    for (const width of widthsIn(board)) {
+      expect(widthsIn(css)).toContain(width);
+    }
   });
 });
 

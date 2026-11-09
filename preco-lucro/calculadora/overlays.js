@@ -18,6 +18,7 @@ export const DISMISSABLE_OVERLAYS = [
   'legalOverlay',
   'saveChoiceOverlay',
   'editNameOverlay',
+  'renameViewOverlay',
 ];
 
 /** Popups that close by more than `hidden`, by id. */

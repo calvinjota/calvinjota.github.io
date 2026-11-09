@@ -13,10 +13,11 @@
 import { attachEnterNavigation } from './field-order.js?v=1';
 import { attachThemeSwitch } from './theme.js?v=1';
 import { attachMenu } from './menu.js?v=1';
-import { attachOverlayDismissal } from './overlays.js?v=1';
-import { attachLegalLinks } from './legal.js?v=1';
+import { attachOverlayDismissal } from './overlays.js?v=2';
+import { attachLegalLinks } from './legal.js?v=2';
 import { attachCalculator } from './calculator.js?v=2';
 import { attachSavedPrices } from './saved-prices.js?v=2';
+import { attachBoard } from './board.js?v=1';
 
 attachEnterNavigation();
 attachOverlayDismissal();
@@ -25,3 +26,5 @@ attachThemeSwitch();
 attachMenu();
 attachCalculator();
 attachSavedPrices();
+// Last: it moves the cards other modules already bound their controls inside.
+attachBoard();

@@ -10,7 +10,7 @@
  * keep working through the same path as every other popup.
  */
 
-import { registerOverlayCloser } from './overlays.js?v=1';
+import { registerOverlayCloser } from './overlays.js?v=2';
 
 const $ = (id) => document.getElementById(id);
 

@@ -19,3 +19,6 @@ Thumbs.db
 # Instrucoes de trabalho internas: repo e publico via GitHub Pages,
 # esse arquivo nao precisa estar visivel pra qualquer um.
 INSTRUCOES-SITE.md
+
+# Configuracao local do Claude Code: o repo e publico via GitHub Pages.
+.claude/

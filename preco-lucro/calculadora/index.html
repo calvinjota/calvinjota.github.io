@@ -29,7 +29,7 @@
        publish (otherwise it reuses the cached CSS/JS). Bump this number on ALL
        local files (here and in the imports between modules) whenever any one
        of them changes. -->
-  <link rel="stylesheet" href="calculator.css?v=8">
+  <link rel="stylesheet" href="calculator.css?v=15">
 </head>
 <body>
 
@@ -121,17 +121,52 @@
         <h1>Precificação de Produto</h1>
         <p class="subtitle">Calcule o seu lucro</p>
       </div>
+    </header>
+
+    <!-- ===== The row above the board: the views on the left, and resetting the
+         fields on the right. Both act on what is right under them, which is
+         what keeps the reset button from sitting alone up in the title. ===== -->
+    <div class="board-toolbar">
+    <!-- "Padrão" is read only and is the way back; the other one is the
+         person's own, renamed by the pencil. The pin on each says which of the
+         two opens by itself. -->
+    <div id="viewBar" class="view-bar">
+      <div class="view-chip" data-view="default" data-active="true">
+        <button class="view-pin" type="button" aria-label="Abrir sempre no Padrão" aria-pressed="true" data-pinned="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 17v5"/><path d="M9 10.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24V16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V7a1 1 0 0 1 1-1 2 2 0 0 0 0-4H8a2 2 0 0 0 0 4 1 1 0 0 1 1 1z"/></svg>
+        </button>
+        <button class="view-tab" type="button" aria-pressed="true">Padrão</button>
+      </div>
+      <div class="view-chip" data-view="profile" data-active="false">
+        <button class="view-pin" type="button" aria-label="Abrir sempre no seu perfil" aria-pressed="false" data-pinned="false">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 17v5"/><path d="M9 10.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24V16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V7a1 1 0 0 1 1-1 2 2 0 0 0 0-4H8a2 2 0 0 0 0 4 1 1 0 0 1 1 1z"/></svg>
+        </button>
+        <button class="view-tab" type="button" aria-pressed="false"><span id="viewProfileName">Perfil 1</span></button>
+        <button class="view-rename" type="button" aria-label="Alterar o nome do perfil" title="Alterar o nome">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"></path><path d="M15 5l4 4"></path></svg>
+        </button>
+      </div>
+    </div>
+
       <button id="btnReset" class="btn-reset" type="button">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7"/><polyline points="3 4 3 9 8 9"/></svg>
         Resetar
       </button>
-    </header>
+    </div>
 
     <div class="gate-wrap">
-    <div id="calcGate" class="grid" data-locked="true">
+    <!-- ===== The board: three columns of cards that can be dragged between
+         them by the grip in each card's corner. Which card starts in which
+         column is the default arrangement of board-layout.js, and board.js
+         rearranges them on load if this browser was left another way. ===== -->
+    <div id="calcGate" class="board" data-locked="true">
 
-      <!-- ==== Column 1: sale data ==== -->
-      <section class="glass-card card-dados">
+      <!-- ==== Column 1 ==== -->
+      <div class="board-col" data-column="0">
+      <section class="glass-card card-dados" data-card="sale">
+        <button class="card-grip" type="button" aria-label="Mover o card Dados da Venda" title="Arraste para mover, ou mova com as setas do teclado">
+          <svg viewBox="0 0 16 10" fill="currentColor" aria-hidden="true"><circle cx="3" cy="3" r="1.4"/><circle cx="8" cy="3" r="1.4"/><circle cx="13" cy="3" r="1.4"/><circle cx="3" cy="7" r="1.4"/><circle cx="8" cy="7" r="1.4"/><circle cx="13" cy="7" r="1.4"/></svg>
+        </button>
         <h2 class="card-title">Dados da Venda</h2>
 
         <div class="loaded-price-banner" id="loadedPriceBanner" hidden>
@@ -269,10 +304,14 @@
           <button id="btnLoad" class="btn-secondary" type="button">📂 Carregar</button>
         </div>
       </section>
+      </div>
 
-      <!-- ==== Column 2: price and breakdown ==== -->
-      <div class="col-mid">
-        <section id="priceCard" class="glass-card card-preco">
+      <!-- ==== Column 2 ==== -->
+      <div class="board-col" data-column="1">
+        <section id="priceCard" class="glass-card card-preco" data-card="price">
+          <button class="card-grip" type="button" aria-label="Mover o card Preço de Venda Sugerido" title="Arraste para mover, ou mova com as setas do teclado">
+            <svg viewBox="0 0 16 10" fill="currentColor" aria-hidden="true"><circle cx="3" cy="3" r="1.4"/><circle cx="8" cy="3" r="1.4"/><circle cx="13" cy="3" r="1.4"/><circle cx="3" cy="7" r="1.4"/><circle cx="8" cy="7" r="1.4"/><circle cx="13" cy="7" r="1.4"/></svg>
+          </button>
           <div class="price-head">
             <div>
               <h2 class="card-title">Preço de Venda Sugerido</h2>
@@ -293,7 +332,10 @@
           </div>
         </section>
 
-        <section class="glass-card card-breakdown">
+        <section class="glass-card card-breakdown" data-card="breakdown">
+          <button class="card-grip" type="button" aria-label="Mover o card Detalhamento da Venda" title="Arraste para mover, ou mova com as setas do teclado">
+            <svg viewBox="0 0 16 10" fill="currentColor" aria-hidden="true"><circle cx="3" cy="3" r="1.4"/><circle cx="8" cy="3" r="1.4"/><circle cx="13" cy="3" r="1.4"/><circle cx="3" cy="7" r="1.4"/><circle cx="8" cy="7" r="1.4"/><circle cx="13" cy="7" r="1.4"/></svg>
+          </button>
           <h2 class="card-title">Detalhamento da Venda</h2>
           <div id="compBar" class="comp-bar"></div>
           <div class="legend"></div>
@@ -316,11 +358,12 @@
         </section>
       </div>
 
-      <!-- ==== Column 3: saved prices ====
-           The wrapper is what holds the column: the card itself is taken out of
-           the flow in CSS so that a long list stops stretching columns 1 and 2. -->
-      <div class="card-saved-wrap">
-        <section class="glass-card card-saved">
+      <!-- ==== Column 3 ==== -->
+      <div class="board-col" data-column="2">
+        <section class="glass-card card-saved" data-card="saved">
+          <button class="card-grip" type="button" aria-label="Mover o card Preços Salvos" title="Arraste para mover, ou mova com as setas do teclado">
+            <svg viewBox="0 0 16 10" fill="currentColor" aria-hidden="true"><circle cx="3" cy="3" r="1.4"/><circle cx="8" cy="3" r="1.4"/><circle cx="13" cy="3" r="1.4"/><circle cx="3" cy="7" r="1.4"/><circle cx="8" cy="7" r="1.4"/><circle cx="13" cy="7" r="1.4"/></svg>
+          </button>
           <h2 class="card-title">Preços Salvos</h2>
           <div class="search-box">
             <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
@@ -401,6 +444,20 @@
     </div>
   </div>
 
+  <!-- ===== Popup: rename the board profile ===== -->
+  <div id="renameViewOverlay" class="overlay" hidden>
+    <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="renameViewTitle">
+      <h3 id="renameViewTitle">Nome do perfil</h3>
+      <label class="field-label" for="viewNameInput">Como chamar esta arrumação</label>
+      <input id="viewNameInput" maxlength="24" autocomplete="off" placeholder="Ex: Meu painel">
+      <div class="char-count"><span id="viewNameCount">0</span>/24</div>
+      <div class="dialog-actions">
+        <button id="renameViewCancel" class="btn-secondary" type="button">Cancelar</button>
+        <button id="renameViewConfirm" class="btn-primary" type="button">Salvar</button>
+      </div>
+    </div>
+  </div>
+
   <!-- ===== Popup: load a saved price ===== -->
   <div id="loadOverlay" class="overlay" hidden>
     <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="loadTitle">
@@ -439,7 +496,7 @@
     </div>
   </div>
 
-  <script type="module" src="app.js?v=21"></script>
+  <script type="module" src="app.js?v=23"></script>
   <script type="module" src="auth.js?v=3"></script>
   <script type="module" src="sync.js?v=12"></script>
   <script type="module" src="paywall.js?v=5"></script>

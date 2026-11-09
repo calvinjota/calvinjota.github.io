@@ -25,6 +25,11 @@
   --rose: #fb7185;
   --radius: 14px;
   --sidebar-w: 280px;
+  /* How tall the saved prices list is allowed to get before it scrolls inside
+     its own card. In vh because what it competes with is the window, not the
+     cards beside it: since the cards can be dragged anywhere, no other card is
+     there to borrow a height from. */
+  --saved-list-max-h: 55vh;
 }
 :root[data-theme="light"] {
   --bg: #f5f7fb;
@@ -49,7 +54,15 @@ body {
 }
 body {
   margin: 0;
-  background: radial-gradient(1200px 600px at 20% -10%, #14203c 0%, var(--bg) 55%);
+  /* The glow is painted once and the rest of the page is the flat background
+     colour. Written as one `background` shorthand it repeated: the body is only
+     as tall as the window, the browser paints its background over the whole
+     scrolling page, and a gradient 600px tall with the default `repeat` comes
+     back every 600px. On a phone, where the page runs to nearly 3000px, that
+     showed as three or four bands of lighter sky stacked down the screen. */
+  background-color: var(--bg);
+  background-image: radial-gradient(1200px 600px at 20% -10%, #14203c 0%, var(--bg) 55%);
+  background-repeat: no-repeat;
   color: var(--text);
   font-family:
     "Segoe UI",
@@ -60,8 +73,12 @@ body {
     Arial,
     sans-serif;
 }
+/* Same shape as the dark one above, and the same reason for being split in
+   two: the shorthand would bring `repeat` back and band the page. */
 :root[data-theme="light"] body {
-  background: radial-gradient(1200px 600px at 20% -10%, #e7ecf7 0%, var(--bg) 55%);
+  background-color: var(--bg);
+  background-image: radial-gradient(1200px 600px at 20% -10%, #e7ecf7 0%, var(--bg) 55%);
+  background-repeat: no-repeat;
 }
 
 /* ===================== Side menu ===================== */
@@ -401,51 +418,215 @@ body {
   color: var(--teal);
 }
 
-/* Three column grid on wide screens */
-.grid {
+/* ===================== The views of the board =====================
+   Above the cards and not in the side menu, on purpose: the row changes what is
+   right under it, and on a phone the menu lives behind the hamburger, so saving
+   or switching would cost two taps and a closed menu. */
+.board-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+.view-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.view-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 3px 6px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--panel);
+}
+.view-chip[data-active="true"] {
+  border-color: var(--teal);
+  box-shadow: inset 0 0 0 1px var(--teal);
+}
+.view-tab,
+.view-pin,
+.view-rename {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  border-radius: 999px;
+  cursor: pointer;
+}
+.view-tab {
+  padding: 5px 10px;
+  font-size: 14px;
+  font-weight: 600;
+}
+.view-chip[data-active="true"] .view-tab {
+  color: var(--text);
+}
+.view-pin,
+.view-rename {
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  line-height: 0;
+}
+.view-pin svg,
+.view-rename svg {
+  width: 15px;
+  height: 15px;
+}
+/* The pinned view is the one that opens by itself, and its pin is filled in.
+   Colour alone would be one more thing to learn, and would say nothing on a
+   screen that is not showing colour. */
+.view-pin[data-pinned="true"] {
+  color: var(--teal);
+}
+.view-pin[data-pinned="true"] svg {
+  fill: currentColor;
+}
+.view-tab:hover,
+.view-pin:hover,
+.view-rename:hover {
+  color: var(--text);
+  background: var(--panel-2);
+}
+
+/* ===================== The board =====================
+   Three columns of equal width, each one a stack of cards that can be dragged
+   into any other. Equal width is what makes dragging predictable: a card that
+   changed shape on arrival would make every move a surprise.
+
+   The columns are independent stacks rather than rows of a grid, which is also
+   what keeps a long card from stretching the ones beside it. Until the cards
+   could move, column 3 had to be taken out of the flow by hand to get the same
+   thing; the stacks give it for free. */
+/* The columns run the full height of the row (stretch, not start) even when
+   their cards are short. The empty strip underneath is not decoration: it is
+   the only place to drop a card when the intention is to stack it in a column
+   rather than to swap it with someone. Without it, a column whose height ends
+   at its last card leaves no room to aim at, and a board of four cards could
+   never be stacked three and one. */
+.board {
   display: grid;
-  grid-template-columns: minmax(300px, 400px) minmax(360px, 1fr) minmax(260px, 360px);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 20px;
   align-items: stretch;
 }
-.col-mid {
+.board-col {
+  position: relative;
   display: flex;
   flex-direction: column;
   gap: 20px;
   min-width: 0;
+  /* A column emptied by dragging still has to be a target the pointer can find. */
+  min-height: 120px;
 }
-/* The breakdown card grows so that the bottom of column 2 lines up with column 1 */
-.col-mid .card-breakdown {
-  flex: 1;
+/* While a card is in the air every column opens a strip at its foot, and only
+   then. It is the one place to aim at when the intention is to stack a card in
+   a column instead of swapping it with someone, and it has to exist in the
+   tallest column too, which by definition has no empty space of its own. */
+body.board-dragging .board-col {
+  padding-bottom: 96px;
 }
-/* Saved prices must never decide how tall the row is. A long list used to set
-   the row height and stretch columns 1 and 2 along with it, leaving both cards
-   with hundreds of empty pixels under their content. Taking the card out of the
-   flow (absolute inside a wrapper that is itself the grid item) means only
-   columns 1 and 2 count: the card grows with its content up to the height they
-   settled on, and from there the list scrolls inside it. */
-.card-saved-wrap {
-  position: relative;
-  min-width: 0;
-  min-height: 0;
-}
-.card-saved {
+body.board-dragging .board-col::after {
+  content: "";
   position: absolute;
-  top: 0;
   left: 0;
   right: 0;
-  max-height: 100%;
-  display: flex;
-  flex-direction: column;
+  bottom: 0;
+  height: 84px;
+  border: 2px dashed var(--border);
+  border-radius: var(--radius);
+  background: rgba(127, 127, 127, 0.04);
 }
-/* min-height: 0 is what allows a flex child to be smaller than its content,
-   which is the difference between the list scrolling and it overflowing. */
+/* The list scrolls inside the card instead of letting the card grow without
+   end: a card taller than the window would mean scrolling the whole page to see
+   the rest of the board, which is the opposite of arranging it. */
 .card-saved .saved-list {
   overflow-y: auto;
+  max-height: var(--saved-list-max-h);
   min-height: 0;
   /* Breathing room between the cards and the scrollbar, so the bar never sits
      on top of the delete buttons */
   padding-right: 8px;
+}
+
+/* ===================== Dragging a card =====================
+   The grip is the only handle: see board.js for why the card itself is not one.
+   touch-action: none is what tells the browser the gesture starting here is not
+   a scroll, and without it a drag on a phone is cancelled the moment the finger
+   moves. */
+.card-grip {
+  position: absolute;
+  top: 6px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 46px;
+  height: 20px;
+  padding: 0;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--muted);
+  opacity: 0.45;
+  cursor: grab;
+  touch-action: none;
+}
+.card-grip svg {
+  width: 16px;
+  height: 10px;
+}
+.card-grip:hover,
+.card-grip:focus-visible {
+  opacity: 1;
+  background: var(--panel-2);
+  color: var(--text);
+}
+.card-grip:active {
+  cursor: grabbing;
+}
+.glass-card[data-card] {
+  position: relative;
+  /* Room for the grip above the title. */
+  padding-top: 32px;
+}
+/* The card being dragged: out of the flow, under the pointer and above
+   everything else. pointer-events: none keeps it from being the element the
+   pointer is over, which is what would otherwise hide the column underneath. */
+.glass-card.is-dragging {
+  position: fixed;
+  z-index: 30;
+  margin: 0;
+  pointer-events: none;
+  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.35);
+  opacity: 0.95;
+  cursor: grabbing;
+}
+/* The hole the dragged card left behind, held open so nothing else jumps. */
+.board-placeholder {
+  border: 2px dashed var(--border);
+  border-radius: var(--radius);
+  background: rgba(127, 127, 127, 0.06);
+}
+/* The card that will change places with the one in the air. Two cards swap, so
+   what has to be shown is which card, not which gap. */
+.glass-card.is-swap-target {
+  border-color: var(--teal);
+  box-shadow:
+    inset 0 0 0 1px var(--teal),
+    0 0 0 4px rgba(34, 211, 238, 0.12);
+}
+body.board-dragging {
+  user-select: none;
+  cursor: grabbing;
 }
 
 /* ===================== Cards ===================== */
@@ -1350,24 +1531,24 @@ body {
 }
 
 /* ===================== Responsive ===================== */
+/* The two widths where a column is dropped. board.js carries the same two
+   numbers, because the arrangement has to collapse along with the columns and a
+   media query says nothing to JavaScript. Change one, change the other. */
 @media (max-width: 1279px) {
-  .grid {
-    grid-template-columns: minmax(300px, 420px) minmax(360px, 1fr);
+  .board {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
-  .card-saved-wrap {
-    grid-column: 1 / -1;
-  }
-  /* On its own row the card has no column to match, so it goes back to being a
-     normal block that grows with the list. */
-  .card-saved {
-    position: static;
-    max-height: none;
-  }
-  .card-saved .saved-list {
-    overflow-y: visible;
+  /* Hidden, not removed: the cards that were in it have already been moved into
+     the columns that remain, and offsetParent going null is how board.js knows
+     this column is not a place a card can be dropped. */
+  .board-col[data-column="2"] {
+    display: none;
   }
 }
 @media (max-width: 1023px) {
+  .board-col[data-column="1"] {
+    display: none;
+  }
   .menu-toggle {
     display: inline-flex;
   }
@@ -1382,7 +1563,7 @@ body {
     margin-left: 0;
     padding-top: 72px;
   }
-  .grid {
-    grid-template-columns: 1fr;
+  .board {
+    grid-template-columns: minmax(0, 1fr);
   }
 }
